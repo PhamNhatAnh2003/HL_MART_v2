@@ -1,0 +1,52 @@
+// Star
+.star {
+    --bg: var(--background);
+    --size: 20px;
+    position: relative;
+    height: var(--size);
+    width: var(--size);
+    background-color: var(--bg);
+
+    &.large {
+        --size: 30px;
+    }
+
+    &.medium {
+        --size: 20px;
+    }
+
+    &.small {
+        --size: 15px;
+    }
+}
+
+.main,
+.extra-star {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--size);
+    width: var(--size);
+}
+
+.extra-star {
+    color: #dde2e4;
+}
+
+.main {
+    background-color: var(--bg);
+    width: 0%;
+    overflow: hidden;
+}
+
+.main-star {
+     vertical-align:0;
+    width: var(--size);
+    color: #f8c51b;
+}
+
+// Rating
+.rating {
+    display: flex;
+    gap: 3px;
+}

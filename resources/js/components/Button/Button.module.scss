@@ -1,0 +1,74 @@
+// Button.module.scss
+$primary-color: #2563eb;
+$secondary-color: #4b5563;
+$danger-color: #dc2626;
+$outline-color: #2563eb;
+
+.button {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Arial", sans-serif; // Thay bằng font mong muốn
+
+  // Kích thước
+  &.sm {
+    padding: 6px 12px;
+    font-size: 14px;
+
+  }
+
+  &.md {
+    padding: 10px 20px;
+    font-size: 16px;
+
+  }
+
+  &.lg {
+    padding: 14px 28px;
+    font-size: 18px;
+   
+  }
+
+  // Loại button
+  &.primary {
+    background: $primary-color;
+    color: white;
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+
+  &.secondary {
+    background: $secondary-color;
+    color: white;
+    &:hover {
+      background: darken($secondary-color, 10%);
+    }
+  }
+
+  &.danger {
+    background: $danger-color;
+    color: white;
+    &:hover {
+      background: darken($danger-color, 10%);
+    }
+  }
+
+  &.outline {
+    border: 2px solid $outline-color;
+    color: $outline-color;
+    background: transparent;
+    &:hover {
+      background: lighten($outline-color, 40%);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

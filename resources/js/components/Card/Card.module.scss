@@ -1,0 +1,92 @@
+.card {
+    --width: 280px;
+    position: relative;
+    width: var(--width);
+    height: 380px; // ✅ Tăng chiều cao tổng thể để phù hợp với ảnh lớn hơn
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:hover {
+        transform: translateY(-5px); // ✅ Hiệu ứng nổi lên khi hover
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); // ✅ Đổ bóng khi hover
+        cursor: pointer;
+    }
+
+    &:active {
+        transform: scale(0.98); // ✅ Hiệu ứng nhấn xuống khi click
+    }
+}
+
+
+.avatar {
+    width: 100%;
+    aspect-ratio: 16 / 12; // ✅ Điều chỉnh chiều cao ảnh
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    transition: transform 0.3s ease-in-out;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover & img {
+        transform: scale(1.05); // ✅ Zoom ảnh nhẹ khi hover
+    }
+}
+
+
+
+.content {
+    flex: 1;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background-color: #ffffff;
+    border-top: none;
+}
+
+.name {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: left; // ✅ Căn lề trái
+    color: #000;
+}
+
+
+.price-and-distance {
+    display: flex;
+    gap: 10px;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+
+
+.rating-box {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.number {
+    opacity: 0.6;
+    font-size: 14px;
+}
+
+.view-btn {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
