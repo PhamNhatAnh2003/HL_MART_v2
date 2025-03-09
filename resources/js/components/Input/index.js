@@ -1,5 +1,5 @@
-import DefaultInput from "./DefaultInput";
-import PasswordInput from "./PasswordInput";
-import Input from "./Input";
+import DefaultInput from "./InputDefault";
+import PasswordInput from "./Password";
+import Input from "./Custom";
 
-export default { PasswordInput,Input, DefaultInput };
+export { PasswordInput,Input, DefaultInput };

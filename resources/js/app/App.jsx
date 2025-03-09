@@ -10,10 +10,11 @@ import DefaultInput from "../components/Input/InputDefault";
 import Slider from "../components/Slider/Slider";
 import Search from "../components/Search";
 import Category from "../components/Category";
+import AddProduct from "../components/Popup/AddProduct";
 
 
 
 const App = () => {
-    return <Category />
+    return <AddProduct />
 };
 export default App
