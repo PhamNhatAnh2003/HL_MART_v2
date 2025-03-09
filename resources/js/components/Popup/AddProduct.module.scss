@@ -1,0 +1,208 @@
+.layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+}
+
+.popup {
+    width: 1000px;
+    height: fit-content;
+    background-color: var(--bg-secondary-2);
+    border-radius: 8px;
+    padding: 10px 24px
+}
+
+.flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    .flex-1 {
+        flex: 1;
+    }
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+.header {
+    span {
+        color: var(--cl-primary);
+    }
+
+    button {
+        padding: 5px 8px;
+        background-color: #666;
+        border-radius: 50%;
+        color: #FFFFFF80;
+
+        :hover {
+            cursor: pointer;
+        }
+    }
+}
+
+.content {
+    margin-bottom: 8px;
+
+    .title {
+        color: var(--cl-primary);
+        letter-spacing: 1px;
+    }
+
+    input {
+        background-color: var(--bg-secondary-2);
+    }
+
+    .content-item {
+        background-color: white;
+        padding: 10px 16px;
+        width: 100%;
+        border-radius: 8px;
+        margin-top: 10px;
+
+        label {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        &:not(:first-child) {
+            margin-top: 16px;
+        }
+    }
+
+    .left {
+        width: 60%;
+    }
+
+    .right {
+        width: 40%;
+
+        button {
+            position: absolute;
+            padding: 4px;
+            background-color: var(--cl-primary);
+            border-radius: 4px;
+
+            svg {
+                color: white;
+            }
+
+            :hover {
+                cursor: pointer;
+            }
+        }
+
+        .upload__avatar-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            background-color: var(--bg-secondary-2);
+            border: 1px dashed #797575;
+            position: relative;
+            overflow: hidden;
+            margin: 6px 0;
+
+            img {
+                object-fit: cover;
+            }
+
+            button {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .upload__image-wrapper {
+            height: 247px;
+            width: 100%;
+            border-radius: 8px;
+            background-color: var(--bg-secondary-2);
+            border: 1px dashed #797575;
+            position: relative;
+            padding: 10px;
+            margin-top: 6px;
+
+            .add-btn {
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -20%);
+            }
+
+            .image-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+
+                .image-item {
+                    position: relative;
+                    width: 150px;
+                    margin-bottom: 8px;
+
+                    img {
+                        border-radius: 4px;
+                        object-fit: contain;
+                    }
+
+                    button {
+                        top: -8px;
+                        right: 8px;
+                        padding: 1px 4px;
+                        border-radius: 50%;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.VideoInput {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.VideoInput_container {
+    position: relative;
+    height: 120px;
+    width: 200px;
+    border: 1px dashed #797575;
+    border-radius: 8px;
+    background-color: var(--bg-secondary-2);
+    margin: 6px 0;
+
+    button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -44%);
+    }
+
+    .VideoInput_btn{
+        top: 0;
+        right: -20px;
+        left: auto;
+    }
+}
+
+.VideoInput_input {
+    display: none;
+}
+
+.VideoInput_video {
+    display: block;
+    margin: 0;
+}
