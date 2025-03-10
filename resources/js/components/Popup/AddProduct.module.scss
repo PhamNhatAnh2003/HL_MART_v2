@@ -37,8 +37,12 @@
 }
 
 .header {
+     margin-top: 10px;
+
     span {
         color: var(--cl-primary);
+        font-weight: 700;
+        font-family: "Arial", sans-serif; // Thay bằng font mong muốn
     }
 
     button {
@@ -55,10 +59,12 @@
 
 .content {
     margin-bottom: 8px;
+    
 
     .title {
         color: var(--cl-primary);
-        letter-spacing: 1px;
+        // letter-spacing: 1px;
+        font-weight: 600;
     }
 
     input {
@@ -74,7 +80,7 @@
 
         label {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         &:not(:first-child) {
