@@ -165,7 +165,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                         value={name}
                                         setValue={setName}
                                         id=""
-                                        label="Tên sản phẩm "
+                                        label="Tên sản phẩm"
                                     ></DefaultInput>
                                     <DefaultInput
                                         setValue={setDesc}
@@ -262,7 +262,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                         // type="time"
                                         value={Number}
                                         id=""
-                                        label="HÀNG TRONG KHO"
+                                        label="Hàng trong kho"
                                         width={"45%"}
                                     ></DefaultInput>
                                     <DefaultInput
@@ -270,7 +270,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                         // type="time"
                                         value={Numbers}
                                         id=""
-                                        label="ĐÃ BÁN"
+                                        label="Đã bán"
                                         width={"45%"}
                                     ></DefaultInput>
                                 </div>

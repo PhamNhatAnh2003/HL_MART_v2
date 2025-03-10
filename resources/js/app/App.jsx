@@ -11,10 +11,11 @@ import Slider from "../components/Slider/Slider";
 import Search from "../components/Search";
 import Category from "../components/Category";
 import AddProduct from "../components/Popup/AddProduct";
+import DeleteProduct from "../components/Popup/DeleteProduct";
 
 
 
 const App = () => {
-    return <AddProduct />
+    return <DeleteProduct />
 };
 export default App
