@@ -1,0 +1,36 @@
+.cartItem {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.image {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.name {
+    flex: 2;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.unit, .price, .quantity {
+    flex: 1;
+    text-align: center;
+}
+
+.quantity {
+    width: 50px;
+    padding: 5px;
+    text-align: center;
+}
+
+.deleteIcon {
+    cursor: pointer;
+    color: red;
+}
