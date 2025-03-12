@@ -1,0 +1,20 @@
+.image {
+    overflow: hidden;
+    object-fit: cover;
+}
+
+// zoom
+.image-zoom {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .image {
+        transition: transform 0.1s ease-in-out;
+    }
+}
+
+.image-zoom:hover .image {
+    transform: scale(2);
+}

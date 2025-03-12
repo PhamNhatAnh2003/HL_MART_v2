@@ -12,10 +12,12 @@ import Search from "../components/Search";
 import Category from "../components/Category";
 import AddProduct from "../components/Popup/AddProduct";
 import DeleteProduct from "../components/Popup/DeleteProduct";
+import CartStep from "../Pages/User/Cart/Components/CartStep/CartStep";
+
 
 
 
 const App = () => {
-    return <DeleteProduct />
+    return <CartStep />
 };
 export default App
