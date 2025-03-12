@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->string('unit'); // Đơn vị sản phẩm (VD: Thùng, Lon)
+            $table->integer('quantity')->default(1);
+            $table->decimal('price_at_time', 10, 2); // Giá tại thời điểm thêm vào giỏ
             $table->timestamps();
         });
     }
