@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('order_status_history', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->string('status'); // pending, processing, shipped, delivered, canceled
+            $table->foreignId('changed_by')->nullable()->constrained('users')->nullOnDelete(); // Ai cập nhật trạng thái
+            $table->text('note')->nullable(); // Ghi chú
             $table->timestamps();
         });
     }

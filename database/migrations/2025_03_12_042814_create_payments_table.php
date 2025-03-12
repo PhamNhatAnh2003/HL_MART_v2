@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->decimal('amount', 10, 2);
+            $table->string('payment_method'); // VD: COD, Chuyển khoản, VNPay, Momo
+            $table->string('payment_status')->default('pending'); // pending, paid, failed
+            $table->string('transaction_id')->nullable(); // Mã giao dịch từ cổng thanh toán (nếu có)
+            $table->timestamp('payment_date')->nullable();
             $table->timestamps();
         });
     }

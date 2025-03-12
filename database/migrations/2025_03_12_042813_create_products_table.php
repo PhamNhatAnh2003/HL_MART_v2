@@ -12,7 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+              $table->id();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('price', 10, 2);
+            $table->decimal('discount_price', 10, 2)->nullable(); // Định nghĩa ngay sau `price`
+            $table->string('avatar')->nullable();
+            $table->text('media')->nullable();
+            $table->integer('stock');
+            $table->integer('sold')->default(0); // Không cần `AFTER stock`
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }
