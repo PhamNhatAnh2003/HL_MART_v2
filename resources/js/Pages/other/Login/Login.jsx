@@ -92,7 +92,7 @@ const Login = () => {
                             </CheckboxInput>
                         </div>
                         <div className={cx("submit-btn")}>
-                            <Button type="danger" size="lg">
+                            <Button primary >
                                 Đăng Nhập
                             </Button>
                         </div>

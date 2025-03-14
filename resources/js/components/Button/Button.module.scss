@@ -1,74 +1,126 @@
-// Button.module.scss
-$primary-color: #2563eb;
-$secondary-color: #4b5563;
-$danger-color: #dc2626;
-$outline-color: #2563eb;
-
 .button {
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.3s ease-in-out;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Arial", sans-serif; // Thay bằng font mong muốn
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 500;
+    color: var(--text-color);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    @extend .medium;
 
-  // Kích thước
-  &.sm {
+    &.shadow {
+        box-shadow: 0px 4px 4px 0px #00000040;
+    }
+
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    &.curved {
+        border-radius: 999px;
+    }
+
+    &.circle {
+        padding: 5px;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+    }
+}
+
+// Icons
+.icon {
+    display: inline-block;
+    width: fit-content;
+    text-align: center;
+}
+
+// .content {
+//     flex: 1;
+//     display: flex;
+//     align-items: center;
+//     justify-content: start;
+
+//     &.center {
+//         justify-content: center;
+//     }
+// }
+
+.icon + .content,
+.content + .icon {
+    margin-left: calc(var(--font-size) / 2);
+}
+
+// Type
+.text {
+    background-color: transparent;
+    color: var(--text-color);
+    text-decoration: underline;
+
+    &:hover,
+    &.active {
+        color: var(--cl-primary);
+    }
+}
+
+.primary {
+    background-color: var(--cl-primary);
+    color: white;
+
+    &:hover,
+    &.active {
+        background-color: var(--cl-secondary);
+    }
+}
+
+.secondary {
+    background-color: var(--cl-secondary);
+    color: var(--text-color);
+
+    &:hover,
+    &.active {
+        background-color: var(--cl-primary);
+    }
+}
+
+.extra {
+    background-color: #e8e8e8;
+    color: var(--text-color);
+
+    &:hover,
+    &.active {
+        background-color: var(--cl-primary);
+    }
+}
+
+.no-background {
+    background-color: transparent;
+    color: var(--text-color);
+
+    &:hover,
+    &.active {
+        color: var(--cl-primary);
+    }
+}
+
+// Size
+.medium {
+    padding: 9px 18px;
+    font-size: 16px;
+}
+
+.small {
     padding: 6px 12px;
     font-size: 14px;
+}
 
-  }
-
-  &.md {
-    padding: 10px 20px;
-    font-size: 16px;
-
-  }
-
-  &.lg {
-    padding: 14px 28px;
+.large {
+    padding: 12px 24px;
     font-size: 18px;
-   
-  }
+}
 
-  // Loại button
-  &.primary {
-    background: $primary-color;
-    color: white;
-    &:hover {
-      background: darken($primary-color, 10%);
-    }
-  }
-
-  &.secondary {
-    background: $secondary-color;
-    color: white;
-    &:hover {
-      background: darken($secondary-color, 10%);
-    }
-  }
-
-  &.danger {
-    background: $danger-color;
-    color: white;
-    &:hover {
-      background: darken($danger-color, 10%);
-    }
-  }
-
-  &.outline {
-    border: 2px solid $outline-color;
-    color: $outline-color;
-    background: transparent;
-    &:hover {
-      background: lighten($outline-color, 40%);
-    }
-  }
-
-  &.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.no-click {
+    pointer-events: none;
 }
