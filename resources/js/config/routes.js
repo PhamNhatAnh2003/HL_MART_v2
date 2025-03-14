@@ -8,20 +8,24 @@ const routes = {
     },
 
     user: {
-        home: '/',
+        home: '/home',
         productList: '/products',
-        productDetail: '/product/:productId/:variantId',
+        productDetail: '/product/:productId',
         cart: '/cart',
-        cartStep2: '/cart/step/2',
-        cartStep3: '/cart/step/3',
-        cartStep4: '/cart/step/4',
+        userInfor: '/userInfor',
+        findProduct: '/findProduct',
+        favorite: '/favorite',
+        // map: '/map',
     },
 
     other: {
         login: '/login',
         register: '/register',
+        landing: '/',
         forbidden: '/forbidden',
+        test: '/test',
     },
 };
+
 
 export default routes;

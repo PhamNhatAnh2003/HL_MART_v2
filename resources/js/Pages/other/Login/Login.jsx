@@ -67,7 +67,7 @@ const Login = () => {
                                 large
                                 medium
                                 required
-                                label="メール"
+                                label="Email"
                                 width="300px"
                                 value={email}
                                 setValue={setEmail}
@@ -78,7 +78,7 @@ const Login = () => {
                                 large
                                 medium
                                 required
-                                label="パスワード"
+                                label="Password"
                                 width="300px"
                                 password={password}
                                 setPassword={setPassword}
