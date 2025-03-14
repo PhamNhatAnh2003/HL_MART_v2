@@ -1,16 +1,18 @@
 .slider {
     position: relative;
     width: 100%;
+    height: 100%;
     aspect-ratio: 10 / 4;
 }
 
 .slider-item {
     width: 100%;
+    height: 100%;
     aspect-ratio: 10 / 4;
 
     img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        // object-fit: cover;
     }
 }

@@ -31,7 +31,6 @@ const responsive = {
 };
 
 const Slider = ({ medias = [] }) => {
-    console.log(medias);
     return (
         <div className={cx("slider")}>
             <Carousel

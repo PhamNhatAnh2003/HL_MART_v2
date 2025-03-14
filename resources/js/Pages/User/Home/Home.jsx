@@ -8,117 +8,63 @@ import { Link, useNavigate } from "react-router-dom";
 import config from "~/config";
 import axios from "axios";
 import { AuthContext } from "~/context/AuthContext";
+import classNames from "classnames/bind";
+import Slider from "../../../components/Slider/Slider";
+
+const cx = classNames.bind(styles);
 
 const Home = () => {
     const { user, userId } = useContext(AuthContext);
-    const [search, setSearch] = useState("");
-    const [newRestaurant, setNewRestaurant] = useState([]);
+    const [newProducts, setNewProducts] = useState([]);
     const [favoriteRestaurant, setFavoriteRestaurant] = useState([]);
     const navigate = useNavigate();
 
-    console.log(newRestaurant);
+    const medias = [images.slider1, images.slider2];
 
-    useEffect(() => {
-        const fetchNew = async () => {
-            try {
-                const response = await axios.get(
-                    `/api/restaurants?style_id=${
-                        user.style_id ?? 1
-                    }&sort_time=desc&per_page=5&page=1&user_id=${userId}`
-                );
-                if (response.status === 200) {
-                    setNewRestaurant(response.data.restaurants.data);
-                }
-            } catch (error) {
-                console.log(error);
+useEffect(() => {
+    const fetchNewProducts = async () => {
+        try {
+            const response = await axios.get("/api/products/latest");
+            console.log("Dữ liệu từ API:", response.data); // Kiểm tra dữ liệu
+
+            if (response.status === 200) {
+                setNewProducts(response.data.data || []); // Đổi từ response.data.products -> response.data.data
             }
-        };
-
-        fetchNew();
-    }, []);
-
-    useEffect(() => {
-        const fetchFavorite = async () => {
-            try {
-                const response = await axios.get(
-                    `/api/favorites_home?user_id=${userId}`
-                );
-                console.log(response);
-                if (response.status === 200) {
-                    setFavoriteRestaurant(response.data.restaurants.data);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchFavorite();
-    }, [user]);
-
-    const searchProducts = (event) => {
-        if (event.key === "Enter") {
-            navigate(`${config.routes.user.findRestaurant}?name=${search}`);
+        } catch (error) {
+            console.error("Lỗi khi lấy sản phẩm mới:", error);
+            setNewProducts([]); // Tránh lỗi undefined
         }
     };
+    fetchNewProducts();
+}, []);
 
     return (
         <div className={styles.homePage}>
             {/* Search Bar Section */}
-            <div className={styles.banner}>
-                <img
-                    src={images.headerFindRestaurant}
-                    alt="Restaurant Banner"
-                />
-                <h1>カフェを探すのはやめて、見つけましょう。</h1>
-                <div className={styles.searchBarWrapper}>
-                    <input
-                        type="text"
-                        style={{ width: "100%" }}
-                        placeholder="名前、料理、場所からレストランを検索"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onKeyDown={searchProducts}
-                    />
+            <div className={cx("first-section")}>
+                <div className={cx("slider")}>
+                    <Slider medias={medias} />
+                </div>
+
+                <div className={cx("banner")}>
+                    <img src={images.slider1} alt="Restaurant Banner" />
+                    <img src={images.slider2} alt="Restaurant Banner" />
                 </div>
             </div>
-
             {/* New Cafe Style Section */}
             <section className={styles.newStyleSection}>
-                <img
-                    src={images.coffeeBlast}
-                    alt="Coffee Blast"
-                    className={styles.coffeeBlast}
-                />
-                <h2 className={styles.sectionHeading}>
-                    カフェスタイルを楽しむ
-                </h2>
-                <p className={styles.sectionDescription}>
+                <h2 className={styles.sectionHeading}>SẢN PHẨM BÁN CHẠY</h2>
+                {/* <p className={styles.sectionDescription}>
                     一緒にあらゆるスタイルのカフェを探検しましょう。体験する価値のある新しいカフェが常にあります。
-                </p>
-                <div className={styles.coffeeList}>
-                    {newRestaurant.map((restaurant, index) => (
-                        <Card key={index} restaurant={restaurant} />
+                </p> */}
+                <div className={styles.productList}>
+                    {newProducts.map((product, index) => (
+                        <Card key={index} product={product} />
                     ))}
                 </div>
-                <img
-                    src={images.coffeeBlast}
-                    alt="Coffee Blast"
-                    className={styles.coffeeBlastDown}
-                />
             </section>
 
-            {/* Favorites Cafe Section */}
-            <section className={styles.favoritesSection}>
-                <h2 className={styles.sectionHeading}>お気に入るカフェ</h2>
-                <p className={styles.sectionDescription}>
-                    あなたのお気に入りのカフェが一挙に
-                </p>
-                <div className={styles.coffeeList}>
-                    {favoriteRestaurant.map((restaurant, index) => (
-                        <Card key={index} restaurant={restaurant} />
-                    ))}
-                </div>
-            </section>
+
 
             {/* Footer */}
             <footer className={styles.footer}>
