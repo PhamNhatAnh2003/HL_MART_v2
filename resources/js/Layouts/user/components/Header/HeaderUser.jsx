@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import classNames from 'classnames/bind';
 import styles from './HeaderUser.module.scss';
 import images from '~/assets/images';
+import Search from "~/components/Search";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +18,8 @@ export default function HeaderUser() {
     const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef(null);
+    const [searchValue, setSearchValue] = useState("");
+
     const location = useLocation();
 
     // Đóng menu khi click bên ngoài
@@ -32,41 +35,36 @@ export default function HeaderUser() {
         };
     }, []);
 
+        const searchProducts = (event) => {
+            if (event.key === "Enter") {
+                navigate(`${config.routes.user.findRestaurant}?name=${searchValue}`);
+            }
+        };
+
     return (
-        <div className={cx('header')}>
+        <div className={cx("header")}>
             <Link to={config.routes.user.home} className={styles.logoText}>
-                SunRise
+                HL_Mart
             </Link>
-            <div className={cx('tab-menu')}>
-                <Link
-                    to={config.routes.user.home}
-                    className={cx('tab-item', { active: location.pathname === config.routes.user.home })}
-                >
-                    ホーム
-                </Link>
-                <Link
-                    to={config.routes.user.findRestaurant}
-                    className={cx('tab-item', { active: location.pathname === config.routes.user.findRestaurant })}
-                >
-                    レストラン
-                </Link>
-                <Link
-                    to={config.routes.user.map}
-                    className={cx('tab-item', { active: location.pathname === config.routes.user.map })}
-                >
-                    地図
-                </Link>
+            <div className={cx("tab-menu")}>
+                <Search
+                    value={searchValue}
+                    setValue={setSearchValue}
+                    placeholder="Tìm kiếm sản phẩm..."
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    onKeyDown={searchProducts}
+                />
             </div>
             {user && (
-                <div className={cx('user-hugs')} ref={menuRef}>
-                    <div className={cx('favorite-header')}>
+                <div className={cx("user-hugs")} ref={menuRef}>
+                    <div className={cx("favorite-header")}>
                         <Link to={config.routes.user.favorite}>
                             <FontAwesomeIcon icon={faHeart} />
                             <span>お気に入り</span>
                         </Link>
                     </div>
                     <img
-                        className={cx('avatar-header')}
+                        className={cx("avatar-header")}
                         src={user.avatar ?? images.avatarUser}
                         alt="avatar"
                         onClick={() => setShowMenu((prev) => !prev)}
@@ -76,20 +74,20 @@ export default function HeaderUser() {
                         onClick={() => setShowMenu((prev) => !prev)}
                     />
                     {showMenu && (
-                        <div className={cx('dropdown-menu')}>
+                        <div className={cx("dropdown-menu")}>
                             <div
-                                className={cx('menu-item')}
+                                className={cx("menu-item")}
                                 onClick={() => {
-                                    navigate('/userInfor');
+                                    navigate("/userInfor");
                                 }}
                             >
                                 プロフィール
                             </div>
                             <div
-                                className={cx('menu-item')}
+                                className={cx("menu-item")}
                                 onClick={() => {
                                     handleLogout();
-                                    navigate('/login');
+                                    navigate("/login");
                                 }}
                             >
                                 ログアウト

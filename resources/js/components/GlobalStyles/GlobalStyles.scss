@@ -6,7 +6,7 @@
 :root {
     // Color
     --bg-primary: #ffffff;
-    --bg-secondary: #603809;
+    --bg-secondary: #000000000000;
     --bg-secondary-2: #f0f0f0;
 
     --cl-primary: #ED1C24;
@@ -67,7 +67,7 @@ html *::-webkit-scrollbar {
 
 html *::-webkit-scrollbar-thumb {
     border-radius: 4px;
-    background: var(--cl-primary);
+    background: gray;
 }
 
 html *::-webkit-scrollbar-track {

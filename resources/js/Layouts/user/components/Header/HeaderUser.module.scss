@@ -1,21 +1,24 @@
 .header {
+    height: 70px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background-color: var(--bg-primary);
+    background-color: var(--cl-primary);
     display: flex;
     padding: 5px 50px;
     z-index: 100;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     .logoText {
+        padding-top: 10px;
+        padding-left: 30px;
         font-family: 'Clicker Script', cursive !important;
-        font-size: 35px;
-        font-weight: 400;
+        font-size: 40px;
+        font-weight: 600;
         line-height: 46.23px;
         text-align: left;
-        color: var(--cl-primary);
+        color: white;
     }
 }
 
@@ -26,25 +29,12 @@
 }
 
 .tab-menu {
+    width: 100%;
     margin-left: 120px;
     display: flex;
     gap: 40px;
     justify-content: center;
     align-items: center;
-
-    .tab-item {
-        font-weight: 400;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    .tab-item:hover {
-        font-weight: 500;
-    }
-
-    .tab-item.active {
-        font-weight: 600;
-    }
 }
 
 .user-hugs {
