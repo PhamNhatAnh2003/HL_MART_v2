@@ -3,11 +3,11 @@ import pages from "~/pages";
 import layouts from "~/layouts";
 
 const publicRoutes = [
-    // {
-    //     path: config.routes.user.home,
-    //     component: pages.user.home,
-    //     layout: layouts.user.default,
-    // },
+    {
+        path: config.routes.user.home,
+        component: pages.user.home,
+        layout: layouts.user.default,
+    },
     // {
     //     path: config.routes.user.restaurantDetail,
     //     component: pages.user.restaurantdetail,

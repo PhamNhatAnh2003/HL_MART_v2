@@ -111,8 +111,7 @@ const Register = () => {
                             <div className={cx("submit-btn")}>
                                 <Button
                                     onClick={(e) => handleSubmit(e)}
-                                    type="danger"
-                                    size="md"
+                                    primary
                                 >
                                     Đăng ký
                                 </Button>
