@@ -5,28 +5,37 @@ import styles from "./Input.module.scss";
 const cx = classNames.bind(styles);
 
 const Input = ({
-    type = "text",
-    placeholder = "Nhập nội dung...",
     value,
-    onChange,
-    iconLeft,
-    iconRight,
-    className,
-    width = "100%",
-    height = "50px",
+    setValue,
+    type = "text",
+    width = "fit-content",
+    id = "id",
+    label = "",
+    small = false,
+    medium = false,
+    large = false,
+    required = false,
 }) => {
+    const handleChangeValue = (e) => {
+        setValue(e.target.value);
+    };
+
     return (
-        <div className={cx("input-container", className)} style={{ width }}>
-            {iconLeft && <span className={cx("icon-left")}>{iconLeft}</span>}
+        <div
+            className={cx("custom-input", { small, medium, large })}
+            style={{ width: width }}
+        >
             <input
+                id={`custom-input-${id}`}
                 type={type}
-                placeholder={placeholder}
                 value={value}
-                onChange={onChange}
-                className={cx("input-field")}
-                style={{ height }}
+                onChange={handleChangeValue}
+                placeholder=" "
             />
-            {iconRight && <span className={cx("icon-right")}>{iconRight}</span>}
+            <label htmlFor={`custom-input-${id}`}>
+                {label}
+                {required && <span className={cx("required-note")}>*</span>}
+            </label>
         </div>
     );
 };

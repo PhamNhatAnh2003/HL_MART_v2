@@ -1,3 +1,19 @@
-import MyLayout from "./myLayout";
+import UserLayout from './user/Default/UserLayout';
+import AdminLayout from './admin/Default/AdminLayout';
+import NoHeaderLayout from './other/NoHeader/NoHeaderLayout';
 
-export default MyLayout;
+const layouts = {
+    admin: {
+        default: AdminLayout,
+    },
+
+    user: {
+        default: UserLayout,
+    },
+
+    other: {
+        noHeader: NoHeaderLayout,
+    },
+};
+
+export default layouts;

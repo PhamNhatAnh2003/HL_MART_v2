@@ -1,15 +1,17 @@
-import axios from 'axios';
-import { createContext, useEffect, useState } from 'react';
+import axios from "axios";
+import { createContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
-    const [role, setRole] = useState(localStorage.getItem('role') || '');
-    const [userId, setUserId] = useState(localStorage.getItem('userId') || '');
+    const [isAuthenticated, setIsAuthenticated] = useState(
+        !!localStorage.getItem("token")
+    );
+    const [role, setRole] = useState(localStorage.getItem("role") || "");
+    const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
     const [user, setUser] = useState({});
     const [currentUser, setCurrentUser] = useState({});
-    const [headPhone, setHeadPhone] = useState('+84');
+    const [headPhone, setHeadPhone] = useState("+84");
 
     // console.log(user);
     // console.log(currentUser);
@@ -33,7 +35,7 @@ const AuthProvider = ({ children }) => {
         const formData = new FormData();
         Object.entries(currentUser).forEach(([key, value]) => {
             if (value !== null && value !== undefined) {
-                if (key === 'phone') {
+                if (key === "phone") {
                     console.log(`${headPhone}${value}`);
 
                     formData.append(`phone`, `${headPhone}${value}`); // Ghép headPhone với phone
@@ -41,7 +43,7 @@ const AuthProvider = ({ children }) => {
                 } else {
                     formData.append(key, value);
                 }
-            } else if (key === 'desired_distance') {
+            } else if (key === "desired_distance") {
                 formData.append(key, parseInt(value)); // Chỉ lưu giá trị số
             } else {
                 formData.append(key, value);
@@ -49,7 +51,10 @@ const AuthProvider = ({ children }) => {
         });
 
         try {
-            const response = await axios.post(`/api/user/update/${currentUser.id}`, formData);
+            const response = await axios.post(
+                `/api/user/update/${currentUser.id}`,
+                formData
+            );
 
             if (response.status === 200) {
                 // console.log(response.data.user.phone);
@@ -64,21 +69,21 @@ const AuthProvider = ({ children }) => {
     };
 
     const handleLogin = (token, userRole, user_id) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('role', userRole);
-        localStorage.setItem('userId', user_id);
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", userRole);
+        localStorage.setItem("userId", user_id);
         setIsAuthenticated(true);
         setRole(userRole);
         setUserId(user_id);
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('userId');
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
         setIsAuthenticated(false);
-        setRole('');
-        setUserId('');
+        setRole("");
+        setUserId("");
     };
 
     return (
