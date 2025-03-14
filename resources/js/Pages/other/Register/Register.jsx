@@ -119,7 +119,7 @@ const Register = () => {
                             </div>
                         </form>
                         <div className={cx("register-footer")}>
-                            <span>Bạn đã có tài khoản?</span>
+                            <span>Bạn đã có tài khoản?  </span>
                             <Link to={config.routes.other.login}>
                                 Đăng nhập
                             </Link>
