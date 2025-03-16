@@ -43,7 +43,7 @@ useEffect(() => {
 
     return (
         <div className={styles.homePage}>
-            {/* Search Bar Section */}
+            {/* QC Bar Section */}
             <div className={cx("first-section")}>
                 <div className={cx("slider")}>
                     <Slider medias={medias} />
@@ -54,12 +54,19 @@ useEffect(() => {
                     <img src={images.slider2} alt="Restaurant Banner" />
                 </div>
             </div>
-            {/* New Cafe Style Section */}
+
+            {/* New Product Section */}
             <section className={styles.newStyleSection}>
                 <h2 className={styles.sectionHeading}>SẢN PHẨM MỚI NHẤT</h2>
-                {/* <p className={styles.sectionDescription}>
-                    一緒にあらゆるスタイルのカフェを探検しましょう。体験する価値のある新しいカフェが常にあります。
-                </p> */}
+                <div className={styles.productList}>
+                    {newProducts.map((product, index) => (
+                        <Card key={index} product={product} />
+                    ))}
+                </div>
+            </section>
+
+            <section className={styles.newStyleSection}>
+                <h2 className={styles.sectionHeading}>SẢN PHẨM MỚI NHẤT</h2>
                 <div className={styles.productList}>
                     {newProducts.map((product, index) => (
                         <Card key={index} product={product} />

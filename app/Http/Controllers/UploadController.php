@@ -24,7 +24,7 @@ class UploadController extends Controller
         }
 
         return response()->json([
-            'message' => '画像が正常に追加されました。',
+            'message' => 'Hình ảnh đã được tải lên thành công.',
             'images' => $imageNames,
             'image_paths' => json_encode($imageNames)
         ], 201);
@@ -38,7 +38,7 @@ class UploadController extends Controller
         $imageName = "/storage/images/$imageName";
 
         return response()->json([
-            'message' => '画像が正常に追加されました。',
+            'message' => 'Hình ảnh đã được tải lên thành công.',
             'image' => $imageName
         ], 201);
     }
