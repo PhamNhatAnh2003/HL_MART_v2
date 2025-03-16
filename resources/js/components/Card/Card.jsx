@@ -3,7 +3,7 @@ import styles from "./Card.module.scss";
 import Rating from "../Rating";
 import Button from "../Button";
 import images from "~/assets/images";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -22,18 +22,29 @@ const Product = {
 // };
 
 const Card = ({ product = Product }) => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const handleSeeDetail = () => {
-        navigate(`/restaurant/${product.id}`);
+        navigate(`/product/${product.id}`);
     };
+
+    // const handleAddtocart = () =>{
+    //     navigate(``)
+
+    // }
+
+
     return (
         <div className={cx("card")}>
             <div className={cx("avatar")}>
-                <img src={product.avatar ?? images.product} alt="avatar" />
+                <img
+                    onClick={handleSeeDetail}
+                    src={product.avatar ?? images.product}
+                    alt="avatar"
+                />
             </div>
 
-            <div className={cx("content")}>
+            <div onClick={handleSeeDetail} className={cx("content")}>
                 <div className={cx("name")}>{product.name}</div>
                 <div className={cx("price-and-distance")}>
                     <div className={cx("price")}>Gia ban {product.price}</div>
@@ -44,16 +55,17 @@ const Card = ({ product = Product }) => {
                 <div className={cx("number")}>
                     (<span>{product.number}</span> Đánh giá)
                 </div>
-                <Button
-                    className={cx("view-btn")}
-                    size="md"
-                    curved
-                    shadow
-                    onClick={handleSeeDetail}
-                >
-                    Thêm vào giỏ hàng
-                </Button>
             </div>
+            <Button
+                className={cx("view-btn")}
+                small
+                primary
+                curved
+                shadow
+                // onClick={handleSeeDetail}
+            >
+                Thêm vào giỏ
+            </Button>
         </div>
     );
 };

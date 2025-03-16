@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class ProductSeeder extends Seeder
 {
@@ -13,46 +14,25 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $faker = Faker::create();
+
+        foreach (range(1, 30) as $index){
         DB::table('products')->insert([
             [
-                'name' => 'Sản phẩm A',
+                'name' => $faker ->unique()->name,
                 'description' => 'Mô tả sản phẩm A',
-                'price' => 500000,
-                'discount_price' => 450000,
+                'price' => $faker->numberBetween(10000, 500000),
+                'discount_price' => $faker->numberBetween(20000, 100000),
                 'avatar' => 'images/productA.jpg',
                 'media' => json_encode(['images/productA1.jpg', 'images/productA2.jpg']),
-                'stock' => 100,
-                'sold' => 10,
-                'category_id' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Sản phẩm B',
-                'description' => 'Mô tả sản phẩm B',
-                'price' => 750000,
-                'discount_price' => null,
-                'avatar' => 'images/productB.jpg',
-                'media' => json_encode(['images/productB1.jpg', 'images/productB2.jpg']),
-                'stock' => 50,
-                'sold' => 5,
-                'category_id' => 2,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Sản phẩm C',
-                'description' => 'Mô tả sản phẩm C',
-                'price' => 300000,
-                'discount_price' => 250000,
-                'avatar' => 'images/productC.jpg',
-                'media' => json_encode(['images/productC1.jpg']),
-                'stock' => 200,
-                'sold' => 20,
-                'category_id' => 1,
+                'stock' => $faker->numberBetween(10, 50),
+                'sold' => $faker->numberBetween(60, 200),
+                'category_id' => $faker->numberBetween(1,2),
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
     }
+}
 }

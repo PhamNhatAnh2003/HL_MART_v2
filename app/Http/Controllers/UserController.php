@@ -99,4 +99,25 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+public function getUser(Request $request)
+    {
+        $id = $request->query('id'); // Lấy ID từ query parameter
+
+        if (!$id) {
+            return response()->json(['message' => 'Thiếu ID người dùng'], 400);
+        }
+
+        $user = User::find($id); // Hoặc dùng with() nếu có liên kết khác
+
+        if (!$user) {
+            return response()->json(['message' => 'Không tìm thấy người dùng!'], 404);
+        }
+
+        return response()->json([
+            'message' => "Lấy thông tin người dùng thành công.",
+            'user' => $user
+        ], 200);
+    }
+
 }
