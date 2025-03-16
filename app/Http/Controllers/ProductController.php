@@ -12,7 +12,7 @@ class ProductController extends Controller
      */
     public function getLatestProducts()
     {
-        $products = Product::orderBy('created_at', 'desc')->take(5)->get();
+        $products = Product::orderBy('created_at', 'desc')->take(4)->get();
 
         return response()->json([
             'success' => true,

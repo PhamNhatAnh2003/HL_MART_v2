@@ -4,6 +4,7 @@ import styles from './HeaderUser.module.scss';
 import images from '~/assets/images';
 import Search from "~/components/Search";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import { faChevronDown, faChevronUp, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -41,6 +42,12 @@ export default function HeaderUser() {
             }
         };
 
+
+        useEffect(() => {
+            console.log("User data:", user);
+        }, [user]);
+
+
     return (
         <div className={cx("header")}>
             <Link to={config.routes.user.home} className={styles.logoText}>
@@ -55,17 +62,17 @@ export default function HeaderUser() {
                     onKeyDown={searchProducts}
                 />
             </div>
-            {user && (
+            {(user) && (
                 <div className={cx("user-hugs")} ref={menuRef}>
                     <div className={cx("favorite-header")}>
                         <Link to={config.routes.user.favorite}>
-                            <FontAwesomeIcon icon={faHeart} />
-                            <span>お気に入り</span>
+                            <FontAwesomeIcon icon={faShoppingCart} />
+                            <span>Giỏ Hàng</span>
                         </Link>
                     </div>
                     <img
                         className={cx("avatar-header")}
-                        src={user.avatar ?? images.avatarUser}
+                        src={ user.avatar ?? images.login }
                         alt="avatar"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />
@@ -81,7 +88,7 @@ export default function HeaderUser() {
                                     navigate("/userInfor");
                                 }}
                             >
-                                プロフィール
+                                Thông tin cá nhân
                             </div>
                             <div
                                 className={cx("menu-item")}
@@ -90,7 +97,7 @@ export default function HeaderUser() {
                                     navigate("/login");
                                 }}
                             >
-                                ログアウト
+                                Đăng xuất
                             </div>
                         </div>
                     )}
