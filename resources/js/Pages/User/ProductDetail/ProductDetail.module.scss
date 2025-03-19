@@ -14,104 +14,107 @@
     box-shadow: 0px 0px 16px 0px #00000014;
 }
 
-.line {
-    border-top: 2px solid var(--cl-primary);
-}
 
-
-// .first-content {
-//     display: flex;
-//     gap: 20px; // Khoảng cách giữa 2 cột
-//     align-items: flex-start; // Căn chỉnh trên cùng
-//     padding: 20px;
-// }
-
-.slider-box {
-    display: flex;
-    flex-direction: column;
-
-    .back-btn {
+.back-btn {
         width: fit-content;
         padding: 10px 20px;
         display: flex;
         align-items: center;
         gap: 5px;
-        font-weight: 700;
+        font-weight: 500;
         cursor: pointer;
 
         span {
-            font-size: 20px;
+            font-size: 16px;
         }
     }
 
-    .line {
-        border-top: 2px solid var(--cl-primary);
-        margin-bottom: 30px;
-    }
+
+.line {
+    border-top: 2px solid var(--cl-primary);
+}
+
+
+.first-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px; /* Khoảng cách giữa hai cột */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.slider-box {
+    flex: 1; /* Chiếm 50% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0; /* Màu xám nhạt */
+    width: 50%;
+    height: 500px; /* Đảm bảo chiều cao đủ lớn */
 }
 
 .detail-box {
     display: flex;
     flex-direction: column;
-
-    .name {
-        font-size: 24px;
-        font-weight: 700;
-        color: var(--cl-primary);
-    }
-
-    .detail {
-        display: flex;
-        gap: 10px;
-        padding: 10px 0;
-    }
-
-    .detail-left {
-        width: 40%;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        .address,
-        .time,
-        .price,
-        .style {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-
-            svg {
-                font-size: 20px;
-                color: var(--cl-primary);
-            }
-        }
-
-        .address {
-            display: flex;
-        }
-
-        .location-btn {
-            display: flex;
-            align-items: center;
-            gap: 3px;
-            cursor: pointer;
-        }
-    }
-
-    .detail-right {
-        width: 60%;
-
-        svg {
-            font-size: 20px;
-            color: var(--cl-primary);
-        }
-
-        .description {
-            display: flex;
-            gap: 20px;
-        }
-    }
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    color: #333;
 }
+
+.detail-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    color: #333;
+    max-width: 600px; /* Giới hạn chiều rộng */
+}
+
+.detail-box .detail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.detail-box .detail div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.detail-box .detail div strong {
+    width: 30%;
+    text-align: left;
+}
+
+.detail-box .detail div span {
+    width: 65%;
+    text-align: left;
+}
+
+.detail-box .description {
+    text-align: justify;
+    line-height: 1.5;
+}
+
+.detail-box .stock {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-box .shipping {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
 
 .comment-box {
     display: flex;
