@@ -12,14 +12,12 @@ const Product = {
     avatar: images.product,
     name: "Products",
     price: "50k",
-    distance: "2km",
+    stock: "50",
+    sold: "51.09k",
     number: 1500,
     rate: 3.6,
 };
 
-// const formatDistance = (distance) => {
-//     return `${Math.round(distance)} Km`;
-// };
 
 const Card = ({ product = Product }) => {
     const navigate = useNavigate();
@@ -29,7 +27,7 @@ const Card = ({ product = Product }) => {
     };
 
     // const handleAddtocart = () =>{
-    //     navigate(``)
+    //     navigate(`/cart/addToCart/${product.id}`)
 
     // }
 
