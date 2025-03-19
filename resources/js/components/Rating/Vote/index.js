@@ -1,3 +1,3 @@
-import Rating from './Vote';
+import Rating from "./Vote";
 
 export default Rating;

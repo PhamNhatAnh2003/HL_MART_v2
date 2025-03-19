@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -14,15 +15,15 @@ class ProductController extends Controller
     /**
      * Lấy 5 sản phẩm mới nhất
      */
-    public function getLatestProducts()
-    {
-        $products = Product::orderBy('created_at', 'desc')->take(4)->get();
+public function getLatestProducts()
+{
+    $products = Product::orderBy('created_at', 'desc')->take(4)->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $products
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'data' => ProductResource::collection($products),
+    ]);
+}
 
     public function getProduct(Request $request)
     {
@@ -39,7 +40,7 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => 'Lấy sản phẩm thành công.',
-            'product' => $product,
+            'product' => new ProductResource($product),
         ], 200);
     }
     

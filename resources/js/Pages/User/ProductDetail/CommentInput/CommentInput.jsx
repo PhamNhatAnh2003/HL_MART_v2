@@ -3,7 +3,6 @@ import classNames from 'classnames/bind';
 import styles from './CommentInput.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera, faPaperPlane, faSmile } from '@fortawesome/free-solid-svg-icons';
-import EmojiPicker from 'emoji-picker-react';
 import { useContext, useState } from 'react';
 import { AuthContext } from '~/context/AuthContext';
 import Vote from '~/components/Rating/Vote/Vote';
@@ -17,15 +16,6 @@ const CommentInput = ({ productId, onUpload }) => {
     const [comment, setComment] = useState('');
     const [image, setImage] = useState(null);
 
-    // const handleEmojiClick = (event, emojiObject) => {
-    //     console.log(emojiObject);
-    //     setComment((prevComment) => prevComment + emojiObject.emoji);
-    //     setShowEmojiPicker(false);
-    // };
-
-    // const handleToggleEmojiPicker = () => {
-    //     setShowEmojiPicker(!showEmojiPicker);
-    // };
 
     const hanldeSendComment = async () => {
         try {
@@ -44,7 +34,7 @@ const CommentInput = ({ productId, onUpload }) => {
             });
             console.log(response);
             if (response.status === 201) {
-                alert('コメントを追加しました。');
+                alert('Đã thêm đánh giá');
                 setRate(0);
                 setComment('');
                 setImage(null);
@@ -61,7 +51,7 @@ const CommentInput = ({ productId, onUpload }) => {
                 type="text"
                 name="comment"
                 id="comment"
-                placeholder="Lovely!"
+                placeholder="Đánh giá sản phẩm"
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
             />
@@ -69,7 +59,7 @@ const CommentInput = ({ productId, onUpload }) => {
                 {image ? (
                     <img src={URL.createObjectURL(image)} alt="image-preview" />
                 ) : (
-                    <div className={cx('image-preview-box')}>画像</div>
+                    <div className={cx('image-preview-box')}>Thêm ảnh</div>
                 )}
             </div>
 
@@ -77,9 +67,6 @@ const CommentInput = ({ productId, onUpload }) => {
                 <Vote rate={rate} setRate={setRate} />
             </div>
 
-            {/* <div className={cx('smile')} onClick={handleToggleEmojiPicker}>
-                <FontAwesomeIcon icon={faSmile} />
-            </div> */}
 
             <label htmlFor="image-input" className={cx('camera')}>
                 <FontAwesomeIcon icon={faCamera} />
@@ -101,21 +88,6 @@ const CommentInput = ({ productId, onUpload }) => {
                 <FontAwesomeIcon icon={faPaperPlane} />
             </div>
 
-            {/* {showEmojiPicker && (
-                <div
-                    style={{
-                        position: 'absolute',
-                        zIndex: '1000',
-                        top: '50px',
-                        backgroundColor: '#fff',
-                        border: '1px solid #ccc',
-                        padding: '10px',
-                        borderRadius: '8px',
-                    }}
-                >
-                    <EmojiPicker onEmojiClick={handleEmojiClick} />
-                </div>
-            )} */}
         </div>
     );
 };
