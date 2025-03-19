@@ -48,23 +48,15 @@ class User extends Authenticatable
         ];
     }
 
+    // Quan hệ với Review
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    public function collections()
+    // Quan hệ với Order (nếu có)
+    public function orders()
     {
-        return $this->hasMany(Collection::class);
+        return $this->hasMany(Order::class);
     }
-
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
-
-    // public function style()
-    // {
-    //     return $this->belongsTo(Style::class, 'style_id');
-    // }
 }

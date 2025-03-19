@@ -11,9 +11,6 @@ class UploadController extends Controller
     //
     public function uploadImages(Request $request)
     {
-        // $request->validate([
-        //     'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-        // ]);
 
         $imageNames = [];
 
@@ -30,6 +27,13 @@ class UploadController extends Controller
         ], 201);
     }
 
+    public static function deleteImage(string $image)
+    {
+        $imageName = basename($image);
+        Storage::delete("public/images/$imageName");
+    }
+
+
     public function uploadImage(Request $request)
     {
         $image = $request->file('image');
@@ -41,11 +45,5 @@ class UploadController extends Controller
             'message' => 'Hình ảnh đã được tải lên thành công.',
             'image' => $imageName
         ], 201);
-    }
-
-    public static function deleteImage(string $image)
-    {
-        $imageName = basename($image);
-        Storage::delete("public/images/$imageName");
     }
 }
