@@ -40,6 +40,7 @@ const ProductDetail = () => {
             });
             if (response.status === 200) {
                 setReviews(response.data.reviews);
+                console.log("Danh sách đánh giá: ", response.data.reviews);
             }
         } catch (error) {
             console.log(error);
@@ -53,6 +54,7 @@ const ProductDetail = () => {
             });
             if (response.status === 200) {
                 setProduct(response.data.product);
+                console.log("Danh sách đánh giá: ", response.data.product);
        }
         } catch (error) {
             console.log(error);
@@ -62,12 +64,9 @@ const ProductDetail = () => {
     useEffect(() => {
         fetchProduct();
         fetchReviews();
+        
     }, [productId]);
 
-    const formatTime = (time) => {
-        const [hours, minutes] = time.split(":");
-        return `${hours}:${minutes}`;
-    };
 
     const formatDateTime = (dateTimeString) => {
         const date = new Date(dateTimeString);
@@ -91,62 +90,70 @@ const ProductDetail = () => {
             {product && (
                 <main className={cx("product-detail")}>
                     <div className={cx("content")}>
-                        <div className={cx("slider-box")}>
-                            <div
-                                className={cx("back-btn")}
-                                onClick={() => navigate(-1)}
-                            >
-                                <span>
-                                    <Button>
-                                        <FontAwesomeIcon icon={faChevronLeft} />
-                                        quay lai
-                                    </Button>
-                                </span>
-                            </div>
-                            <div className={cx("line")}></div>
-                            <Slider medias={product.media ?? []} />
-                        </div>
-
-                        <div className={cx("detail-box")}>
-                            <div className={cx("name")}>{product.name}</div>
-                            <div className={cx("line")}></div>
-                            <div className={cx("detail")}>
-                                <div className={cx("detail-left")}>
-                                  
-                                    <div className={cx("price")}>
-                                        <FontAwesomeIcon icon={faMoneyBill} />
-                                        <span>
-                                            {product.price}D~
-                                            {product.discount_price}D
-                                        </span>
-                                    </div>
-                                    <div className={cx("time")}>
-                                        <FontAwesomeIcon icon={faClock} />
-                                        <span>
-                                            <span style={{ fontWeight: 600 }}>
-                                                {product.stock}
-                                            </span>{" "}
-                                            AM -
-                                            <span style={{ fontWeight: 600 }}>
-                                                {product.sold}
-                                            </span>{" "}
-                                            PM
-                                        </span>
-                                    </div>
-
-                                    <Rating rate={product.rating} />
+                        <div className={cx("first-content")}>
+                            <div className={cx("slider-box")}>
+                                <div
+                                    className={cx("back-btn")}
+                                    onClick={() => navigate(-1)}
+                                >
+                                    <span>
+                                        <Button>
+                                            <FontAwesomeIcon
+                                                icon={faChevronLeft}
+                                            />
+                                            quay lai
+                                        </Button>
+                                    </span>
                                 </div>
+                                <div className={cx("line")}></div>
+                                <Slider medias={product.media ?? []} />
+                            </div>
 
-                                <div className={cx("detail-right")}>
-                                    <div className={cx("description")}>
-                                        <FontAwesomeIcon icon={faBars} />
-                                        <span>{product.description}</span>
+                            <div className={cx("detail-box")}>
+                                <div className={cx("name")}>{product.name}</div>
+                                <div className={cx("line")}></div>
+                                <div className={cx("detail")}>
+                                    <div className={cx("detail-left")}>
+                                        <div className={cx("price")}>
+                                            <FontAwesomeIcon
+                                                icon={faMoneyBill}
+                                            />
+                                            <span>
+                                                {product.price}D~
+                                                {product.discount_price}D
+                                            </span>
+                                        </div>
+                                        <div className={cx("time")}>
+                                            <FontAwesomeIcon icon={faClock} />
+                                            <span>
+                                                <span
+                                                    style={{ fontWeight: 600 }}
+                                                >
+                                                    {product.stock}
+                                                </span>{" "}
+                                                AM -
+                                                <span
+                                                    style={{ fontWeight: 600 }}
+                                                >
+                                                    {product.sold}
+                                                </span>{" "}
+                                                PM
+                                            </span>
+                                        </div>
+
+                                        <Rating rate={product.rating} />
+                                    </div>
+
+                                    <div className={cx("detail-right")}>
+                                        <div className={cx("description")}>
+                                            <FontAwesomeIcon icon={faBars} />
+                                            <span>{product.description}</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div className={cx("line")}></div>
                             </div>
-                            <div className={cx("line")}></div>
                         </div>
-
                         <CommentInput
                             productId={productId}
                             onUpload={handleComment}

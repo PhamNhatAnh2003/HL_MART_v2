@@ -31,8 +31,8 @@ const responsive = {
 };
 
 const Slider = ({ medias = [] }) => {
-    console.log(medias);
-    console.log("Type of medias:", typeof medias);
+    // console.log(medias);
+    // console.log("Type of medias:", typeof medias);
     return (
         
         <div className={cx("slider")}>
