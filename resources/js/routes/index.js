@@ -8,11 +8,11 @@ const publicRoutes = [
         component: pages.user.home,
         layout: layouts.user.default,
     },
-    // {
-    //     path: config.routes.user.restaurantDetail,
-    //     component: pages.user.restaurantdetail,
-    //     layout: layouts.user.default,
-    // },
+    {
+        path: config.routes.user.productDetail,
+        component: pages.user.productDetail,
+        layout: layouts.user.default,
+    },
 
 
     // {
