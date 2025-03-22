@@ -28,7 +28,7 @@ Route::post('/review/create', [ReviewController::class, 'createReview']);
 
 // Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/cart/{userId}', [CartController::class, 'getCart']);
-    Route::post('/cart', [CartController::class, 'addtoCart']);
+    Route::post('/addtocart', [CartController::class, 'addtoCart']);
     Route::put('/cart/{id}', [CartController::class, 'updateCart']);
     Route::delete('/cart/{id}', [CartController::class, 'removeProduct']);
     Route::delete('/cart/clear', [CartController::class, 'deleteCart']);

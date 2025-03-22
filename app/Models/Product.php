@@ -16,6 +16,7 @@ class Product extends Model
         'discount_price',
         'avatar',
         'media',
+        'unit',
         'stock',
         'sold',
         'category_id',

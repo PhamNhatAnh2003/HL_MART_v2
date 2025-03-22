@@ -4,7 +4,8 @@ import Rating from "../Rating";
 import Button from "../Button";
 import images from "~/assets/images";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "~/hooks/useCart"
+import { useCart } from "~/hooks/useCart";
+import { formatPrice } from "~/utils/format";
 
 const cx = classNames.bind(styles);
 
@@ -18,7 +19,6 @@ const Product = {
     number: 1500,
     rate: 3.6,
 };
-
 
 const Card = ({ product = Product }) => {
     const navigate = useNavigate();
@@ -45,8 +45,27 @@ const Card = ({ product = Product }) => {
             <div onClick={handleSeeDetail} className={cx("content")}>
                 <div className={cx("name")}>{product.name}</div>
                 <div className={cx("price-and-distance")}>
-                    <div className={cx("price")}>Gia ban {product.price}</div>
+                    <span className={cx("price-label")}>Giá bán:</span>
+                    <div className={cx("price-container")}>
+                        {product.discount_price &&
+                        product.discount_price <
+                            product.price ? (
+                            <>
+                                <span className={cx("discount-price")}>
+                                    {formatPrice(product.discount_price)}
+                                </span>
+                                <span className={cx("original-price")}>
+                                    {formatPrice(product.price)}
+                                </span>
+                            </>
+                        ) : (
+                            <span className={cx("normal-price")}>
+                                {formatPrice(product.price)}
+                            </span>
+                        )}
+                    </div>
                 </div>
+
                 <div className={cx("rating-box")}>
                     <Rating rate={product.rating} />
                 </div>

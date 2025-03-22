@@ -73,23 +73,41 @@ public function getUserCart(Request $request)
     }
 
         // Thêm sản phẩm vào giỏ hàng
-  public function addToCart(Request $request) {
+public function addToCart(Request $request) {
     $request->validate([
         'user_id' => 'required|exists:users,id',
         'product_id' => 'required|exists:products,id',
-        'unit' => 'nullable|string|min:1', // 🔥 Thêm unit
-        'quantity' => 'nullable|integer|min:1', // Cho phép nullable, mặc định sẽ đặt là 1
+        'unit' => 'nullable|string|max:50',
+        'quantity' => 'nullable|integer|min:1',
         'price_at_time' => 'required|numeric|min:0'
     ]);
 
-    // Nếu quantity không được gửi, mặc định là 1
-    $data = $request->all();
-    $data['quantity'] = $request->filled('quantity') ? $request->quantity : 1;
+    // 🔍 Kiểm tra sản phẩm đã có trong giỏ hàng chưa
+    $cartItem = CartItem::where('user_id', $request->user_id)
+                        ->where('product_id', $request->product_id)
+                        ->first();
 
-    $cartItem = CartItem::create($data);
+    if ($cartItem) {
+        // Nếu đã có, tăng số lượng sản phẩm
+        $cartItem->increment('quantity', $request->input('quantity', 1));
+    } else {
+        // Nếu chưa có, thêm mới vào giỏ hàng
+        $cartItem = CartItem::create([
+            'user_id' => $request->user_id,
+            'product_id' => $request->product_id,
+            'unit' => $request->unit ?? 'default_unit', // Đảm bảo có đơn vị tính
+            'quantity' => $request->input('quantity', 1),
+            'price_at_time' => $request->price_at_time
+        ]);
+    }
 
-    return response()->json($cartItem);
+   return response()->json([
+        'success' => true,
+        'message' => 'Thêm vào giỏ hàng thành công',
+        'cart_item' => $cartItem
+    ], 200);
 }
+
 
 
 

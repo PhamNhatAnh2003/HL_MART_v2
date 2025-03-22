@@ -43,9 +43,9 @@ export default function HeaderUser() {
         };
 
 
-        useEffect(() => {
-            console.log("User data:", user);
-        }, [user]);
+        // useEffect(() => {
+        //     console.log("User data:", user);
+        // }, [user]);
 
 
     return (

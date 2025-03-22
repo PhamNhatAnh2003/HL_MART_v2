@@ -6,6 +6,7 @@ import { faCamera, faPaperPlane, faSmile } from '@fortawesome/free-solid-svg-ico
 import { useContext, useState } from 'react';
 import { AuthContext } from '~/context/AuthContext';
 import Vote from '~/components/Rating/Vote/Vote';
+import showToast from "~/components/message";
 import axios from 'axios';
 
 const cx = classNames.bind(styles);
@@ -34,7 +35,8 @@ const CommentInput = ({ productId, onUpload }) => {
             });
             console.log(response);
             if (response.status === 201) {
-                alert('Đã thêm đánh giá');
+
+                showToast('Đã thêm đánh giá');
                 setRate(0);
                 setComment('');
                 setImage(null);
