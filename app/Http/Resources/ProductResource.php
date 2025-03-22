@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
             'avatar' => $this->avatar,
             'media' => $this->media,
             'stock' => $this->stock,
+            'unit' => $this->unit, // 🔥 Thêm unit vào response
             'sold' => $this->sold,
             'category_id' => $this->category_id,
             'rating' => round($this->reviews->avg('rating'), 2),

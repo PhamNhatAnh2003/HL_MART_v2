@@ -4,6 +4,7 @@ import Rating from "../Rating";
 import Button from "../Button";
 import images from "~/assets/images";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "~/hooks/useCart"
 
 const cx = classNames.bind(styles);
 
@@ -21,16 +22,15 @@ const Product = {
 
 const Card = ({ product = Product }) => {
     const navigate = useNavigate();
+    const { addToCart } = useCart(); // 🔥 Lấy hàm addToCart từ context
 
     const handleSeeDetail = () => {
         navigate(`/product/${product.id}`);
     };
 
-    // const handleAddtocart = () =>{
-    //     navigate(`/cart/addToCart/${product.id}`)
-
-    // }
-
+    const handleAddToCart = () => {
+        addToCart(product); // 🔥 Gọi hàm thêm vào giỏ hàng
+    };
 
     return (
         <div className={cx("card")}>
@@ -60,7 +60,7 @@ const Card = ({ product = Product }) => {
                 primary
                 curved
                 shadow
-                // onClick={handleSeeDetail}
+                onClick={handleAddToCart}
             >
                 Thêm vào giỏ
             </Button>
