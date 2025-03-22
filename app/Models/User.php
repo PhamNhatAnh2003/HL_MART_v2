@@ -55,8 +55,8 @@ class User extends Authenticatable
     }
 
     // Quan hệ với Order (nếu có)
-    public function orders()
+  public function cart()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasOne(Cart::class, 'user_id', 'id');
     }
 }

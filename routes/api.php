@@ -2,6 +2,7 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\CartController;
 
 
 Route::get('/user', function (Request $request) {
@@ -22,3 +23,14 @@ Route::post('/product/create', [ProductController::class, 'createProduct']);
 //Review
 Route::get('/reviews', [ReviewController::class, 'getReviews']);
 Route::post('/review/create', [ReviewController::class, 'createReview']);
+
+//Cart
+
+// Route::middleware('auth:sanctum')->group(function () {
+    // Route::get('/cart/{userId}', [CartController::class, 'getCart']);
+    Route::post('/cart', [CartController::class, 'addtoCart']);
+    Route::put('/cart/{id}', [CartController::class, 'updateCart']);
+    Route::delete('/cart/{id}', [CartController::class, 'removeProduct']);
+    Route::delete('/cart/clear', [CartController::class, 'deleteCart']);
+    Route::get('/cart/{userId}', [CartController::class, 'getCartItems']);
+// });

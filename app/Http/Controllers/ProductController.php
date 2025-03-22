@@ -55,6 +55,7 @@ public function getLatestProducts()
             'discount_price' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'sold' => 'nullable|integer|min:0',
+            'unit' => 'required|string|max:50', // 🔥 Thêm đơn vị tính, bắt buộc nhập
             'category_id' => 'nullable|exists:categories,id'
         ]);
 
@@ -93,6 +94,7 @@ public function getLatestProducts()
             'description' => $request->input('description'),
             'price' => $request->input('price'),
             'discount_price' => $request->input('discount_price'),
+            'unit' => $request->input('unit', 'pcs'), // 🔥 Mặc định là "pcs" nếu không có
             'stock' => $request->input('stock'),
             'sold' => $request->input('sold'),
             'category_id' => $request->input('category_id'),

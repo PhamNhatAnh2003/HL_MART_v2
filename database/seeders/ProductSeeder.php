@@ -16,6 +16,7 @@ class ProductSeeder extends Seeder
     {
 
         $faker = Faker::create();
+        $units = ['kg', 'g', 'lit', 'chai', 'hộp', 'cái','thùng']; // 🔥 Danh sách đơn vị tính
 
         foreach (range(1, 30) as $index){
         DB::table('products')->insert([
@@ -24,6 +25,7 @@ class ProductSeeder extends Seeder
                 'description' => 'Mô tả sản phẩm A',
                 'price' => $faker->numberBetween(10000, 500000),
                 'discount_price' => $faker->numberBetween(20000, 100000),
+                'unit' => $units[array_rand($units)], // 🔥 Chọn đơn vị ngẫu nhiên
                 'avatar' => 'images/productA.jpg',
                 'media' => json_encode(['images/productA1.jpg', 'images/productA2.jpg']),
                 'stock' => $faker->numberBetween(10, 50),
