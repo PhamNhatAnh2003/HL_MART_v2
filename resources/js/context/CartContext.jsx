@@ -1,6 +1,7 @@
 import { useAuth } from "~/hooks/useAuth";
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
+import showToast from "~/components/message"
 
 // 1️⃣ Tạo context giỏ hàng
 const CartContext = createContext();
@@ -41,18 +42,18 @@ const CartProvider = ({ children }) => {
             return;
         }
        try {
-           const response = await axios.post("/api/cart", {
+           const response = await axios.post("/api/addtocart", {
                user_id: user.id,
                product_id: product.id,
                unit: product.unit,
                quantity: 1,
                price_at_time: product.price,
            });
-           console.log("Cart response:", response.data); // 🔥 Debug phản hồi từ API
-        //    console.log("Product unit:", product.unit);
-           setCart(response.data);
+            showToast(response.data.message);
+            setCart(response.data);
        } catch (error) {
-           console.error("Lỗi khi thêm sản phẩm:", error);
+            console.error("Lỗi khi thêm sản phẩm:", error);
+            showToast("Có lỗi xảy ra, vui lòng thử lại!", "error");
        }
     };
 

@@ -31,8 +31,9 @@ const responsive = {
 };
 
 const Slider = ({ medias = [] }) => {
-    // console.log(medias);
-    // console.log("Type of medias:", typeof medias);
+    console.log(medias);
+    console.log("Type of medias:", typeof medias);
+    const mediaArray = typeof medias === "string" ? JSON.parse(medias) : medias;
     return (
         
         <div className={cx("slider")}>
@@ -44,7 +45,7 @@ const Slider = ({ medias = [] }) => {
             >
                 {medias &&
                     medias.length > 0 &&
-                    medias.map((item, index) => {
+                    mediaArray.map((item, index) => {
                         if (item === null) {
                             return;
                         }

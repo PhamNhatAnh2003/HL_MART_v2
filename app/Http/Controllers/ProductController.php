@@ -51,8 +51,8 @@ public function getLatestProducts()
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'media.*' => 'nullable|mimes:jpg,jpeg,png,mp4,avi,mkv|max:20480000',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'discount_price' => 'nullable|numeric|min:0',
+            'price' => 'required|integer|min:0',
+            'discount_price' => 'nullable|integer|min:0',
             'stock' => 'required|integer|min:0',
             'sold' => 'nullable|integer|min:0',
             'unit' => 'required|string|max:50', // 🔥 Thêm đơn vị tính, bắt buộc nhập
@@ -94,7 +94,7 @@ public function getLatestProducts()
             'description' => $request->input('description'),
             'price' => $request->input('price'),
             'discount_price' => $request->input('discount_price'),
-            'unit' => $request->input('unit', 'pcs'), // 🔥 Mặc định là "pcs" nếu không có
+            'unit' => $request->input('unit'),
             'stock' => $request->input('stock'),
             'sold' => $request->input('sold'),
             'category_id' => $request->input('category_id'),

@@ -63,14 +63,27 @@
 
 .price-and-distance {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 5px; /* Khoảng cách giữa giá gốc và giá giảm */
 }
 
-.price {
-    font-size: 18px;
-    font-weight: bold;
-    color: #000;
+.original-price {
+    margin-left: 15px;
+    text-decoration: line-through;
+    color: gray;
+    font-size: 14px; /* Giảm kích thước giá gốc */
 }
+
+.discount-price {
+    font-weight: bold;
+    color: red;
+    font-size: 16px; /* Làm nổi bật giá giảm */
+}
+
+.price-label {
+    font-weight: bold;
+}
+
 
 
 .rating-box {

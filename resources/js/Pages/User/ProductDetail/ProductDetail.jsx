@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Rating from "~/components/Rating";
 import Button from "~/components/Button";
-import Carousel from "react-multi-carousel";
+import { formatPrice } from "~/utils/format";
 import "react-multi-carousel/lib/styles.css";
 import Slider from "./Slider/Slider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -24,6 +24,7 @@ import CommentInput from "./CommentInput/CommentInput";
 import images from "~/assets/images";
 import { Input } from "~/components/Input";
 import config from "~/config";
+import { formatTimeStr } from "antd/es/statistic/utils";
 
 const cx = classNames.bind(styles);
 
@@ -40,7 +41,7 @@ const ProductDetail = () => {
             });
             if (response.status === 200) {
                 setReviews(response.data.reviews);
-                console.log("Danh sách đánh giá: ", response.data.reviews);
+                // console.log("Danh sách đánh giá: ", response.data.reviews);
             }
         } catch (error) {
             console.log(error);
@@ -54,7 +55,7 @@ const ProductDetail = () => {
             });
             if (response.status === 200) {
                 setProduct(response.data.product);
-                console.log("Danh sách đánh giá: ", response.data.product);
+                // console.log("Danh sách đánh giá: ", response.data.product);
             }
         } catch (error) {
             console.log(error);
@@ -113,12 +114,18 @@ const ProductDetail = () => {
                                         <span>{product.name}</span>
                                     </div>
                                     <div className={cx("price")}>
-                                        <strong>Giá bán lẻ:</strong>
-                                        <span>{product.price}đ</span>
+                                        <strong>Giá bán:</strong>
+                                        <span>
+                                            {formatPrice(product.price)}
+                                        </span>
                                     </div>
                                     <div className={cx("price")}>
-                                        <strong>Giam gia:</strong>
-                                        <span>{product.discount_price}đ</span>
+                                        <strong>Giảm giá:</strong>
+                                        <span>
+                                            {formatPrice(
+                                                product.discount_price
+                                            )}
+                                        </span>
                                     </div>
                                     <div className={cx("description")}>
                                         <strong>Mô tả:</strong>{" "}
