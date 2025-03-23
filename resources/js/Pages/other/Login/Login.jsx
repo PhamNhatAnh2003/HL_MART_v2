@@ -10,6 +10,8 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import config from "~/config";
 import { AuthContext } from "~/context/AuthContext";
+import showToast from "~/components/message";
+
 const cx = classNames.bind(styles);
 
 const Login = () => {
@@ -38,12 +40,12 @@ const Login = () => {
                 if (role === "user") {
                     navigate(config.routes.user.home);
                 } else if (role === "admin") {
-                    navigate(config.routes.admin.restaurantList);
+                    navigate(config.routes.admin.home);
                 }
             }
             console.log(response);
         } catch (error) {
-            alert(error.response.data.message);
+            showToast(error.response.data.message);
         }
     };
 

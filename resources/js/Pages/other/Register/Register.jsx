@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./Register.module.scss";
-
+import showToast from "~/components/message";
 import Button from "~/components/Button";
 import { Input, PasswordInput } from "~/components/Input";
 import { CheckboxInput } from "~/components/Checkbox";
@@ -37,14 +37,14 @@ const Register = () => {
             .post("http://127.0.0.1:8000/api/register", payload)
             .then((response) => {
                 if (response.status === 201) {
-                    alert("Đăng ký thành công");
+                    showToast("Đăng ký thành công");
                     window.location.href = "/login";
                 } else {
-                    alert("Đăng ký thất bại");
+                    showToast("Đăng ký thất bại");
                 }
             })
             .catch((error) => {
-                alert(error.response.data.message);
+                showToast(error.response.data.message);
             });
     };
 

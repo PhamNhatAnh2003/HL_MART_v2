@@ -1,14 +1,14 @@
 .product-detail {
-
+display: flex;
     justify-content: center;
-    padding-top: 20px;
+    // padding-top: 20px;
 }
 
 .content {
-    width: 90%;
+    // width: 90%;
     flex-direction: column;
     gap: 20px;
-    padding: 10px 20px;
+    padding-bottom: 10px;
     border-radius: 5px;
     box-shadow: 0px 0px 16px 0px #00000014;
 }
@@ -20,7 +20,7 @@
         display: flex;
         align-items: center;
         gap: 5px;
-        font-weight: 500;
+        font-weight: 700;
         cursor: pointer;
 
         span {
@@ -50,33 +50,24 @@
     align-items: center;
     justify-content: center;
     background-color: #e0e0e0; /* Màu xám nhạt */
-    width: 50%;
+    width: 30%;
     height: 500px; /* Đảm bảo chiều cao đủ lớn */
 }
 
 .detail-box {
+    flex: 0.5;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
     font-size: 16px;
     color: #333;
-}
-
-.detail-box {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 16px;
-    color: #333;
-    max-width: 600px; /* Giới hạn chiều rộng */
 }
 
 .detail-box .detail {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
     width: 100%;
 }
 
@@ -87,7 +78,7 @@
 }
 
 .detail-box .detail div strong {
-    width: 30%;
+    // width: 30%;
     text-align: left;
 }
 
@@ -101,19 +92,23 @@
     line-height: 1.5;
 }
 
-.detail-box .stock {
+.detail-box .stock  {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.detail-box .shipping {
+.detail-box .sold  {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-
+.detail-box .unit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
 .comment-box {
     display: flex;

@@ -113,6 +113,10 @@ const ProductDetail = () => {
                                         <strong>Tên sản phẩm:</strong>{" "}
                                         <span>{product.name}</span>
                                     </div>
+                                    <div className={cx("unit")}>
+                                        <strong>ĐVT:</strong>{" "}
+                                        <span>{product.unit}</span>
+                                    </div>
                                     <div className={cx("price")}>
                                         <strong>Giá bán:</strong>
                                         <span>
@@ -131,19 +135,19 @@ const ProductDetail = () => {
                                         <strong>Mô tả:</strong>{" "}
                                         <span>{product.description}</span>
                                     </div>
-                                    <div className={cx("stock")}>
-                                        <strong>Số lượng:</strong>{" "}
-                                        <span>{product.stock}</span>
-                                    </div>
                                     <div className={cx("star")}>
                                         <strong>Đánh giá</strong>{" "}
                                         <span>
                                             <Rating rate={product.rating} />
                                         </span>
                                     </div>
-                                    <div className={cx("shipping")}>
-                                        <strong>Vận chuyển:</strong>{" "}
-                                        <span>Pham Nhat Anh</span>
+                                    <div className={cx("stock")}>
+                                        <strong>Số lượng:</strong>{" "}
+                                        <span>{product.stock}</span>
+                                    </div>
+                                    <div className={cx("sold")}>
+                                        <strong>Đã bán:</strong>{" "}
+                                        <span>{product.sold}</span>
                                     </div>
                                     <div className={cx("hoho")}>
                                         <strong>Xuất xứ:</strong>{" "}
