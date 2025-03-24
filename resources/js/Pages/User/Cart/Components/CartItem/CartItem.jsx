@@ -1,48 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import styles from "./CartItem.module.scss";
 import { formatPrice } from "~/utils/format";
+import { useCart } from "~/hooks/useCart";
+import classNames from "classnames/bind";
 
-const CartItem = ({ item, onUpdateQuantity, onRemove, index }) => {
+const cx = classNames.bind(styles);
+
+const CartItem = ({ item, index }) => {
     if (!item || !item.product) return null; // Nếu không có dữ liệu, không hiển thị
-
-    const { id, quantity, product } = item; // Lấy thông tin sản phẩm
+    const { cart } = useCart();
+    const { quantity, product } = item; // Lấy thông tin sản phẩm
     const [currentQuantity, setCurrentQuantity] = useState(quantity);
+    const { updateQuantity, removeFromCart } = useCart(); // Lấy hàm từ CartContext
+
+
+    useEffect(() => {
+        setCurrentQuantity(quantity);
+    }, [cart, quantity]);
 
     const handleChangeQuantity = (e) => {
-        const newQuantity = Math.max(1, parseInt(e.target.value, 10) || 1);
+        let newQuantity = Math.max(1, parseInt(e.target.value, 10) || 1);
         setCurrentQuantity(newQuantity);
-        onUpdateQuantity(id, newQuantity);
+        updateQuantity(product.id, newQuantity);
     };
 
     return (
-        <div className={styles.container}>
-            <div className={styles.columnSTT}>{index}</div>
-            <div className={styles.columnImage}>
+        <div className={cx("container")}>
+            <div className={cx("columnSTT")}>{index}</div>
+            <div className={cx("columnImage")}>
                 <img
+                    className={cx("image")}
                     src={product.image}
                     alt={product.name}
-                    className={styles.image}
                 />
             </div>
-            <div className={styles.columnName}>{product.name}</div>
-            <div className={styles.columnUnit}>{product.unit}</div>
-            <div className={styles.columnPrice}>
+            <div className={cx("columnName")}>{product.name}</div>
+            <div className={cx("columnUnit")}>{product.unit}</div>
+            <div className={cx("columnPrice")}>
                 {formatPrice(product.price)}
             </div>
-            <div className={styles.columnQuantity}>
+            <div className={cx("columnQuantity")}>
                 <input
                     type="number"
                     value={currentQuantity}
                     min="1"
-                    className={styles.quantity}
+                    className={cx("quantity")}
                     onChange={handleChangeQuantity}
                 />
             </div>
-            <div className={styles.columnDelete}>
+            <div className={cx("delete-btn-con")}>
                 <FaTrash
-                    className={styles.deleteIcon}
-                    onClick={() => onRemove(id)}
+                    className={cx("delete-btn")}
+                    onClick={() => removeFromCart(product.id)}
                 />
             </div>
         </div>
