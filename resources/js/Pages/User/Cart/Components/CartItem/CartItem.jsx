@@ -3,7 +3,7 @@ import { FaTrash } from "react-icons/fa";
 import styles from "./CartItem.module.scss";
 import { formatPrice } from "~/utils/format";
 
-const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
+const CartItem = ({ item, onUpdateQuantity, onRemove, index }) => {
     if (!item || !item.product) return null; // Nếu không có dữ liệu, không hiển thị
 
     const { id, quantity, product } = item; // Lấy thông tin sản phẩm
@@ -16,28 +16,35 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
     };
 
     return (
-        <div className={styles.cartItem}>
-            <img
-                src={product.image}
-                alt={product.name}
-                className={styles.image}
-            />
-            <span className={styles.name}>{product.name}</span>
-            <span className={styles.unit}>{product.unit}</span>
-            <span className={styles.price}>
+        <div className={styles.container}>
+            <div className={styles.columnSTT}>{index}</div>
+            <div className={styles.columnImage}>
+                <img
+                    src={product.image}
+                    alt={product.name}
+                    className={styles.image}
+                />
+            </div>
+            <div className={styles.columnName}>{product.name}</div>
+            <div className={styles.columnUnit}>{product.unit}</div>
+            <div className={styles.columnPrice}>
                 {formatPrice(product.price)}
-            </span>
-            <input
-                type="number"
-                value={currentQuantity}
-                min="1"
-                className={styles.quantity}
-                onChange={handleChangeQuantity}
-            />
-            <FaTrash
-                className={styles.deleteIcon}
-                onClick={() => onRemove(id)}
-            />
+            </div>
+            <div className={styles.columnQuantity}>
+                <input
+                    type="number"
+                    value={currentQuantity}
+                    min="1"
+                    className={styles.quantity}
+                    onChange={handleChangeQuantity}
+                />
+            </div>
+            <div className={styles.columnDelete}>
+                <FaTrash
+                    className={styles.deleteIcon}
+                    onClick={() => onRemove(id)}
+                />
+            </div>
         </div>
     );
 };

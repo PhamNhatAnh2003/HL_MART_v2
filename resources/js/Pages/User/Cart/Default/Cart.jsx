@@ -45,16 +45,21 @@ const Cart = () => {
             <div className={cx("cart-left")}>
                 <CartStep step={1} />
                 <div className={cx("cart-content")}>
-                    <div className={cx("cart-list-header")}>
-                        <span>Ảnh đại diện</span>
-                        <span>Tên sản phẩm</span>
-                        <span>Thông tin</span>
-                        <span>Số lượng</span>
-                        <span>Tổng tiền</span>
-                        <span>Xóa</span>
+                    <div className={styles.container}>
+                        <div className={styles.columnSTT}>STT</div>
+                        <div className={styles.columnImage}>Ảnh</div>
+                        <div className={styles.columnName}>Tên Sản Phẩm</div>
+                        <div className={styles.columnUnit}>ĐVT</div>
+                        <div className={styles.columnPrice}>Giá</div>
+                        <div className={styles.columnQuantity}>Số Lượng</div>
+                        <div className={styles.columnDelete}>Xóa</div>
                     </div>
                     {cartItems.map((item, index) => (
-                        <CartItem key={`cart-item-${index}`} item={item} />
+                        <CartItem
+                            key={`cart-item-${index}`}
+                            item={item}
+                            index={index + 1}
+                        />
                     ))}
                 </div>
             </div>
@@ -75,7 +80,10 @@ const Cart = () => {
                     </span>
                 </div>
                 <div className={cx("cart-right-last-line")}></div>
-                <Button onClick={() => navigate(config.routes.user.cartStep2)}>
+                <Button
+                    primary
+                    onClick={() => navigate(config.routes.user.cartStep2)}
+                >
                     Đặt hàng
                 </Button>
             </div>
