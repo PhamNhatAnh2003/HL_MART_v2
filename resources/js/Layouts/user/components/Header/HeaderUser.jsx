@@ -38,7 +38,7 @@ export default function HeaderUser() {
 
         const searchProducts = (event) => {
             if (event.key === "Enter") {
-                navigate(`${config.routes.user.findRestaurant}?name=${searchValue}`);
+                navigate(`${config.routes.user.findProduct}?name=${searchValue}`);
             }
         };
 
@@ -65,7 +65,7 @@ export default function HeaderUser() {
             {(user) && (
                 <div className={cx("user-hugs")} ref={menuRef}>
                     <div className={cx("favorite-header")}>
-                        <Link to={config.routes.user.favorite}>
+                        <Link to={config.routes.user.cart}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                             <span>Giỏ Hàng</span>
                         </Link>
