@@ -41,8 +41,8 @@ const publicRoutes = [
     //     layout: layouts.user.default,
     // },
     // {
-    //     path: config.routes.user.findRestaurant,
-    //     component: pages.user.findRestaurant,
+    //     path: config.routes.user.productList,
+    //     component: pages.user.productList,
     //     layout: layouts.user.default,
     // },
     {

@@ -9,11 +9,11 @@ const routes = {
 
     user: {
         home: "/home",
-        productList: "/products",
+        // productList: "/products",
         productDetail: "/product/:productId",
         // cart: "/cart",
         userInfor: "/userInfor",
-        findProduct: "/findProduct",
+        // ProductList: "/ProductList",
         cart: "/cart",
         // map: '/map',
     },
