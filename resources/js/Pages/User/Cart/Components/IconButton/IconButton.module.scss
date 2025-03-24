@@ -1,0 +1,82 @@
+.icon-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--secondary);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--secondary-75);
+    }
+}
+
+.icon-btn.active {
+    // background-color: var(--active-item);
+    color: var(--text-secondary);
+
+    &:hover {
+        background-color: inherit;
+    }
+
+    + .number {
+        color: var(--text-secondary);
+    }
+
+    &.border {
+        border: 2px solid var(--text-secondary);
+    }
+}
+
+.medium {
+    @extend .icon-btn;
+    font-size: var(--icon-medium);
+    padding: 8px;
+}
+
+.small {
+    @extend .icon-btn;
+    font-size: var(--icon-small);
+    padding: 4px 8px;
+}
+
+.large {
+    @extend .icon-btn;
+    font-size: var(--icon-large);
+    padding: 8px 12px;
+}
+
+.circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+
+    &.medium {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+.border {
+    border-radius: var(--border-radius);
+    border: 2px solid transparent;
+}
+
+.number {
+    position: absolute;
+    width: 18px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: calc(var(--font-size) - 6px);
+    font-weight: 600;
+    border-radius: 5px;
+    background-color: #ea4c89;
+    top: 0;
+    right: 0;
+}

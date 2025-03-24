@@ -11,10 +11,10 @@ const routes = {
         home: "/home",
         productList: "/products",
         productDetail: "/product/:productId",
-        cart: "/cart",
+        // cart: "/cart",
         userInfor: "/userInfor",
         findProduct: "/findProduct",
-        favorite: "/favorite",
+        cart: "/cart",
         // map: '/map',
     },
 

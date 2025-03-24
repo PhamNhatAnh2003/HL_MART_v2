@@ -45,11 +45,11 @@ const publicRoutes = [
     //     component: pages.user.findRestaurant,
     //     layout: layouts.user.default,
     // },
-    // {
-    //     path: config.routes.user.favorite,
-    //     component: pages.user.favorite,
-    //     layout: layouts.user.default,
-    // },
+    {
+        path: config.routes.user.cart,
+        component: pages.user.cart,
+        layout: layouts.user.default,
+    },
     // {
     //     path: config.routes.user.map,
     //     component: pages.user.map,

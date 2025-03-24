@@ -22,18 +22,30 @@ const CartProvider = ({ children }) => {
     }, [user?.id]);
 
     // 4️⃣ Hàm lấy giỏ hàng từ server
-    const fetchCart = async () => {
-        if (!user?.id) return;
-        setLoading(true);
-        try {
-            const response = await axios.get(`/api/cart/${user.id}`);
-            setCart(response.data);
-        } catch (error) {
-            console.error("Lỗi khi lấy giỏ hàng:", error);
-        } finally {
-            setLoading(false);
+const fetchCart = async () => {
+    if (!user?.id) return;
+    setLoading(true);
+
+    try {
+        const response = await axios.get(`/api/cart/${user.id}`);
+
+        if (response.data.success) {
+            setCart(response.data.cart_items);
+            console.log(response.data.cart_items); // Kiểm tra dữ liệu nhận được
+        } else {
+            console.error("Lỗi: Không thể lấy giỏ hàng");
         }
-    };
+    } catch (error) {
+        console.error("Lỗi khi lấy giỏ hàng:", error);
+    } finally {
+        setLoading(false);
+    }
+};
+
+const refreshCart = async () => {
+    await fetchCart(); // Gọi lại API để cập nhật giỏ hàng
+};
+
 
     // 5️⃣ Thêm sản phẩm vào giỏ hàng
     const addToCart = async (product) => {
@@ -110,6 +122,7 @@ const CartProvider = ({ children }) => {
                 updateQuantity,
                 removeFromCart,
                 clearCart,
+                refreshCart,
             }}
         >
             {children}

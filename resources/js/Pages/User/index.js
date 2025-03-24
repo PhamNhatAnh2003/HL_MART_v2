@@ -1,4 +1,5 @@
 import Home from "./Home";
+import Cart from "./Cart/Default";
 import ProductDetail from "./ProductDetail";
 // import UserInfor from "./Infor";
 // import FindRestaurant from "./FindRestaurant";
@@ -10,7 +11,7 @@ const user = {
     productDetail: ProductDetail,
     // userInfor: UserInfor,
     // findRestaurant: FindRestaurant,
-    // favorite: Favorite,
+    cart: Cart,
     // map: Map,
 };
 

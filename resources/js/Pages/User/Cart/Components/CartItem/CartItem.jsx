@@ -1,27 +1,18 @@
 import { useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import styles from "./CartItem.module.scss";
-
-// Dữ liệu giả (Fake Data)
-const fakeItem = {
-    id: 1,
-    image: "https://via.placeholder.com/50", // Ảnh giả
-    name: "Thùng 24 lon nước tăng lực STING hương dâu 330ml/320ml",
-    unit: "Thùng",
-    price: 1000000,
-    quantity: 10,
-};
+import { formatPrice } from "~/utils/format";
 
 const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
-    // Nếu `item` không có giá trị, sử dụng dữ liệu giả `fakeItem`
-    const product = item || fakeItem;
+    if (!item || !item.product) return null; // Nếu không có dữ liệu, không hiển thị
 
-    const [quantity, setQuantity] = useState(product.quantity);
+    const { id, quantity, product } = item; // Lấy thông tin sản phẩm
+    const [currentQuantity, setCurrentQuantity] = useState(quantity);
 
     const handleChangeQuantity = (e) => {
-        const newQuantity = parseInt(e.target.value, 10) || 1;
-        setQuantity(newQuantity);
-        onUpdateQuantity(product.id, newQuantity);
+        const newQuantity = Math.max(1, parseInt(e.target.value, 10) || 1);
+        setCurrentQuantity(newQuantity);
+        onUpdateQuantity(id, newQuantity);
     };
 
     return (
@@ -34,18 +25,18 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
             <span className={styles.name}>{product.name}</span>
             <span className={styles.unit}>{product.unit}</span>
             <span className={styles.price}>
-                {product.price.toLocaleString()}đ
+                {formatPrice(product.price)}
             </span>
             <input
                 type="number"
-                value={quantity}
+                value={currentQuantity}
                 min="1"
                 className={styles.quantity}
                 onChange={handleChangeQuantity}
             />
             <FaTrash
                 className={styles.deleteIcon}
-                onClick={() => onRemove(product.id)}
+                onClick={() => onRemove(id)}
             />
         </div>
     );
