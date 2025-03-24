@@ -73,7 +73,17 @@
     width: 35px;
 }
 
-.columnDelete {
-  justify-content: center;
-  width: 50px;
+
+
+.delete-btn-con {
+     width: 50px;
+    display: flex;
+    justify-content: center;
+
+    .delete-btn {
+        width: fit-content;
+        height: fit-content;
+        font-size: 20px;
+        cursor: pointer;
+    }
 }

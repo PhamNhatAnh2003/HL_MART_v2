@@ -14,5 +14,4 @@ const showToast = (message, type = "success") => {
     });
 };
 
-// Xuất hàm để có thể dùng ở nhiều nơi
 export default showToast;
