@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import config from '~/config';
 import { AuthContext } from '~/context/AuthContext';
 import { useLocation } from 'react-router-dom';
+import Category from '../../../../components/Category/Category';
 
 const cx = classNames.bind(styles);
 
@@ -103,6 +104,8 @@ export default function HeaderUser() {
                     )}
                 </div>
             )}
+
+
         </div>
-    );
+    )
 }

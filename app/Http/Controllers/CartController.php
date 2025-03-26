@@ -74,12 +74,6 @@ public function removeProduct(Request $request) {
 }
 
 
-    // Xóa toàn bộ giỏ hàng
-    public function deleteCart() {
-        CartItem::where('user_id', Auth::id())->delete();
-        return response()->json(['message' => 'Đã xóa toàn bộ giỏ hàng']);
-    }
-
         // Thêm sản phẩm vào giỏ hàng
 public function addToCart(Request $request) {
     $request->validate([
@@ -126,6 +120,6 @@ public function addToCart(Request $request) {
         return response()->json([
             'success' => true,
             'cart_items' => $cartItems
-        ]);
+        ], 200);
     }
 }

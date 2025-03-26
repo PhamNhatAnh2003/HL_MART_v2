@@ -93,3 +93,36 @@
     padding-top: 20px;
     border-bottom: 1px solid var(--bg-secondary);
 }
+
+
+
+.cart-empty {
+    text-align: center;
+    padding: 50px 0;
+    height: 400px;
+
+    img {
+        width: 120px;
+        opacity: 0.6;
+    }
+
+    p {
+        font-size: 18px;
+        color: #666;
+        margin: 10px 0;
+    }
+
+    .back-home {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: darkred;
+        }
+    }
+}

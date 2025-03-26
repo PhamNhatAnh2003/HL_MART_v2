@@ -10,7 +10,7 @@ import axios from "axios";
 import { AuthContext } from "~/context/AuthContext";
 import classNames from "classnames/bind";
 import Slider from "../../../components/Slider/Slider";
-import Footer from "../../../components/Footer";
+
 
 
 
@@ -74,8 +74,6 @@ useEffect(() => {
                 </div>
             </section>
 
-            {/* Footer */}
-            <Footer />
         </div>
     );
 };

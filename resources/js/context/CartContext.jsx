@@ -71,10 +71,6 @@ const CartProvider = ({ children }) => {
     // 6️⃣ Cập nhật số lượng sản phẩm
     const updateQuantity = async (productId, quantity) => {
         if (!user?.id) return;
-        if (quantity < 1) {
-            removeFromCart(productId);
-            return;
-        }
         try {
             const response = await axios.post(`/api/cart/update/${productId}`, {
                 user_id: user.id,
