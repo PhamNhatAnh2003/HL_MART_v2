@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTimes, faPen } from "@fortawesome/free-solid-svg-icons";
@@ -13,13 +13,14 @@ import styles from "./AddProduct.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
-const AddProduct = ({ onClose, onReFetch }) => {
+const AddProduct = ({ }) => {
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
-    const [priceStart, setPriceStart] = useState("");
-    const [priceEnd, setPriceEnd] = useState("");
+    const [price, setPrice] = useState("");
+    const [Discount_price, setDiscount_price] = useState("");
     const [avatar, setAvatar] = useState();
     const [images, setImages] = useState([]);
+    const [unit, setUnit] = useState("");
     const [imagesFile, setImagesFile] = useState([]);
     const [media, setMedia] = useState([]);
     const [Number, setNumber] = useState("");
@@ -28,20 +29,35 @@ const AddProduct = ({ onClose, onReFetch }) => {
     const [categories, setCategories] = useState([]); // 🔹 Định nghĩa state cho categories
     const [selectedCategory, setSelectedCategory] = useState(null);
 
-    //   useEffect(() => {
-    //       axios
-    //           .get("http://localhost:8000/api/categories") // 🔹 Gọi API để lấy danh mục từ backend
-    //           .then((response) => {
-    //               setCategories(response.data); // 🔹 Cập nhật state categories
-    //           })
-    //           .catch((error) => {
-    //               console.error("Lỗi khi lấy danh mục:", error);
-    //           });
-    //   }, []);
 
 
+        const [isOpen, setIsOpen] = useState(true); // Quản lý trạng thái đóng/mở popup
 
+        // Hàm đóng popup
+        const onClose = () => {
+            setIsOpen(false);
+        };
 
+            const onReFetch = () => {
+                console.log("Dữ liệu đã được cập nhật, thực hiện tải lại...");
+                // Gọi API hoặc cập nhật state tại đây
+            };
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:8000/api/categories")
+            .then((response) => {
+                console.log("Dữ liệu API trả về:", response.data);
+                setCategories(response.data);
+    })
+            .catch((error) => {
+                console.error("Lỗi khi lấy danh mục:", error);
+            });
+    }, []);
+
+    useEffect(() => {
+        console.log("🔄 Danh mục sau khi cập nhật:", categories);
+    }, [categories]);
 
     const inputRef = React.useRef();
 
@@ -76,19 +92,17 @@ const AddProduct = ({ onClose, onReFetch }) => {
         try {
             const data = await axios
                 .post(
-                    "/api/restaurant/create-v",
+                    "/api/product/create",
                     {
                         name,
                         description: desc,
-                        address,
-                        phone,
-                        email,
-                        price_start: priceStart,
-                        price_end: priceEnd,
+                        price: price,
+                        discount_price: Discount_price,
                         avatar: avatar?.file,
                         media: imagesFile.length > 0 ? imagesFile : media,
-                        open_time: `${openTime}:00`,
-                        close_time: `${closeTime}:00`,
+                        unit: unit,
+                        sold: Numbers,
+                        stock: Number,
                     },
                     {
                         headers: {
@@ -98,7 +112,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                 )
                 .then((response) => {
                     // console.log(response);
-                    addStyleToRestaurant(response.data.restaurant.id);
+                    addCategoryToProduct(response.data.product.id);
                 });
         } catch (error) {
             console.error("Error adding restaurant:", error);
@@ -106,31 +120,40 @@ const AddProduct = ({ onClose, onReFetch }) => {
         }
     };
 
-    const addStyleToRestaurant = async (id) => {
-        await axios
-            .post(
-                "/api/restaurant/style/create",
+    const addCategoryToProduct = async (productId) => {
+        if (!selectedCategory) {
+            alert("Vui lòng chọn danh mục!");
+            return;
+        }
+console.log("📤 Dữ liệu gửi lên API:", {
+    product_id: productId,
+    category_id: selectedCategory,
+});
+
+        try {
+            const response = await axios.post(
+                "/api/product/category/create",
                 {
-                    restaurant_id: id,
-                    style_id: styles,
+                    product_id: productId,
+                    category_id: selectedCategory, 
                 },
                 {
                     headers: {
-                        "Content-Type": "multipart/form-data",
+                        "Content-Type": "application/json", 
                     },
                 }
-            )
-            .then((response) => {
-                alert("レストランの追加に成功しました");
-                onClose();
-                onReFetch();
-            })
-            .catch((error) => {
-                alert(
-                    "Error adding style to restaurant " +
-                        error?.response?.data?.message
-                );
-            });
+            );
+
+            alert("Thêm danh mục thành công!");
+             onClose();
+             onReFetch();
+        } catch (error) {
+            console.error("Lỗi khi thêm danh mục:", error);
+            alert(
+                "Lỗi khi thêm danh mục: " +
+                    (error?.response?.data?.message || "Lỗi không xác định")
+            );
+        }
     };
 
     return (
@@ -173,6 +196,12 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                         id=""
                                         label="Mô tả sản phẩm"
                                     ></DefaultInput>
+                                    <DefaultInput
+                                        setValue={setUnit}
+                                        value={unit}
+                                        id=""
+                                        label="Đơn vị tính"
+                                    ></DefaultInput>
                                     <Dropdown
                                         id="category"
                                         label="Danh mục"
@@ -193,7 +222,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                             if (selectedOption) {
                                                 setSelectedCategory(
                                                     selectedOption.id
-                                                );
+                                                ); // Lưu ID danh mục đã chọn
                                             }
                                         }}
                                         width="100%"
@@ -206,48 +235,19 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                     </Dropdown>
                                 </div>
                             </div>
-                            {/* <div className={cx("content-item", "flex-col")}>
-                                <h3 className={cx("title")}>連絡先</h3>
-                                <DefaultInput
-                                    setValue={setAddress}
-                                    value={address}
-                                    id=""
-                                    label="住所"
-                                ></DefaultInput>
-                                <div
-                                    className={cx("flex-row")}
-                                    style={{ marginTop: 6 }}
-                                >
-                                    <DefaultInput
-                                        setValue={setPhone}
-                                        value={phone}
-                                        type="tel"
-                                        id=""
-                                        label="電話番号"
-                                    ></DefaultInput>
-                                    <DefaultInput
-                                        setValue={setEmail}
-                                        value={email}
-                                        type="email"
-                                        id=""
-                                        label="メール"
-                                        width={"60%"}
-                                    ></DefaultInput>
-                                </div>
-                            </div> */}
 
                             <div className={cx("content-item", "flex-col")}>
                                 <h3 className={cx("title")}>Giá bán</h3>
                                 <div className={cx("flex-row")}>
                                     <DefaultInput
-                                        setValue={setPriceStart}
-                                        value={priceStart}
+                                        setValue={setPrice}
+                                        value={price}
                                         id=""
                                         label="Giá bán (đ)"
                                     ></DefaultInput>
                                     <DefaultInput
-                                        setValue={setPriceEnd}
-                                        value={priceEnd}
+                                        setValue={setDiscount_price}
+                                        value={Discount_price}
                                         id=""
                                         label="Giắ khuyến mãi (đ)"
                                         width={"60%"}
@@ -464,13 +464,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                     </form>
                     <div className={cx("flex-row")}>
                         <div className={cx("flex-1")}></div>
-                        <Button
-                            onClick={(e) => onSubmitHandler(e)}
-                            small
-                            curved
-                            type="danger"
-                            width={"100px"}
-                        >
+                        <Button onClick={(e) => onSubmitHandler(e)} primary>
                             TẢI LÊN
                         </Button>
                     </div>

@@ -20,6 +20,7 @@ Route::get('/user', [UserController::class, 'getUser']); // Lấy user theo ID\
 Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
 Route::get('/product', [ProductController::class, 'getProduct']);
 Route::post('/product/create', [ProductController::class, 'createProduct']);
+Route::post('/product/category/create', [ProductController::class, 'productCategoryCreate']);
 
 //Review
 Route::get('/reviews', [ReviewController::class, 'getReviews']);

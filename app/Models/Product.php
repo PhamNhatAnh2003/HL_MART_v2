@@ -26,10 +26,11 @@ class Product extends Model
         'media' => 'array',
     ];
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
+public function categories()
+{
+    return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
+}
+
 
    
     public function reviews()

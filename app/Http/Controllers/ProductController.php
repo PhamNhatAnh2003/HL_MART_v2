@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -56,7 +57,6 @@ public function getLatestProducts()
             'stock' => 'required|integer|min:0',
             'sold' => 'nullable|integer|min:0',
             'unit' => 'required|string|max:50', // 🔥 Thêm đơn vị tính, bắt buộc nhập
-            'category_id' => 'nullable|exists:categories,id'
         ]);
 
         if ($request->filled('discount_price') && $request->input('price') <= $request->input('discount_price')) {
@@ -97,7 +97,6 @@ public function getLatestProducts()
             'unit' => $request->input('unit'),
             'stock' => $request->input('stock'),
             'sold' => $request->input('sold'),
-            'category_id' => $request->input('category_id'),
         ]);
 
         return response()->json([
@@ -105,4 +104,41 @@ public function getLatestProducts()
             'product' => $product,
         ], 200);
     }
+
+public function productCategoryCreate(Request $request)
+    {
+        try {
+            $request->validate([
+                'product_id' => 'required|exists:products,id',
+                'category_id' => 'required|exists:categories,id'
+            ]);
+
+            $product = Product::find($request->product_id);
+
+            // Kiểm tra xem style đã tồn tại chưa
+            if ($product->categories()->where('category_id', $request->category_id)->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'da ton tai'
+                ], 400);
+            }
+
+            // Thêm style mới
+            $product->categories()->attach($request->category_id);
+            $product->category_id = $request->category_id;
+            $product->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'thanh cong。'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'hihni',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
