@@ -3,6 +3,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 
 
 Route::get('/user', function (Request $request) {
@@ -34,3 +35,8 @@ Route::post('/review/create', [ReviewController::class, 'createReview']);
     Route::delete('/cart/clear', [CartController::class, 'deleteCart']);
     Route::get('/cart/{userId}', [CartController::class, 'getCartItems']);
 // });
+
+
+// Catelogy
+Route::get('categories', [CategoryController::class, 'index']); // Lấy danh sách danh mục
+Route::get('categories/{id}', [CategoryController::class, 'show']); // Lấy chi tiết một danh mục

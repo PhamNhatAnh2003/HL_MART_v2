@@ -1,0 +1,205 @@
+.find-restaurant {
+    display: flex;
+    flex-direction: column;
+}
+
+svg {
+    vertical-align: 0.125em;
+}
+
+.banner {
+    position: relative;
+    width: 100%;
+    height: 400px; /* Chiều cao của banner */
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    h1 {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 32px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .search-bar-wrapper {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        width: 50%;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        
+
+        .search-icon {
+            margin-left: 12px;
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        
+    }
+}
+
+.content {
+    display: flex;
+    margin: 50px;
+    // flex-direction: column;
+    .filter {
+        flex: 1;
+        margin-right: 20px;
+
+        h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+    }
+
+    .cafe-list {
+        flex: 3;
+        display: grid;
+        // grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        &.grid-view {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    
+        &.list-view {
+            grid-template-columns: 1fr;
+        }
+    }
+}
+.search-bar {
+    flex: 1;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    outline: none;
+    border-radius: 8px;
+    padding: 16px 0;
+    width: 100%;
+    margin-left: 10px;
+   
+}
+
+//filter 
+.filters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 25px 50px 0 50px;
+
+    .filters-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        h3 {
+            font-size: 18px;
+            margin: 0;
+            font: optional;
+            margin-left: 85px;
+        }
+        h4{
+            font-size: 18px;
+            color: #545B61;
+        }
+
+        a {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 90px;
+
+            svg {
+                font-size: 14px;
+            }
+
+            &:hover {
+                text-decoration: none;
+                color: #000;
+            }
+        }
+    }
+
+    .filters-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        .view-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+        &.active {
+            color: #000;
+        }
+        h3{
+            color: #787878;
+            font-size: 18px;
+        }
+        
+    }
+}
+.filter-option {
+    margin-bottom: 40px;
+
+    h3 {
+        font-size: 15px;
+        letter-spacing: 1px;
+    }
+
+    label {
+        font-size: 12px;
+        user-select: none;
+        margin-left: 4px;
+    }
+}
+
+.filter-option>div {
+    margin: 8px 0;
+}
+.pagination {
+    display: flex;
+    justify-content: right;
+    margin-top: 20px;
+    gap: 10px;
+    margin-bottom: 30px;
+    margin-right: 50px;
+
+    .active {
+        background-color: var(--cl-primary-50);
+        color: var(--text-color-50);
+    }
+}
+
+.no-result {
+    text-align: center;
+    color: var(--cl-primary);
+    margin-top: 20px;
+    font-size: 28px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    margin-left: 412px;
+    width: 145px;
+}
