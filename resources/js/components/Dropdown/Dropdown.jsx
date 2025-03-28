@@ -22,7 +22,7 @@ const Dropdown = ({
     handleClick,
 }) => {
     const [show, setShow] = useState(false);
-    const dropRef = useRef(null);
+
 
     useEffect(() => {
         const handleClickOutside = (e) => {
