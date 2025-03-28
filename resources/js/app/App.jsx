@@ -10,37 +10,37 @@ import AddProduct from "../components/Popup/AddProduct";
 
 const App = () => {
     return ( 
-        // <Category />
+
     // <ProductList />
-    <AddProduct />
-        // <Router>
-        //     <div className="App">
-        //         <Routes>
-        //             {publicRoutes.map((route, index) => {
-        //                 const Page = route.component;
+    // <AddProduct />
+        <Router>
+            <div className="App">
+                <Routes>
+                    {publicRoutes.map((route, index) => {
+                        const Page = route.component;
 
-        //                 let Layout = layouts.admin.default;
-        //                 if (route.layout === null) {
-        //                     Layout = Fragment; 
-        //                 } else if (route.layout) {
-        //                     Layout = route.layout; 
-        //                 }
+                        let Layout = layouts.admin.default;
+                        if (route.layout === null) {
+                            Layout = Fragment; 
+                        } else if (route.layout) {
+                            Layout = route.layout; 
+                        }
 
-        //                 return (
-        //                     <Route
-        //                         key={index}
-        //                         path={route.path}
-        //                         element={
-        //                             <Layout>
-        //                                 <Page />
-        //                             </Layout>
-        //                         }
-        //                     />
-        //                 );
-        //             })}
-        //         </Routes>
-        //     </div>
-        // </Router>
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={
+                                    <Layout>
+                                        <Page />
+                                    </Layout>
+                                }
+                            />
+                        );
+                    })}
+                </Routes>
+            </div>
+        </Router>
     );
 };
 

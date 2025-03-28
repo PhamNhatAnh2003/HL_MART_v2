@@ -12,8 +12,6 @@ import classNames from "classnames/bind";
 import Slider from "../../../components/Slider/Slider";
 
 
-
-
 const cx = classNames.bind(styles);
 
 const Home = () => {

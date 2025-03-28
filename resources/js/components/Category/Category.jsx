@@ -1,38 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { FaBars, FaChevronRight } from "react-icons/fa";
+import React, { useState,useRef, useEffect } from "react";
+import {
+    FaBars,
+    FaChevronRight,
+    FaEnvelope,
+    FaHeadphones,
+} from "react-icons/fa";
 import styles from "./Category.module.scss"; // Import SCSS module
 import classNames from "classnames/bind";
+import { useNavigate } from "react-router-dom";
+
 
 const cx = classNames.bind(styles);
 
-
-const categories = [
-    // "Giá Siêu Rẻ",
-    // "Ưu Đãi Hội Viên",
-    // "Sữa các loại",
-    // "Rau - Củ - Trái Cây",
-    // "Hóa Phẩm - Tẩy rửa",
-    // "Chăm Sóc Cá Nhân",
-    // "Thịt - Hải Sản Tươi",
-    // "Bánh Kẹo",
-    // "Đồ uống có cồn",
-    // "Đồ Uống - Giải Khát",
-    // "Mì - Thực Phẩm Ăn Liền",
-    // "Thực Phẩm Khô",
-    // "Thực Phẩm Chế Biến",
-    // "Gia vị",
-    // "Thực Phẩm Đông Lạnh",
-    // "Trứng - Đậu Hũ",
-    // "Chăm Sóc Bé",
-    // "Đồ Dùng Gia Đình",
-    // "Điện Gia Dụng",
-    // "Văn Phòng Phẩm - Đồ Chơi",
-];
 
 const Category = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [categories, setCategories] = useState([]); // Khởi tạo mảng rỗng
     const [error, setError] = useState(null);
+    const menuRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://127.0.0.1:8000/api/categories")
@@ -54,25 +40,62 @@ const Category = () => {
             });
     }, []);
 
-    return (
-        <div className={styles["category-menu"]}>
-            <button
-                className={styles["menu-toggle"]}
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <FaBars /> Danh mục sản phẩm
-            </button>
-            <div
-                className={`${styles["menu-dropdown"]} ${
-                    isOpen ? styles["open"] : ""
-                }`}
-            >
-                {categories.map((category) => (
-                    <div className={cx("menu-item")} key={category.id}>
-                        {category.name}
-                    </div>
-                ))}
+useEffect(() => {
+    function handleClickOutside(event) {
+        if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setIsOpen(false);
+        }
+    }
 
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+        document.removeEventListener("click", handleClickOutside);
+    };
+}, []);
+
+     const handleCategoryClick = (categoryId) => {
+         navigate(`/category/${categoryId}`);
+     };
+
+
+    return (
+        <div className={cx("category-container")}>
+            <div className={cx("category-menu")} ref={menuRef}>
+                
+                <button
+                    className={cx("menu-toggle")}
+                    // onClick={() => setIsOpen(!isOpen)}
+                    onClick={() => setIsOpen((prev) => !prev)}
+                >
+                    <FaBars /> Danh mục sản phẩm
+                </button>
+                <div
+                    className={`${cx("menu-dropdown")} ${
+                        isOpen ? cx("open") : ""
+                    }`}
+                >
+                    {categories.map((category) => (
+                        <div
+                            className={cx("menu-item")}
+                            onClick={() => handleCategoryClick(category.id)}
+                            key={category.id}
+                        >
+                            {category.name}{" "}
+                            <FaChevronRight className="arrow-icon" />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Phần Tin Tức và Chăm Sóc Khách Hàng */}
+            <div className={cx("extra-menu")}>
+                <div className={cx("menu-item")}>
+                    <FaEnvelope className={cx("icon")} /> Tin Tức
+                </div>
+                <div className={cx("menu-item")}>
+                    <FaHeadphones className={cx("icon")} /> Chăm sóc khách hàng
+                </div>
             </div>
         </div>
     );

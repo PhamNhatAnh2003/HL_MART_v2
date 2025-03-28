@@ -16,15 +16,15 @@ class ProductController extends Controller
     /**
      * Lấy 5 sản phẩm mới nhất
      */
-public function getLatestProducts()
-{
+    public function getLatestProducts()
+    {
     $products = Product::orderBy('created_at', 'desc')->take(4)->get();
 
     return response()->json([
         'success' => true,
         'data' => ProductResource::collection($products),
     ]);
-}
+    }
 
     public function getProduct(Request $request)
     {
@@ -105,7 +105,7 @@ public function getLatestProducts()
         ], 200);
     }
 
-public function productCategoryCreate(Request $request)
+    public function productCategoryCreate(Request $request)
     {
         try {
             $request->validate([
@@ -141,4 +141,84 @@ public function productCategoryCreate(Request $request)
         }
     }
 
+
+// public function getProductsByCategory(Request $request)
+// {
+//     $categoryId = $request->query('category_id') ?? null;
+//     $sort_price = $request->query('sort_price') ?? null;
+//     $sort_rating = $request->query('sort_rating') ?? null;
+//     $perPage = $request->query('per_page') ?? 10;
+
+//     if (!$categoryId) {
+//         return response()->json([
+//             'message' => 'Vui lòng chọn danh mục.',
+//             'products' => []
+//         ], 400);
+//     }
+
+//     $products = Product::where('category_id', $categoryId)
+//         ->withAvg('reviews', 'rating');
+    
+//     // Sắp xếp theo giá
+//     if ($sort_price === "asc") {
+//         $products = $products->orderBy('price', 'asc');
+//     } else if ($sort_price === "desc") {
+//         $products = $products->orderBy('price', 'desc');
+//     }
+
+//     // Sắp xếp theo đánh giá
+//     if ($sort_rating === "asc") {
+//         $products = $products->orderBy('reviews_avg_rating', 'asc');
+//     } else if ($sort_rating === "desc") {
+//         $products = $products->orderBy('reviews_avg_rating', 'desc');
+//     }
+
+//     $products = $products->paginate($perPage);
+
+//     return response()->json([
+//         'message' => 'Lấy danh sách sản phẩm thành công.',
+//         'products' => [
+//             'data' => ProductResource::collection($products),
+//             'meta' => [
+//                 'current_page' => $products->currentPage(),
+//                 'last_page' => $products->lastPage(),
+//                 'total' => $products->total(),
+//                 'per_page' => $products->perPage(),
+//             ]
+//         ],
+//     ], 200);
+// }
+
+
+ public function getProductsByCategory($categoryId, Request $request)
+    {
+        $sortPrice = $request->query('sort_price');  // asc hoặc desc
+        $sortRating = $request->query('sort_rating'); // asc hoặc desc
+        $perPage = $request->query('per_page', 10); // Mặc định 10 sản phẩm mỗi trang
+
+        // Lấy danh sách sản phẩm thuộc danh mục được chọn
+        $products = Product::where('category_id', $categoryId);
+
+        // Sắp xếp theo giá
+        if ($sortPrice === 'asc') {
+            $products->orderBy('price', 'asc');
+        } elseif ($sortPrice === 'desc') {
+            $products->orderBy('price', 'desc');
+        }
+
+        // Sắp xếp theo đánh giá
+        if ($sortRating === 'asc') {
+            $products->orderBy('rating', 'asc');
+        } elseif ($sortRating === 'desc') {
+            $products->orderBy('rating', 'desc');
+        }
+
+        // Phân trang
+        $products = $products->paginate($perPage);
+
+        return response()->json([
+            'message' => 'Lấy danh sách sản phẩm thành công',
+            'products' => $products
+        ], 200);
+    }
 }
