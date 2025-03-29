@@ -43,13 +43,9 @@ export default function HeaderUser() {
 
     const searchProducts = (event) => {
         if (event.key === "Enter") {
-            navigate(`${config.routes.user.findProduct}?name=${searchValue}`);
+            navigate(`${config.routes.user.productList}?name=${searchValue}`);
         }
     };
-
-    // useEffect(() => {
-    //     console.log("User data:", user);
-    // }, [user]);
 
     return (
             <div className={cx("header")}>

@@ -8,11 +8,13 @@ import Category from "../components/Category/Category";
 import HeaderUser from "../layouts/user/components/Header/HeaderUser";
 import AddProduct from "../components/Popup/AddProduct";
 
-const App = () => {
-    return ( 
 
-    // <ProductList />
-    // <AddProduct />
+
+const App = () => {
+    return (
+
+        // <ProductList />
+        // <AddProduct />
         <Router>
             <div className="App">
                 <Routes>
@@ -21,9 +23,9 @@ const App = () => {
 
                         let Layout = layouts.admin.default;
                         if (route.layout === null) {
-                            Layout = Fragment; 
+                            Layout = Fragment;
                         } else if (route.layout) {
-                            Layout = route.layout; 
+                            Layout = route.layout;
                         }
 
                         return (
