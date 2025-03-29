@@ -190,35 +190,42 @@ class ProductController extends Controller
 // }
 
 
- public function getProductsByCategory($categoryId, Request $request)
-    {
-        $sortPrice = $request->query('sort_price');  // asc hoặc desc
-        $sortRating = $request->query('sort_rating'); // asc hoặc desc
-        $perPage = $request->query('per_page', 10); // Mặc định 10 sản phẩm mỗi trang
-
-        // Lấy danh sách sản phẩm thuộc danh mục được chọn
-        $products = Product::where('category_id', $categoryId);
-
-        // Sắp xếp theo giá
-        if ($sortPrice === 'asc') {
-            $products->orderBy('price', 'asc');
-        } elseif ($sortPrice === 'desc') {
-            $products->orderBy('price', 'desc');
-        }
-
-        // Sắp xếp theo đánh giá
-        if ($sortRating === 'asc') {
-            $products->orderBy('rating', 'asc');
-        } elseif ($sortRating === 'desc') {
-            $products->orderBy('rating', 'desc');
-        }
-
-        // Phân trang
-        $products = $products->paginate($perPage);
-
+public function getProductsByCategory($categoryId, Request $request)
+{
+    // Kiểm tra danh mục có tồn tại không
+    $category = Category::find($categoryId);
+    if (!$category) {
         return response()->json([
-            'message' => 'Lấy danh sách sản phẩm thành công',
-            'products' => $products
-        ], 200);
+            'message' => 'Danh mục không tồn tại',
+            'products' => []
+        ], 404);
     }
+
+    // Lấy danh sách sản phẩm theo category_id
+    $products = Product::where('category_id', $categoryId);
+
+    // Xử lý sắp xếp theo giá (price)
+    $sortPrice = $request->query('sort_price'); // 'asc' hoặc 'desc'
+    if (in_array($sortPrice, ['asc', 'desc'])) {
+        $products->orderBy('price', $sortPrice);
+    }
+
+    // Xử lý sắp xếp theo đánh giá (rating)
+    $sortRating = $request->query('sort_rating'); // 'asc' hoặc 'desc'
+    if (in_array($sortRating, ['asc', 'desc'])) {
+        $products->orderBy('rating', $sortRating);
+    }
+
+    // Lấy số lượng sản phẩm mỗi trang (mặc định: 10)
+    $perPage = $request->query('per_page', 10);
+    $products = $products->paginate($perPage);
+
+    // Trả về danh sách sản phẩm
+    return response()->json([
+        'message' => 'Lấy danh sách sản phẩm thành công',
+        'category' => $category->name,
+        'products' => $products
+    ], 200);
+}
+
 }
