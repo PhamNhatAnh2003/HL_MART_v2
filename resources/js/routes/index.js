@@ -40,11 +40,11 @@ const publicRoutes = [
     //     component: pages.user.userInfor,
     //     layout: layouts.user.default,
     // },
-    // {
-    //     path: config.routes.user.productList,
-    //     component: pages.user.productList,
-    //     layout: layouts.user.default,
-    // },
+    {
+        path: config.routes.user.categoryProduct,
+        component: pages.user.categoryProduct,
+        layout: layouts.user.default,
+    },
     {
         path: config.routes.user.cart,
         component: pages.user.cart,

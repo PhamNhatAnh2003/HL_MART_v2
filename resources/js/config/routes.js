@@ -13,7 +13,7 @@ const routes = {
         productDetail: "/product/:productId",
         // cart: "/cart",
         userInfor: "/userInfor",
-        // ProductList: "/ProductList",
+        categoryProduct: "/category/:categoryId",
         cart: "/cart",
         // map: '/map',
     },
