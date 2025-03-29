@@ -24,12 +24,16 @@ Route::post('/product/category/create', [ProductController::class, 'productCateg
 // Route::get('/products', [ProductController::class, 'getProductsByCategory']);
 Route::get('/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
 
+
+//Upload
+Route::post('/upload/images', [UploadController::class, 'uploadImages']);
+Route::post('/upload/image', [UploadController::class, 'uploadImage']);
+
 //Review
 Route::get('/reviews', [ReviewController::class, 'getReviews']);
 Route::post('/review/create', [ReviewController::class, 'createReview']);
 
 //Cart
-
 // Route::middleware('auth:sanctum')->group(function () {
     // Route::get('/cart/{userId}', [CartController::class, 'getCart']);
     Route::post('/addtocart', [CartController::class, 'addtoCart']);

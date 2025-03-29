@@ -51,8 +51,8 @@ const publicRoutes = [
         layout: layouts.user.default,
     },
     // {
-    //     path: config.routes.user.map,
-    //     component: pages.user.map,
+    //     path: config.routes.user.productList,
+    //     component: pages.user.productList,
     //     layout: layouts.user.default,
     // },
     // {

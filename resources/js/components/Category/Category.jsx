@@ -5,6 +5,7 @@ import {
     FaEnvelope,
     FaHeadphones,
 } from "react-icons/fa";
+import { GiEightBall } from "react-icons/gi";
 import styles from "./Category.module.scss"; // Import SCSS module
 import classNames from "classnames/bind";
 import { useNavigate } from "react-router-dom";
@@ -62,7 +63,6 @@ useEffect(() => {
     return (
         <div className={cx("category-container")}>
             <div className={cx("category-menu")} ref={menuRef}>
-                
                 <button
                     className={cx("menu-toggle")}
                     // onClick={() => setIsOpen(!isOpen)}
@@ -91,7 +91,7 @@ useEffect(() => {
             {/* Phần Tin Tức và Chăm Sóc Khách Hàng */}
             <div className={cx("extra-menu")}>
                 <div className={cx("menu-item")}>
-                    <FaEnvelope className={cx("icon")} /> Tin Tức
+                    <GiEightBall className={cx("icon")} /> Billard
                 </div>
                 <div className={cx("menu-item")}>
                     <FaHeadphones className={cx("icon")} /> Chăm sóc khách hàng
