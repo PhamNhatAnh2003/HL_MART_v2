@@ -4,6 +4,8 @@ import React, { useState, useEffect, useActionState, useContext } from "react";
 import styles from "./CategoryProduct.module.scss";
 import classNames from "classnames/bind";
 import Card from "~/components/Card";
+import { Link, useNavigate } from "react-router-dom";
+import config from "~/config";
 
 const cx = classNames.bind(styles);
 
@@ -36,12 +38,10 @@ const CategoryProduct = () => {
 
     return (
         <div className={cx("list-product")}>
-            <h2 className={cx("sectionHeading")}>
-                        SẢN PHẨM "{category}"
-                    </h2>
+            <h2 className={cx("sectionHeading")}>SẢN PHẨM "{category}"</h2>
 
             {products.length === 0 ? (
-                <p className={cx('noHeading')}>Không có sản phẩm nào </p>
+                <p className={cx("noHeading")}>Không có sản phẩm nào </p>
             ) : (
                 <section className={cx("newStyleSection")}>
                     <div className={cx("productList")}>
@@ -51,6 +51,14 @@ const CategoryProduct = () => {
                     </div>
                 </section>
             )}
+            <div className={cx("all-product-container")}>
+                <Link
+                    to={config.routes.user.productList}
+                    className={cx("all-product")}
+                >
+                    Xem Tất cả Sản Phẩm
+                </Link>
+            </div>
         </div>
     );
 };

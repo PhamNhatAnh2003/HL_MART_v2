@@ -3,19 +3,9 @@ import { Fragment } from "react";
 
 import { publicRoutes, privateRoutes } from "../routes";
 import layouts from "../layouts";
-import ProductList from "../Pages/user/ProductList";
-import Category from "../components/Category/Category";
-import HeaderUser from "../layouts/user/components/Header/HeaderUser";
-import AddProduct from "../components/Popup/AddProduct";
-import Cards from "../components/Cards";
-
-
 
 const App = () => {
     return (
-        //     <Cards />
-        // <ProductList />
-        // <AddProduct />
         <Router>
             <div className="App">
                 <Routes>
