@@ -35,7 +35,11 @@ const Slider = ({ medias = [] }) => {
         <div className={cx("slider")}>
             <Carousel
                 responsive={responsive}
-                infinite={false}
+                infinite={true} // Lặp vô hạn
+                autoPlay={true} // Tự động trượt
+                autoPlaySpeed={3000} // Chuyển ảnh sau 3 giây
+                customTransition="transform 0.5s ease-in-out" // Hiệu ứng mượt
+                rewind={false} // Không cần đảo ngược hướng
                 showDots={true}
                 keyBoardControl={true}
             >

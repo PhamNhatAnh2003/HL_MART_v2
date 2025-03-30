@@ -9,7 +9,8 @@ import config from "~/config";
 import axios from "axios";
 import { AuthContext } from "~/context/AuthContext";
 import classNames from "classnames/bind";
-import Slider from "../../../components/Slider/Slider";
+// import Slider from "../../../components/Slider/Slider";
+import Slider from "~/components/Slider";
 
 
 const cx = classNames.bind(styles);
@@ -38,10 +39,6 @@ useEffect(() => {
     };
     fetchNewProducts();
 }, []);
-
-    const handleSeeAllProduct = () => {
-        navigate(`/product/${product.id}`);
-    };
 
     return (
         <div className={styles.homePage}>

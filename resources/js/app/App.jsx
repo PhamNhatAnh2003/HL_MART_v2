@@ -3,9 +3,12 @@ import { Fragment } from "react";
 
 import { publicRoutes, privateRoutes } from "../routes";
 import layouts from "../layouts";
+import Filter from "../components/Filter";
 
 const App = () => {
     return (
+
+        // <Filter />
         <Router>
             <div className="App">
                 <Routes>
