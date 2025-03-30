@@ -41,11 +41,16 @@ export default function HeaderUser() {
         };
     }, []);
 
-    const searchProducts = (event) => {
-        if (event.key === "Enter") {
-            navigate(`${config.routes.user.productList}?name=${searchValue}`);
-        }
-    };
+const searchProducts = (event) => {
+    if (event.key === "Enter" && searchValue.trim() !== "") {
+        navigate(
+            `${config.routes.user.productList}?name=${encodeURIComponent(
+                searchValue.trim()
+            )}`
+        );
+    }
+};
+
 
     return (
             <div className={cx("header")}>
