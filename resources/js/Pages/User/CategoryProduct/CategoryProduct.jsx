@@ -4,7 +4,6 @@ import React, { useState, useEffect, useActionState, useContext } from "react";
 import styles from "./CategoryProduct.module.scss";
 import classNames from "classnames/bind";
 import Card from "~/components/Card";
-import Category from "~/components/Category";
 
 const cx = classNames.bind(styles);
 
@@ -24,7 +23,7 @@ const CategoryProduct = () => {
                 const response = await axios.get(`/api/category/${categoryId}`);
                 console.log("Dữ liệu từ API:", response.data); // Kiểm tra dữ liệu
                 setCategory(response.data.category || ""); // Lưu tên danh mục
-                setProducts(response.data.products.data || []); // Lưu danh sách sản phẩm
+                setProducts(response.data.products || []); // Lưu danh sách sản phẩm
             } catch (error) {
                 console.error("Lỗi khi tải sản phẩm:", error);
                  setCategory(""); // Tránh lỗi nếu API gặp sự cố

@@ -39,6 +39,10 @@ useEffect(() => {
     fetchNewProducts();
 }, []);
 
+    const handleSeeAllProduct = () => {
+        navigate(`/product/${product.id}`);
+    };
+
     return (
         <div className={styles.homePage}>
             {/* QC Bar Section */}
@@ -71,7 +75,14 @@ useEffect(() => {
                     ))}
                 </div>
             </section>
-
+            <div className={cx("all-product-container")}>
+                <Link
+                    to={config.routes.user.productList}
+                    className={cx("all-product")}
+                >
+                    Xem Tất cả Sản Phẩm
+                </Link>
+            </div>
         </div>
     );
 };

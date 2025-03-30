@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('discount_price')->nullable(); // Định nghĩa ngay sau `price`
             $table->string('avatar')->nullable();
             $table->text('media')->nullable();
-             $table->string('unit');
+            $table->string('unit');
             $table->integer('stock');
             $table->integer('sold')->default(0); // Không cần `AFTER stock`
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();

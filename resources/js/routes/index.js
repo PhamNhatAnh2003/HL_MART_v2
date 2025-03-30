@@ -50,11 +50,11 @@ const publicRoutes = [
         component: pages.user.cart,
         layout: layouts.user.default,
     },
-    // {
-    //     path: config.routes.user.productList,
-    //     component: pages.user.productList,
-    //     layout: layouts.user.default,
-    // },
+    {
+        path: config.routes.user.productList,
+        component: pages.user.productList,
+        layout: layouts.user.default,
+    },
     // {
     //     path: config.routes.admin.restaurantList,
     //     component: pages.admin.restaurantList,

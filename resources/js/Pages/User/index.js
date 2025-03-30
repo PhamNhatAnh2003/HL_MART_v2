@@ -3,7 +3,7 @@ import Cart from "./Cart/Default";
 import ProductDetail from "./ProductDetail";
 // import UserInfor from "./Infor";
 import CategoryProduct from "./CategoryProduct";
-// import ProductList from "./ProductList";
+import ProductList from "./ProductList";
 // import Favorite from "./Favorite";
 // import Map from "./Map";
 
@@ -12,7 +12,7 @@ const user = {
     productDetail: ProductDetail,
     // userInfor: UserInfor,
     categoryProduct: CategoryProduct,
-    // listProduct: ProductList,
+    productList: ProductList,
     cart: Cart,
     // map: Map,
 };

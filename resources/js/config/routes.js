@@ -9,9 +9,8 @@ const routes = {
 
     user: {
         home: "/home",
-        // productList: "/productList",
+        productList: "/productList",
         productDetail: "/product/:productId",
-        // cart: "/cart",
         userInfor: "/userInfor",
         categoryProduct: "/category/:categoryId",
         cart: "/cart",
