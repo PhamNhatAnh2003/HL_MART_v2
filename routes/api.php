@@ -21,6 +21,7 @@ Route::get('/products/latest', [ProductController::class, 'getLatestProducts']);
 Route::get('/product', [ProductController::class, 'getProduct']);
 Route::post('/product/create', [ProductController::class, 'createProduct']);
 Route::post('/product/category/create', [ProductController::class, 'productCategoryCreate']);
+Route::get('/products', [ProductController::class, 'getProducts']);
 // Route::get('/products', [ProductController::class, 'getProductsByCategory']);
 Route::get('/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
 

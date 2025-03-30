@@ -142,54 +142,6 @@ class ProductController extends Controller
     }
 
 
-// public function getProductsByCategory(Request $request)
-// {
-//     $categoryId = $request->query('category_id') ?? null;
-//     $sort_price = $request->query('sort_price') ?? null;
-//     $sort_rating = $request->query('sort_rating') ?? null;
-//     $perPage = $request->query('per_page') ?? 10;
-
-//     if (!$categoryId) {
-//         return response()->json([
-//             'message' => 'Vui lòng chọn danh mục.',
-//             'products' => []
-//         ], 400);
-//     }
-
-//     $products = Product::where('category_id', $categoryId)
-//         ->withAvg('reviews', 'rating');
-    
-//     // Sắp xếp theo giá
-//     if ($sort_price === "asc") {
-//         $products = $products->orderBy('price', 'asc');
-//     } else if ($sort_price === "desc") {
-//         $products = $products->orderBy('price', 'desc');
-//     }
-
-//     // Sắp xếp theo đánh giá
-//     if ($sort_rating === "asc") {
-//         $products = $products->orderBy('reviews_avg_rating', 'asc');
-//     } else if ($sort_rating === "desc") {
-//         $products = $products->orderBy('reviews_avg_rating', 'desc');
-//     }
-
-//     $products = $products->paginate($perPage);
-
-//     return response()->json([
-//         'message' => 'Lấy danh sách sản phẩm thành công.',
-//         'products' => [
-//             'data' => ProductResource::collection($products),
-//             'meta' => [
-//                 'current_page' => $products->currentPage(),
-//                 'last_page' => $products->lastPage(),
-//                 'total' => $products->total(),
-//                 'per_page' => $products->perPage(),
-//             ]
-//         ],
-//     ], 200);
-// }
-
-
 public function getProductsByCategory($categoryId, Request $request)
 {
     // Kiểm tra danh mục có tồn tại không
@@ -224,8 +176,126 @@ public function getProductsByCategory($categoryId, Request $request)
     return response()->json([
         'message' => 'Lấy danh sách sản phẩm thành công',
         'category' => $category->name,
-        'products' => $products
+        'products' => ProductResource::collection($products),
     ], 200);
 }
+
+
+public function getProducts(Request $request)
+    {
+        // Category filter
+        $categoryId = $request->query('category_id') ?? null;
+        $categoryIds = $request->query('category_ids') ?? null;
+        // Rating filter
+        $rating = $request->query('rating') ?? null;
+        $ratings = $request->query('ratings') ?? null;
+        // Name filter
+        $name = $request->query('name') ?? null;
+        // Price filter
+        $start = $request->query('start') ?? null;
+        $end = $request->query('end') ?? null;
+        // Sort
+        $sort_rating = $request->query('sort_rating') ?? null;
+        $sort_price = $request->query('sort_price') ?? null;
+        $sort_time = $request->query('sort_time') ?? null;
+        $userId = $request->query('user_id') ?? null;
+        $perPage = $request->query('per_page') ?? 10;
+        $products = Product::withAvg('reviews', 'rating');
+
+        // Category filter
+      if ($categoryId) {
+        $products = $products->where('category_id', $categoryId);
+        }
+    
+        // Rating filter
+        if ($rating) {
+            $minRating = $rating - 0.5;
+            $maxRating = $rating + 0.5;
+            $products = $products->havingRaw('reviews_avg_rating > ? AND reviews_avg_rating <= ?', [$minRating, $maxRating]);
+        } else if ($ratings) {
+            $ratingsArray = explode(',', $ratings);
+            $products = $products->having(function ($query) use ($ratingsArray) {
+                foreach ($ratingsArray as $rate) {
+                    $rate = intval($rate);
+                    $minRating = $rate - 0.5;
+                    $maxRating = $rate + 0.5;
+                    $query->orHavingRaw('reviews_avg_rating > ? AND reviews_avg_rating <= ?', [$minRating, $maxRating]);
+                }
+            });
+        }
+
+        // Price filter
+        if ($start && $end) {
+             $products = $products->whereBetween(DB::raw('COALESCE(discount_price, price)'), [$start, $end]);
+        }
+        else if ($start) {
+            $products = $products->whereRaw('COALESCE(discount_price, price) >= ?', [$start]);
+        } 
+        else if ($end) {
+            $products = $products->whereRaw('COALESCE(discount_price, price) <= ?', [$end]);
+        }
+
+        // Name filter
+        if ($name) {
+        $products = $products->where('name', 'like', "%{$name}%");
+        }
+
+
+           if ($products->count() == 0) {
+            return response()->json([
+                'message' => 'Không tìm thấy sản phẩm nào.',
+                'restaurants' => [
+                'data' => [],
+                'meta' => [
+                        'current_page' => 1,
+                        'last_page' => 1,
+                        'total' => 0,
+                        'per_page' => 1,
+                ]
+              ],
+                ], 200);
+            }
+        
+
+        if ($sort_price === "asc") {
+            $products = $products->orderByRaw("COALESCE(discount_price, price) ASC");
+        } else if ($sort_price === "desc") {
+            $products = $products->orderByRaw("COALESCE(discount_price, price) ASC");
+
+        }
+
+        // Rating sort
+        if ($sort_rating === "asc") {
+            $products = $products->orderBy('reviews_avg_rating', 'asc');
+        } else if ($sort_rating === "desc") {
+            $products = $products->orderBy('reviews_avg_rating', 'desc');
+        }
+
+        // Time sort 
+        if ($sort_time === "asc") {
+            $products = $products->orderBy('created_at', 'asc');
+        } else if ($sort_time === "desc") {
+            $products = $products->orderBy('created_at', 'desc');
+        }
+        
+            $products = $products->paginate($perPage);
+            // $products = $products->get();
+
+        return response()->json([
+                'message' => 'Lấy danh sách sản phẩm thành công.',
+                'products' => [
+                'data' => ProductResource::collection($products->map(function ($product) use ($userId) {
+        return new ProductResource($product, $userId);
+        })),
+                'meta' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'total' => $products->total(),
+                'per_page' => $products->perPage(),
+        ]
+    ],
+        ], 200);
+    }
+
 
 }

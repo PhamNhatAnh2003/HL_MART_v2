@@ -85,3 +85,24 @@
         flex-wrap: wrap;
     }
 }
+
+.all-product-container {
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+}
+
+
+.all-product {
+    font-size: 16px;
+    color: var(--bg-secondary);
+    margin-bottom: 15px;
+    height: 5px;
+    cursor: pointer;
+    text-decoration: underline; /* Thêm gạch chân */
+}
+
+.all-product:hover {
+    color: var(--bg-primary); /* Thay đổi màu khi hover */
+    text-decoration: underline; /* Đảm bảo vẫn có gạch chân khi hover */
+}
