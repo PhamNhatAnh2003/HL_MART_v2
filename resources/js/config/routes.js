@@ -14,6 +14,7 @@ const routes = {
         userInfor: "/userInfor",
         categoryProduct: "/category/:categoryId",
         cart: "/cart",
+        step2: "/cart/step2",
         // map: '/map',
     },
 

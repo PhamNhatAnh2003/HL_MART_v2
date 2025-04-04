@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
-             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('status')->default('pending'); // Trạng thái: pending, processing, completed, canceled
-            $table->decimal('total_price', 10, 2); // Tổng giá trị đơn hàng
-            $table->string('payment_method'); // Phương thức thanh toán: COD, Chuyển khoản
-            $table->string('shipping_address');
-            $table->timestamp('ordered_at')->useCurrent(); // Ngày đặt hàng
-            $table->timestamps();
-        });
+       Schema::create('orders', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        $table->string('status')->default('pending');
+        $table->decimal('total_price', 10, 2);
+        $table->string('payment_method');
+        $table->text('shipping_address');
+        $table->timestamp('ordered_at')->nullable();
+        $table->timestamps();
+    });
     }
 
     /**

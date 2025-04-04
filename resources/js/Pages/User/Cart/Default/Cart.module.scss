@@ -80,7 +80,7 @@
     flex-direction: column;
     gap: 15px;
     padding: 20px;
-    background-color: var(--primary-25);
+    background-color: var(--bg-secondary-3);
 }
 
 .cart-right-line {
@@ -94,6 +94,9 @@
     border-bottom: 1px solid var(--bg-secondary);
 }
 
+.order-button{
+  padding-left: 100px;
+}
 
 
 .cart-empty {

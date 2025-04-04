@@ -63,13 +63,19 @@ const ProductList = () => {
             <Filter onFilterChange={setFilters} />
             <h1 className={styles.title}>Tất Cả Sản Phẩm</h1>
             <div className={styles.grid}>
-                
-                {products.map((product, index) => (
-                    <Card key={index} product={product} />
-                ))}
+                {noProducts ? (
+                    <p className={styles.noProducts}>
+                        Không tìm thấy sản phẩm nào.
+                    </p>
+                ) : (
+                    products.map((product, index) => (
+                        <Card key={index} product={product} />
+                    ))
+                )}
             </div>
             <div className={styles.pagination}>
                 <Pagination
+                    
                     align="center"
                     current={currentPage}
                     total={totalPages * perPage} // Tổng số sản phẩm

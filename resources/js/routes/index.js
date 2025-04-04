@@ -14,7 +14,6 @@ const publicRoutes = [
         layout: layouts.user.default,
     },
 
-
     // {
     //     path: config.routes.other.landing,
     //     component: pages.other.landing,
@@ -35,11 +34,11 @@ const publicRoutes = [
     //     component: pages.other.test,
     //     layout: layouts.other.noHeader,
     // },
-    // {
-    //     path: config.routes.user.userInfor,
-    //     component: pages.user.userInfor,
-    //     layout: layouts.user.default,
-    // },
+    {
+        path: config.routes.user.userInfor,
+        component: pages.user.userInfor,
+        layout: layouts.user.default,
+    },
     {
         path: config.routes.user.categoryProduct,
         component: pages.user.categoryProduct,
@@ -53,6 +52,11 @@ const publicRoutes = [
     {
         path: config.routes.user.productList,
         component: pages.user.productList,
+        layout: layouts.user.default,
+    },
+    {
+        path: config.routes.user.step2,
+        component: pages.user.step2,
         layout: layouts.user.default,
     },
     // {

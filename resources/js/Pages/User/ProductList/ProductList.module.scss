@@ -19,6 +19,15 @@
     gap: 16px;
 }
 
+.noProducts {
+    font-size: 20px;
+    color: var(--bg-secondary);
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 50px 0;
+    height: 50px;
+}
+
 .pagination {
     display: flex;
     justify-content: center;

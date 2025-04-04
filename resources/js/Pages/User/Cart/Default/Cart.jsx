@@ -89,12 +89,14 @@ const Cart = () => {
                     </span>
                 </div>
                 <div className={cx("cart-right-last-line")}></div>
-                <Button
-                    primary
-                    onClick={() => navigate(config.routes.user.cartStep2)}
-                >
-                    Đặt hàng
-                </Button>
+                    <Button
+                        primary
+                        width="100%"
+                        large
+                        onClick={() => navigate(config.routes.user.step2)}
+                    >
+                        Đặt hàng
+                    </Button>
             </div>
         </div>
     );
