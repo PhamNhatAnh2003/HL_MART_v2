@@ -75,7 +75,7 @@ const Card = ({ product = Product }) => {
             </div>
             <Button
                 className={cx("view-btn")}
-                small
+                md
                 primary
                 curved
                 shadow

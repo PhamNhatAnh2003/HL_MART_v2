@@ -89,7 +89,7 @@
     top: -26px;
     right: 38px;
 }
-.favorite-header {
+.shoppingcart-header {
     margin-right: 15px;
     display: flex;
     gap: 10px;
@@ -97,13 +97,13 @@
     // border-bottom: #EA6A12 4px solid;
     // padding-bottom: 8px;
 }
-.favorite-header span {
+.shoppingcart-header span {
     font-weight: 500;
     color: #f6f2f0;
     margin-left: 7px;
-     text-decoration: underline; /* Thêm gạch chân */
+    text-decoration: underline; /* Thêm gạch chân */
 }
-.favorite-header svg {
+.shoppingcart-header svg {
     color: #f6f2f0;
 }
 

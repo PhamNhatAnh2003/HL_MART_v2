@@ -4,6 +4,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UploadController;
 
 
 Route::get('/user', function (Request $request) {
@@ -14,6 +15,7 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [UserController::class, 'login']); // Lấy danh sách user
 Route::post('/register', [UserController::class, 'register']); // Đăng ký user
 Route::get('/user', [UserController::class, 'getUser']); // Lấy user theo ID\
+Route::post('/user/{id}', [UserController::class, 'updateUser']);
 
 
 //Product

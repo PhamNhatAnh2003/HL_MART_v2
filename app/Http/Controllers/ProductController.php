@@ -141,8 +141,8 @@ class ProductController extends Controller
     }
 
 
-public function getProductsByCategory($categoryId, Request $request)
-{
+    public function getProductsByCategory($categoryId, Request $request)
+    {
     // Kiểm tra danh mục có tồn tại không
     $category = Category::find($categoryId);
     if (!$category) {
@@ -177,11 +177,11 @@ public function getProductsByCategory($categoryId, Request $request)
         'category' => $category->name,
         'products' => ProductResource::collection($products),
     ], 200);
-}
+    }   
 
 
-public function getProducts(Request $request)
-{
+    public function getProducts(Request $request)
+    {
     $categoryId = $request->query('category_id');
     $ratings = $request->query('ratings');
     $rating = $request->query('rating');
@@ -277,7 +277,7 @@ public function getProducts(Request $request)
             ],
         ],
     ], 200);
-}
+    }
 
 
 }

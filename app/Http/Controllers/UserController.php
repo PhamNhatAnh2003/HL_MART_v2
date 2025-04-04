@@ -120,4 +120,80 @@ public function getUser(Request $request)
         ], 200);
     }
 
+
+public function updateUser(Request $request, $id)
+    {
+        // Tìm người dùng theo ID
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'Không tìm thấy người dùng!',
+            ], 404);
+        }
+
+        // Kiểm tra dữ liệu đầu vào
+        $validator = Validator::make($request->all(), [
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:users,email,' . $id,
+            'phone' => 'nullable|numeric|unique:users,phone,' . $id,
+            'address' => 'nullable|string|max:255',
+            // 'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'password' => 'nullable|string|min:8|confirmed', // Nếu có thay đổi mật khẩu
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Cập nhật thông tin người dùng
+        if ($request->has('name')) {
+            $user->name = $request->input('name');
+        }
+
+        if ($request->has('email')) {
+            $user->email = $request->input('email');
+        }
+
+        if ($request->has('phone')) {
+            $user->phone = $request->input('phone');
+        }
+
+        if ($request->has('address')) {
+            $user->address = $request->input('address');
+        }
+
+        // Xử lý ảnh đại diện
+       if ($request->hasFile('avatar')) {
+            $image = $request->file('avatar');
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('images', $imageName, 'public');
+            $imagePath = "/storage/images/$imageName";
+
+            // Xóa ảnh cũ nếu tồn tại
+            if ($user->avatar) {
+                $oldImageName = basename($user->avatar);
+                Storage::delete("public/images/$oldImageName");
+            }
+
+            $user->avatar = $imagePath;
+        }
+
+        // Cập nhật mật khẩu nếu có
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->input('password'));
+        }
+
+        // Lưu thông tin người dùng
+        $user->save();
+
+        return response()->json([
+            'message' => 'Cập nhật thông tin người dùng thành công!',
+            'user' => $user,
+        ], 200);
+    }
+
 }
