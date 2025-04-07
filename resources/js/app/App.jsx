@@ -3,12 +3,14 @@ import { Fragment } from "react";
 
 import { publicRoutes, privateRoutes } from "../routes";
 import layouts from "../layouts";
+import HeaderAdmin from "../layouts/admin/components/Header/HeaderAdmin";
 import Filter from "../components/Filter";
 import Step2 from "../Pages/user/Cart/Step/Step2";
 import UserInfor from "../Pages/user/UserInfor";
 
 const App = () => {
     return (
+        // <HeaderAdmin />
         // <UserInfor />
         // <Step2 />
         // <Filter />
