@@ -172,7 +172,7 @@ const Step2 = () => {
                     primary
                     width="100%"
                     large
-                    onClick={handleProceedToStep3} // Khi nhấn nút sẽ gọi hàm handleProceedToStep3
+                    onClick={() => navigate(config.routes.user.step3)} // Khi nhấn nút sẽ gọi hàm handleProceedToStep3
                 >
                     Thanh Toán
                 </Button>

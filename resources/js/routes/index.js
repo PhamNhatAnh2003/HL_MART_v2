@@ -59,6 +59,11 @@ const publicRoutes = [
         component: pages.user.step2,
         layout: layouts.user.default,
     },
+    {
+        path: config.routes.user.step3,
+        component: pages.user.step3,
+        layout: layouts.user.default,
+    },
     // {
     //     path: config.routes.admin.restaurantList,
     //     component: pages.admin.restaurantList,

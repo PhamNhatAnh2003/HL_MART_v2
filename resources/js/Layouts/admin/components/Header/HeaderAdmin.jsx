@@ -4,14 +4,14 @@ import styles from './HeaderAdmin.module.scss';
 import images from '~/assets/images';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/context/AuthContext';
 import { useContext } from 'react';
 const cx = classNames.bind(styles);
 
 export default function HeaderAdmin() {
     const { handleLogout } = useContext(AuthContext);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef(null);
 
@@ -30,7 +30,9 @@ export default function HeaderAdmin() {
 
     return (
         <div className={cx('header')}>
-            <h1 className={styles.logoText}>SunRise</h1>
+            <h1 className={styles.logoText}>HL_MART</h1>
+
+            
             <div className={cx('user-hugs')} ref={menuRef}>
                 <img
                     className={cx('avatar-header')}
@@ -47,7 +49,7 @@ export default function HeaderAdmin() {
                         <div
                             className={cx('menu-item')}
                             onClick={() => {
-                                navigate('/userInfor');
+                                // navigate('/userInfor');
                             }}
                         >
                             UserInfor
@@ -56,7 +58,7 @@ export default function HeaderAdmin() {
                             className={cx('menu-item')}
                             onClick={() => {
                                 handleLogout();
-                                navigate('/login');
+                                // navigate('/login');
                             }}
                         >
                             Logout

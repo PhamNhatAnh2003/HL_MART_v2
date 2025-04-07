@@ -1,6 +1,6 @@
 const routes = {
     admin: {
-        dashboard: "/admin",
+        dashboard: "/admin/dashboard",
         productDetail: "/admin/product/:id",
         productList: "/admin/products",
         productCreate: "/admin/product/create",
@@ -15,6 +15,7 @@ const routes = {
         categoryProduct: "/category/:categoryId",
         cart: "/cart",
         step2: "/cart/step2",
+        step3: "/cart/step3",
         // map: '/map',
     },
 
