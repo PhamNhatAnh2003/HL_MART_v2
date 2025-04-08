@@ -18,28 +18,12 @@ const cx = classNames.bind(styles);
 const CartStep3 = () => {
     const { profile: loginedProfile } = useContext(AuthContext);
     const { profile, setProfileField, setProfile } = useProfile();
-    const { cart } = useCart();
+   const { cart, totalProducts, totalQuantity, totalPrice } = useCart();
     const navigate = useNavigate();
-
-    console.log(profile);
-    console.log(loginedProfile);
 
     useEffect(() => {
         setProfile(loginedProfile);
     }, [loginedProfile]);
-
-
-const cartItems = cart || [];
-
-    // Tính tổng số sản phẩm, tổng số lượng và tổng tiền
-    const totalProducts = cartItems.length;
-    const totalQuantity = cartItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-    );
-    const totalPrice = cartItems.reduce(
-        (sum, item) => sum + item.quantity * item.product.price,
-        0)
 
     return (
         <div className={cx("cart-page")}>
