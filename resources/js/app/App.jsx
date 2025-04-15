@@ -5,11 +5,12 @@ import { publicRoutes, privateRoutes } from "../routes";
 import layouts from "../layouts";
 import HeaderAdmin from "../layouts/admin/components/Header/HeaderAdmin";
 import Filter from "../components/Filter";
-import Step2 from "../Pages/user/Cart/Step/Step2";
+// import Cart2 from "../Pages/user/Cart2/Cart2";
 import UserInfor from "../Pages/user/UserInfor";
 
 const App = () => {
     return (
+        // <Cart2 />
         // <HeaderAdmin />
         // <UserInfor />
         // <Step2 />

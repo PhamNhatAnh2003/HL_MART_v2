@@ -107,3 +107,9 @@
     color: #f6f2f0;
 }
 
+.shoppingcart-header {
+  cursor: pointer;
+  &:hover {
+    color: #007bff;
+  }
+}

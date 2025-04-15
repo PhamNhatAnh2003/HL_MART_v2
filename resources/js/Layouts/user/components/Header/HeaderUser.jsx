@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import config from "~/config";
 import { AuthContext } from "~/context/AuthContext";
 import { useLocation } from "react-router-dom";
+import Cart2 from "../../../../Pages/user/Cart2";
 
 const cx = classNames.bind(styles);
 
@@ -24,6 +25,7 @@ export default function HeaderUser() {
     const [showMenu, setShowMenu] = useState(false);
     const menuRef = useRef(null);
     const [searchValue, setSearchValue] = useState("");
+     const [isCartOpen, setIsCartOpen] = useState(false);
 
     const location = useLocation();
 
@@ -52,7 +54,7 @@ export default function HeaderUser() {
 
     return (
         <div className={cx("header")}>
-            <Link to={config.routes.user.home} className={cx('logoText')}>
+            <Link to={config.routes.user.home} className={cx("logoText")}>
                 HL_Mart
             </Link>
             <div className={cx("tab-menu")}>
@@ -72,6 +74,19 @@ export default function HeaderUser() {
                             <span>Giỏ Hàng</span>
                         </Link>
                     </div>
+                    {/* <Cart2
+                        isOpen={isCartOpen}
+                        onClose={() => setIsCartOpen(false)}
+                    />
+
+                    <div
+                        className={cx("shoppingcart-header")}
+                        onClick={() => setIsCartOpen(true)}
+                    >
+                        <FontAwesomeIcon icon={faShoppingCart} />
+                        <span>Giỏ Hàng</span>
+                    </div> */}
+
                     <img
                         className={cx("avatar-header")}
                         src={user.avatar ?? images.login}
