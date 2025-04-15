@@ -64,11 +64,11 @@ const publicRoutes = [
         component: pages.user.step3,
         layout: layouts.user.default,
     },
-    // {
-    //     path: config.routes.admin.restaurantList,
-    //     component: pages.admin.restaurantList,
-    //     role: "admin",
-    // },
+    {
+        path: config.routes.admin.dashboard,
+        component: pages.admin.dashboard,
+        role: "admin",
+    },
     // { path: config.routes.admin.productDetail, component: pages.admin.productDetail, role: 'admin' },
 ];
 

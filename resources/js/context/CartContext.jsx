@@ -108,6 +108,15 @@ const removeFromCart = async (productId) => {
     }
 };
 
+
+
+const totalProducts = cart.length;
+const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+const totalPrice = cart.reduce(
+    (sum, item) => sum + item.quantity * item.product.price,
+    0
+);
+
     return (
         <CartContext.Provider
             value={{
@@ -117,6 +126,10 @@ const removeFromCart = async (productId) => {
                 updateQuantity,
                 removeFromCart,
                 refreshCart,
+                setCart,
+                totalProducts,
+                totalQuantity,
+                totalPrice,
             }}
         >
             {children}

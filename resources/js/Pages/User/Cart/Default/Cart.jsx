@@ -13,7 +13,8 @@ import images from "~/assets/images";
 const cx = classNames.bind(styles);
 
 const Cart = () => {
-    const { cart, refreshCart } = useCart();
+    const { cart, refreshCart, totalProducts, totalQuantity, totalPrice } =
+        useCart();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,30 +25,20 @@ const Cart = () => {
     const cartItems = cart || [];
 
     // Kiểm tra nếu cartItems không phải mảng hoặc rỗng
-   if (!Array.isArray(cartItems) || cartItems.length === 0) {
-       return (
-           <div className={cx("cart-empty")}>
-               <img src={images.emptycart} alt="Giỏ hàng trống" />
-               <p>Giỏ hàng chưa có sản phẩm</p>
-               <Button
-                   className={cx("back-home")}
-                   onClick={() => navigate("/home")}
-               >
-                   Quay lại trang chủ
-               </Button>
-           </div>
-       );
-   }
-    // Tính tổng số sản phẩm, tổng số lượng và tổng tiền
-    const totalProducts = cartItems.length;
-    const totalQuantity = cartItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-    );
-    const totalPrice = cartItems.reduce(
-        (sum, item) => sum + item.quantity * item.product.price,
-        0
-    );
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+        return (
+            <div className={cx("cart-empty")}>
+                <img src={images.emptycart} alt="Giỏ hàng trống" />
+                <p>Giỏ hàng chưa có sản phẩm</p>
+                <Button
+                    className={cx("back-home")}
+                    onClick={() => navigate("/home")}
+                >
+                    Quay lại trang chủ
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className={cx("cart-page")}>
@@ -89,14 +80,14 @@ const Cart = () => {
                     </span>
                 </div>
                 <div className={cx("cart-right-last-line")}></div>
-                    <Button
-                        primary
-                        width="100%"
-                        large
-                        onClick={() => navigate(config.routes.user.step2)}
-                    >
-                        Đặt hàng
-                    </Button>
+                <Button
+                    primary
+                    width="100%"
+                    large
+                    onClick={() => navigate(config.routes.user.step2)}
+                >
+                    Đặt hàng
+                </Button>
             </div>
         </div>
     );

@@ -3,69 +3,30 @@ import styles from "./Step2.module.scss";
 import CartStep from "../../Components/CartStep/CartStep";
 import { useCart } from "~/hooks/useCart";
 import { formatPrice } from "~/utils/format";
-import CartItem from "../../Components/CartItem/CartItem";
 import Button from "~/components/Button";
 import { useNavigate } from "react-router-dom"; // Điều hướng
 import config from "~/config";
-import { Input } from "~/components/Input";
 import useProfile from "~/hooks/useProfile";
 import Dropdown from "~/components/Dropdown";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "~/context/AuthContext";
+import { AuthContext } from "~/context/AuthContext"; // Import context
 
 const cx = classNames.bind(styles);
 
 const Step2 = () => {
-    const { profile: loginedProfile } = useContext(AuthContext);
-    const { profile, setProfileField, setProfile } = useProfile();
-    const { cart, refreshCart } = useCart();
+    const { profile: loginedProfile } = useContext(AuthContext); // Lấy profile từ AuthContext
+    const { profile, setProfile } = useProfile(); // Hook để lấy và set profile
+
+    const { cart, totalProducts, totalQuantity, totalPrice } =
+        useCart();
     const navigate = useNavigate(); // Khai báo navigate để điều hướng
 
+    // Kiểm tra và cập nhật thông tin người dùng vào profile khi đăng nhập
     useEffect(() => {
         if (loginedProfile) {
-            setProfile(loginedProfile);
+            setProfile(loginedProfile); // Nếu đã có thông tin người dùng trong AuthContext, set vào profile
         }
-    }, [loginedProfile]);
-
-    useEffect(() => {
-        refreshCart(); // Tự động gọi API khi vào trang giỏ hàng
-    }, []); // Chạy 1 lần khi component mount
-
-    // Lấy danh sách sản phẩm trong giỏ
-    const cartItems = cart || [];
-
-    // Tính tổng số sản phẩm, tổng số lượng và tổng tiền
-    const totalProducts = cartItems.length;
-    const totalQuantity = cartItems.reduce(
-        (sum, item) => sum + item.quantity,
-        0
-    );
-    const totalPrice = cartItems.reduce(
-        (sum, item) => sum + item.quantity * item.product.price,
-        0
-    );
-
-
-        const handleInputChange = (field, value) => {
-            setProfileField(field, value); // Thay vì setValue
-        };
-
-    // Hàm lưu thông tin và chuyển sang bước 3
-    const handleProceedToStep3 = () => {
-        // Lưu thông tin người nhận (nếu cần thiết, có thể thêm logic kiểm tra dữ liệu trước khi lưu)
-        if (
-            !profile.first_name ||
-            !profile.last_name ||
-            !profile.phone ||
-            !profile.gender
-        ) {
-            alert("Vui lòng điền đầy đủ thông tin người nhận!");
-            return;
-        }
-
-        // Điều hướng sang trang bước 3
-        navigate(config.routes.user.cartStep3);
-    };
+    }, [loginedProfile, setProfile]); // Chạy lại khi loginedProfile thay đổi
 
     return (
         <div className={cx("cart-page")}>
@@ -74,74 +35,33 @@ const Step2 = () => {
                 <div className={cx("cart-content")}>
                     <div className={cx("title")}>Thông tin người nhận hàng</div>
 
+                    {/* Hiển thị thông tin người dùng đã đăng nhập */}
                     <div className={cx("two-items")}>
-                        <Input
-                            value={profile.first_name || ""}
-                            setValue={(value) =>
-                                handleInputChange("first_name", value)
-                            }
-                            label="Họ"
-                            placeholder="Nhập họ"
-                            required
-                        />
-                        <Input
-                            value={profile.last_name || ""}
-                            setValue={(value) =>
-                                handleInputChange("last_name", value)
-                            }
-                            label="Tên"
-                            placeholder="Nhập tên"
-                            required
-                        />
+                        <div>
+                            <span className={cx("label")}>Người nhận: </span>
+                            <span>
+                                {profile.first_name || "Chưa có thông tin"}
+                            </span>
+                        </div>
+                        <div>
+                            <span className={cx("label")}>Email: </span>
+                            <span>
+                                {profile.Email || "Chưa có thông tin"}
+                            </span>
+                        </div>
                     </div>
 
                     <div className={cx("two-items")}>
-                        <Input
-                            value={profile.phone || ""}
-                            setValue={(value) =>
-                                handleInputChange("phone", value)
-                            }
-                            label="Số điện thoại"
-                            placeholder="Nhập số điện thoại"
-                            required
-                        />
-                        <Dropdown
-                            title="Chọn giới tính"
-                            label="Giới tính"
-                            selected={profile.gender || ""}
-                            setValue={(value) =>
-                                handleInputChange("gender", value)
-                            } // Sử dụng setProfileField cho Dropdown
-                            required
-                        >
-                            <Button
-                                width="100%"
-                                noRadius
-                                onClick={() =>
-                                    handleInputChange("gender", "Nam")
-                                }
-                            >
-                                Nam
-                            </Button>
-                            <Button
-                                width="100%"
-                                noRadius
-                                onClick={() =>
-                                    handleInputChange("gender", "Nữ")
-                                }
-                            >
-                                Nữ
-                            </Button>
-                            <Button
-                                width="100%"
-                                noRadius
-                                onClick={() =>
-                                    handleInputChange("gender", "Khác")
-                                }
-                            >
-                                Khác
-                            </Button>
-                        </Dropdown>
+                        <div>
+                            <span className={cx("label")}>Số điện thoại: </span>
+                            <span>{profile.phone || "Chưa có thông tin"}</span>
+                        </div>
+                        <div>
+                            <span className={cx("label")}>Địa chỉ: </span>
+                            <span>
+                                {profile.address || "Chưa có thông tin"}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

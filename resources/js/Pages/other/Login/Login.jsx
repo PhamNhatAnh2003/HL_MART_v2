@@ -40,7 +40,7 @@ const Login = () => {
                 if (role === "user") {
                     navigate(config.routes.user.home);
                 } else if (role === "admin") {
-                    navigate(config.routes.admin.home);
+                    navigate(config.routes.admin.dashboard);
                 }
             }
             console.log(response);
