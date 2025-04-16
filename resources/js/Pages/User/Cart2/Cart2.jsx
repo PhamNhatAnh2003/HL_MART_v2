@@ -1,94 +1,62 @@
 import React, { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
 import classNames from "classnames/bind";
 import styles from "./Cart2.module.scss";
 import { useCart } from "~/hooks/useCart";
+import Button from "~/components/Button";
+import CartItem2 from "./components/CartItem2";
+import { formatPrice } from "~/utils/format";
+import images from "~/assets/images";
+
 
 const cx = classNames.bind(styles);
 
 const Cart2 = ({ isOpen, onClose }) => {
-    // const [cart, setCart] = useState(null);
-    const [loading, setLoading] = useState(true);
+const {
+    cart: rawCart,
+    loading,
+    updateQuantity,
+    removeFromCart,
+    totalPrice,
+    refreshCart,
+    TotalPrice2,
+} = useCart();
+
+const cart = Array.isArray(rawCart) ? rawCart : [];
+
     const [selectedItems, setSelectedItems] = useState(new Set());
     const [selectAll, setSelectAll] = useState(false);
-     const { cart, refreshCart, totalProducts, totalQuantity, totalPrice } =
-            useCart();
-
-    const fetchCart = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get("/api/cart");
-            setCart(response.data.data);
-        } catch (error) {
-            console.error("Error fetching cart:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
         if (isOpen) {
-            fetchCart();
+            refreshCart();
         }
     }, [isOpen]);
 
-    const handleQuantityChange = async (itemId, newQuantity) => {
-        try {
-            await axios.put("/api/cart/quantity", {
-                cart_item_id: itemId,
-                quantity: newQuantity,
-            });
-            fetchCart();
-        } catch (error) {
-            alert(
-                error.response?.data?.message ||
-                    "Có lỗi xảy ra khi cập nhật số lượng"
-            );
-        }
-    };
+useEffect(() => {
+    const newSelected = new Set(
+        selectAll ? cart.map((item) => item.product.id) : []
+    );
 
-    const handleRemoveItem = async (itemId) => {
-        if (!confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
+    // Chỉ setState nếu newSelected khác hiện tại
+    const isDifferent =
+        selectedItems.size !== newSelected.size ||
+        [...newSelected].some((id) => !selectedItems.has(id));
 
-        try {
-            await axios.delete("/api/cart/item", {
-                data: { cart_item_id: itemId },
-            });
-            fetchCart();
-        } catch (error) {
-            alert(
-                error.response?.data?.message ||
-                    "Có lỗi xảy ra khi xóa sản phẩm"
-            );
-        }
-    };
-
-    const handleSelectItem = (itemId) => {
-        const newSelected = new Set(selectedItems);
-        newSelected.has(itemId)
-            ? newSelected.delete(itemId)
-            : newSelected.add(itemId);
+    if (isDifferent) {
         setSelectedItems(newSelected);
-        setSelectAll(newSelected.size === cart?.items?.length);
+    }
+}, [selectAll, cart]);
+
+    const handleSelectItem = (productId) => {
+        const newSelected = new Set(selectedItems);
+        newSelected.has(productId)
+            ? newSelected.delete(productId)
+            : newSelected.add(productId);
+        setSelectedItems(newSelected);
+        setSelectAll(newSelected.size === cart.length);
     };
 
-    const handleSelectAll = () => {
-        const allSelected = !selectAll;
-        setSelectAll(allSelected);
-        setSelectedItems(
-            allSelected
-                ? new Set(cart?.items?.map((item) => item.cart_item_id))
-                : new Set()
-        );
-    };
-
-    const calculateTotal = () => {
-        if (!cart?.items) return 0;
-        return cart.items
-            .filter((item) => selectedItems.has(item.cart_item_id))
-            .reduce((sum, item) => sum + item.subtotal, 0);
-    };
 
     return (
         <div className={cx("drawer-wrapper", { open: isOpen })}>
@@ -97,19 +65,25 @@ const Cart2 = ({ isOpen, onClose }) => {
             <div className={cx("drawer")}>
                 <div className={cx("drawer-header")}>
                     <h2>Giỏ hàng</h2>
-                    <button onClick={onClose}>
+                    <Button primary onClick={onClose}>
                         <XMarkIcon className={cx("icon")} />
-                    </button>
+                    </Button>
                 </div>
 
                 <div className={cx("drawer-content")}>
                     {loading ? (
                         <div className={cx("spinner")} />
-                    ) : !cart?.items?.length ? (
-                        <div className={cx("empty-cart")}>
-                            <p>Giỏ hàng trống</p>
-                            <button onClick={onClose}>Tiếp tục mua sắm</button>
-                        </div>
+                    ) : !cart.length ? (
+                         <div className={cx("cart-empty")}>
+                                        <img src={images.emptycart} alt="Giỏ hàng trống" />
+                                        <p>Giỏ hàng chưa có sản phẩm</p>
+                                        <Button
+                                            className={cx("back-home")}
+                                            onClick={onClose}
+                                        >
+                                            Quay lại
+                                        </Button>
+                                    </div>
                     ) : (
                         <>
                             <div className={cx("cart-items")}>
@@ -117,97 +91,22 @@ const Cart2 = ({ isOpen, onClose }) => {
                                     <input
                                         type="checkbox"
                                         checked={selectAll}
-                                        onChange={handleSelectAll}
+                                        onChange={() =>
+                                            setSelectAll(!selectAll)
+                                        }
                                     />
                                     <span>
-                                        Chọn tất cả ({cart.items.length} sản
-                                        phẩm)
+                                        Chọn tất cả ({cart.length} sản phẩm)
                                     </span>
                                 </div>
 
-                                {cart.items.map((item) => (
-                                    <div
-                                        key={item.cart_item_id}
-                                        className={cx("cart-item")}
-                                    >
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedItems.has(
-                                                item.cart_item_id
-                                            )}
-                                            onChange={() =>
-                                                handleSelectItem(
-                                                    item.cart_item_id
-                                                )
-                                            }
-                                        />
-
-                                        <div className={cx("image-wrapper")}>
-                                            <img
-                                                src={item.image_url}
-                                                alt={item.product_name}
-                                            />
-                                        </div>
-
-                                        <div className={cx("item-info")}>
-                                            <h3>{item.product_name}</h3>
-                                            <p>
-                                                {item.color_name} - {item.size}
-                                            </p>
-                                            <p className={cx("price")}>
-                                                {item.unit_price.toLocaleString(
-                                                    "vi-VN"
-                                                )}
-                                                đ
-                                            </p>
-
-                                            <div className={cx("actions")}>
-                                                <div className={cx("quantity")}>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleQuantityChange(
-                                                                item.cart_item_id,
-                                                                item.quantity -
-                                                                    1
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            item.quantity <= 1
-                                                        }
-                                                    >
-                                                        -
-                                                    </button>
-                                                    <span>{item.quantity}</span>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleQuantityChange(
-                                                                item.cart_item_id,
-                                                                item.quantity +
-                                                                    1
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            item.quantity >=
-                                                            item.stock_quantity
-                                                        }
-                                                    >
-                                                        +
-                                                    </button>
-                                                </div>
-
-                                                <button
-                                                    className={cx("remove")}
-                                                    onClick={() =>
-                                                        handleRemoveItem(
-                                                            item.cart_item_id
-                                                        )
-                                                    }
-                                                >
-                                                    Xóa
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                {cart.map((item) => (
+                                    <CartItem2
+                                        key={item.product.id}
+                                        item={item}
+                                        selectedItems={selectedItems}
+                                        handleSelectItem={handleSelectItem}
+                                    />
                                 ))}
                             </div>
 
@@ -215,19 +114,20 @@ const Cart2 = ({ isOpen, onClose }) => {
                                 <div className={cx("total")}>
                                     <span>Tổng tiền:</span>
                                     <span>
-                                        {calculateTotal().toLocaleString(
-                                            "vi-VN"
+                                        {formatPrice(
+                                            TotalPrice2(cart, selectedItems)
                                         )}
-                                        đ
                                     </span>
                                 </div>
 
-                                <button
+                                <Button
                                     onClick={() => {
                                         if (selectedItems.size > 0) {
-                                            window.location.href = `/checkout?items=${Array.from(
-                                                selectedItems
-                                            ).join(",")}`;
+                                            const ids =
+                                                Array.from(selectedItems).join(
+                                                    ","
+                                                );
+                                            window.location.href = `/checkout?items=${ids}`;
                                         }
                                     }}
                                     className={cx("checkout-btn", {
@@ -236,7 +136,7 @@ const Cart2 = ({ isOpen, onClose }) => {
                                     disabled={selectedItems.size === 0}
                                 >
                                     Thanh toán ({selectedItems.size} sản phẩm)
-                                </button>
+                                </Button>
                             </div>
                         </>
                     )}
@@ -244,6 +144,6 @@ const Cart2 = ({ isOpen, onClose }) => {
             </div>
         </div>
     );
-}
+};
 
 export default Cart2;

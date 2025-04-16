@@ -111,11 +111,26 @@ const removeFromCart = async (productId) => {
 
 
 const totalProducts = cart.length;
-const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-const totalPrice = cart.reduce(
+const safeCart = Array.isArray(cart) ? cart : [];
+
+const totalQuantity = safeCart.reduce((sum, item) => sum + item.quantity, 0);
+
+const totalPrice = safeCart.reduce(
     (sum, item) => sum + item.quantity * item.product.price,
     0
 );
+
+
+const TotalPrice2 = (cart, selectedItems = null) => {
+    let total = 0;
+    for (let i = 0; i < cart.length; i++) {
+        const item = cart[i];
+        if (!selectedItems || selectedItems.has(item.product.id)) {
+            total += item.quantity * item.product.price;
+        }
+    }
+    return total;
+};
 
     return (
         <CartContext.Provider
@@ -130,6 +145,7 @@ const totalPrice = cart.reduce(
                 totalProducts,
                 totalQuantity,
                 totalPrice,
+                TotalPrice2,
             }}
         >
             {children}
