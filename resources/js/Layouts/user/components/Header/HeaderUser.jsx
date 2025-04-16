@@ -68,13 +68,13 @@ export default function HeaderUser() {
             </div>
             {user && (
                 <div className={cx("user-hugs")} ref={menuRef}>
-                    <div className={cx("shoppingcart-header")}>
+                    {/* <div className={cx("shoppingcart-header")}>
                         <Link to={config.routes.user.cart}>
                             <FontAwesomeIcon icon={faShoppingCart} />
                             <span>Giỏ Hàng</span>
                         </Link>
-                    </div>
-                    {/* <Cart2
+                    </div> */}
+                    <Cart2
                         isOpen={isCartOpen}
                         onClose={() => setIsCartOpen(false)}
                     />
@@ -85,7 +85,7 @@ export default function HeaderUser() {
                     >
                         <FontAwesomeIcon icon={faShoppingCart} />
                         <span>Giỏ Hàng</span>
-                    </div> */}
+                    </div>
 
                     <img
                         className={cx("avatar-header")}
