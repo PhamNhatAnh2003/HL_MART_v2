@@ -4,26 +4,26 @@ import styles from "./CartItem.module.scss";
 import { formatPrice } from "~/utils/format";
 import { useCart } from "~/hooks/useCart";
 import classNames from "classnames/bind";
-
+import images from "~/assets/images";
 const cx = classNames.bind(styles);
 
 const CartItem = ({ item, index }) => {
-    if (!item || !item.product) return null; // Nếu không có dữ liệu, không hiển thị
-    const { cart } = useCart();
-    const { quantity, product } = item; // Lấy thông tin sản phẩm
-    const [currentQuantity, setCurrentQuantity] = useState(quantity);
-    const { updateQuantity, removeFromCart } = useCart(); // Lấy hàm từ CartContext
+    if (!item) return null;
 
+    const {
+        product_name,
+        avatar,
+        unit,
+        quantity,
+        price,
+        discount_price,
+        subtotal,
+    } = item;
 
-    useEffect(() => {
-        setCurrentQuantity(quantity);
-    }, [cart, quantity]);
-
-    const handleChangeQuantity = (e) => {
-        let newQuantity = Math.max(1, parseInt(e.target.value, 10) || 1);
-        setCurrentQuantity(newQuantity);
-        updateQuantity(product.id, newQuantity);
-    };
+    // Ưu tiên dùng discount_price nếu có, không thì fallback về price_at_time
+    const finalPrice = discount_price && parseFloat(discount_price) > 0
+        ? discount_price
+        : price;
 
     return (
         <div className={cx("container")}>
@@ -31,29 +31,17 @@ const CartItem = ({ item, index }) => {
             <div className={cx("columnImage")}>
                 <img
                     className={cx("image")}
-                    src={product.image}
-                    alt={product.name}
+                    src={avatar || "/default-avatar.jpg"}
+                    alt={product_name}
                 />
             </div>
-            <div className={cx("columnName")}>{product.name}</div>
-            <div className={cx("columnUnit")}>{product.unit}</div>
+            <div className={cx("columnName")}>{product_name}</div>
+            <div className={cx("columnUnit")}>{unit}</div>
             <div className={cx("columnPrice")}>
-                {formatPrice(product.price)}
+                {formatPrice(finalPrice)}
             </div>
             <div className={cx("columnQuantity")}>
-                <input
-                    type="number"
-                    value={currentQuantity}
-                    min="1"
-                    className={cx("quantity")}
-                    onChange={handleChangeQuantity}
-                />
-            </div>
-            <div className={cx("delete-btn-con")}>
-                <FaTrash
-                    className={cx("delete-btn")}
-                    onClick={() => removeFromCart(product.id)}
-                />
+                <span className={cx("readonlyQuantity")}>{quantity}</span>
             </div>
         </div>
     );

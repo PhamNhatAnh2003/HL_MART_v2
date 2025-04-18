@@ -18,20 +18,112 @@
     gap: 10px;
 }
 
-.two-items {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--gap);
-}
-
 .title {
     display: flex;
-    justify-content: center;
     font-size: 30px;
-    font-weight: 700;
+    font-weight: 500;
     padding: 15px 0;
 }
+
+.productListContainer {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    display: flex;
+    // width: 870px;
+    height: 74px;
+    background: white;
+    align-items: center;
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: black;
+    padding-right: 20px;
+}
+
+.columnSTT,
+.columnImage,
+.columnName,
+.columnUnit,
+.columnPrice,
+.columnQuantity,
+.columnDelete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.columnSTT {
+    width: 60px;
+}
+
+.columnImage {
+    width: 100px;
+}
+
+.columnName {
+    width: 400px;
+}
+
+.columnUnit {
+    width: 100px;
+}
+
+.columnPrice {
+    width: 105px;
+}
+
+.columnQuantity {
+    width: 130px;
+}
+
+// .address-shipping{
+//   background-color: white;
+//   padding: 1.5rem;
+//   border-radius: 0.5rem;
+//   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+// }
+
+.wrapper {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.changeButton {
+    color: #2563eb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.changeButton:hover {
+    color: #1e40af;
+}
+
+.addressInfo {
+    color: #4b5563;
+}
+
+.name {
+    font-weight: 500;
+}
+
 
 // Right
 .cart-right {

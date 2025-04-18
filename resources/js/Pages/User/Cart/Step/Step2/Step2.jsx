@@ -7,22 +7,37 @@ import Button from "~/components/Button";
 import { useNavigate, useLocation } from "react-router-dom";
 import config from "~/config";
 import useProfile from "~/hooks/useProfile";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "~/context/AuthContext";
+import axios from "axios";
+import CartItem from "../../Components/CartItem/CartItem";
+import images from "~/assets/images";
 
 const cx = classNames.bind(styles);
 
 const Step2 = () => {
-    const { profile: loginedProfile } = useContext(AuthContext);
+    const { user: loginedProfile } = useContext(AuthContext);
     const { profile, setProfile } = useProfile();
 
     const { cart } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [addresses, setAddresses] = useState([]);
+    const [vouchers, setVouchers] = useState([]);
+    const [paymentMethod, setPaymentMethod] = useState("COD");
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [orderNote, setOrderNote] = useState("");
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
+    const [showAddressModal, setShowAddressModal] = useState(false);
+    const [showVoucherModal, setShowVoucherModal] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [orderItems, setOrderItems] = useState([]);
+
     // Lấy danh sách ID sản phẩm được chọn từ query
     const queryParams = new URLSearchParams(location.search);
     const itemIds = queryParams.get("items")?.split(",") || [];
+    const totalPrice = queryParams.get("totalPrice") || 0;
 
     // Lọc giỏ hàng để chỉ lấy sản phẩm được chọn
     const selectedCart =
@@ -35,47 +50,115 @@ const Step2 = () => {
         (acc, item) => acc + item.quantity,
         0
     );
-    const totalPrice = selectedCart.reduce(
-        (acc, item) => acc + item.product.price * item.quantity,
-        0
-    );
 
+
+    // Sử dụng useEffect để cập nhật profile nếu loginedProfile thay đổi
     useEffect(() => {
-        if (loginedProfile) {
+        if (loginedProfile && loginedProfile.id !== profile?.id) {
             setProfile(loginedProfile);
         }
-    }, [loginedProfile, setProfile]);
+    }, [loginedProfile, profile, setProfile]);
+
+    const [cachedItemIds, setCachedItemIds] = useState([]);
+
+    // Chỉ cập nhật cachedItemIds khi itemIds thực sự thay đổi
+    useEffect(() => {
+        if (JSON.stringify(itemIds) !== JSON.stringify(cachedItemIds)) {
+            setCachedItemIds(itemIds);
+        }
+    }, [itemIds, cachedItemIds]);
+
+    // Fetch selected items từ API
+    useEffect(() => {
+        const fetchSelectedItems = async () => {
+            try {
+                const response = await axios.post(
+                    "http://127.0.0.1:8000/api/cart/selected-items",
+                    {
+                        user_id: loginedProfile?.id,
+                        selected_items: cachedItemIds,
+                    }
+                );
+
+                if (response.data.status) {
+                    setOrderItems(response.data.data.items);
+                    console.log("Selected Items:", response.data.data.items);
+                } else {
+                    console.error(
+                        "Lỗi khi lấy sản phẩm:",
+                        response.data.message
+                    );
+                }
+            } catch (error) {
+                console.error("Lỗi khi gọi API:", error);
+            }
+        };
+
+        // Chỉ gọi API khi cachedItemIds có thay đổi
+        if (loginedProfile?.id && cachedItemIds.length > 0) {
+            fetchSelectedItems();
+        }
+    }, [loginedProfile, cachedItemIds]);
 
     return (
         <div className={cx("cart-page")}>
             <div className={cx("cart-left")}>
                 <CartStep step={2} />
                 <div className={cx("cart-content")}>
-                    <div className={cx("title")}>Thông tin người nhận hàng</div>
-
-                    <div className={cx("two-items")}>
-                        <div>
-                            <span className={cx("label")}>Người nhận: </span>
-                            <span>
-                                {profile.first_name || "Chưa có thông tin"}
-                            </span>
-                        </div>
-                        <div>
-                            <span className={cx("label")}>Email: </span>
-                            <span>{profile.Email || "Chưa có thông tin"}</span>
+                    <div className={cx("productListContainer")}>
+                        <h2 className={cx("title")}>Sản phẩm</h2>
+                        <div className={cx("productList")}>
+                            <div className={cx("container")}>
+                                <div className={cx("columnSTT")}>STT</div>
+                                <div className={cx("columnImage")}>Ảnh</div>
+                                <div className={cx("columnName")}>
+                                    Tên Sản Phẩm
+                                </div>
+                                <div className={cx("columnUnit")}>ĐVT</div>
+                                <div className={cx("columnPrice")}>Giá</div>
+                                <div className={cx("columnQuantity")}>
+                                    Số Lượng
+                                </div>
+                            </div>
+                            {orderItems.map((item, index) => (
+                                <CartItem
+                                    key={`cart-item-${index}`}
+                                    item={item}
+                                    index={index + 1}
+                                />
+                            ))}
                         </div>
                     </div>
 
-                    <div className={cx("two-items")}>
-                        <div>
-                            <span className={cx("label")}>Số điện thoại: </span>
-                            <span>{profile.phone || "Chưa có thông tin"}</span>
-                        </div>
-                        <div>
-                            <span className={cx("label")}>Địa chỉ: </span>
-                            <span>
-                                {profile.address || "Chưa có thông tin"}
-                            </span>
+                    <div className={cx("address-shipping")}>
+                        <div className={styles.wrapper}>
+                            <div className={styles.header}>
+                                <h2 className={styles.title}>
+                                    Địa chỉ giao hàng
+                                </h2>
+                                <button
+                                    onClick={() => setShowAddressModal(true)}
+                                    className={styles.changeButton}
+                                >
+                                    Thay đổi
+                                </button>
+                            </div>
+                            {selectedAddress && (
+                                <div className={styles.addressInfo}>
+                                    <p className={styles.name}>
+                                        {selectedAddress.receiver_name}
+                                    </p>
+                                    <p>{selectedAddress.phone}</p>
+                                    <p>
+                                        {selectedAddress.street_address},{" "}
+                                        {selectedAddress.ward},
+                                    </p>
+                                    <p>
+                                        {selectedAddress.district},{" "}
+                                        {selectedAddress.province}
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -109,7 +192,7 @@ const Step2 = () => {
                     width="100%"
                     large
                     onClick={() => {
-                        const itemsQuery = itemIds.join(",");
+                        const itemsQuery = cachedItemIds.join(",");
                         navigate(
                             `${config.routes.user.step3}?items=${itemsQuery}`
                         );
