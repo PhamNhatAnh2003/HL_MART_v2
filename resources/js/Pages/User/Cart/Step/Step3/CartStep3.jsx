@@ -1,25 +1,48 @@
-import classNames from 'classnames/bind';
-
-import styles from './CartStep3.module.scss';
-import CartStep from '../../Components/CartStep/CartStep';
-import { useCart } from '~/hooks/useCart';
-import { formatPrice } from '~/utils/format';
-import  Button from '~/components/Button';
-import { useNavigate } from 'react-router-dom';
-import config from '~/config';
-import { Input } from '~/components/Input';
-import useProfile from '~/hooks/useProfile';
-import Dropdown from '~/components/Dropdown';
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '~/context/AuthContext';
+import classNames from "classnames/bind";
+import styles from "./CartStep3.module.scss";
+import CartStep from "../../Components/CartStep/CartStep";
+import { useCart } from "~/hooks/useCart";
+import { formatPrice } from "~/utils/format";
+import Button from "~/components/Button";
+import { useNavigate, useLocation } from "react-router-dom";
+import config from "~/config";
+import useProfile from "~/hooks/useProfile";
+import { useContext, useEffect, useMemo } from "react";
+import { AuthContext } from "~/context/AuthContext";
 
 const cx = classNames.bind(styles);
 
 const CartStep3 = () => {
     const { profile: loginedProfile } = useContext(AuthContext);
-    const { profile, setProfileField, setProfile } = useProfile();
-   const { cart, totalProducts, totalQuantity, totalPrice } = useCart();
+    const { profile, setProfile } = useProfile();
+    const { cart } = useCart();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Lấy danh sách ID sản phẩm từ query
+    const queryParams = new URLSearchParams(location.search);
+    const itemIds = queryParams.get("items")?.split(",") || [];
+
+    // Lọc giỏ hàng theo itemIds
+    const filteredCart = useMemo(() => {
+        if (itemIds.length === 0) return cart;
+        return (
+            cart?.filter((item) =>
+                itemIds.includes(item.product.id.toString())
+            ) || []
+        );
+    }, [cart, itemIds]);
+
+    // Tính tổng
+    const totalProducts = filteredCart.length;
+    const totalQuantity = filteredCart.reduce(
+        (acc, item) => acc + item.quantity,
+        0
+    );
+    const totalPrice = filteredCart.reduce(
+        (acc, item) => acc + item.product.price * item.quantity,
+        0
+    );
 
     useEffect(() => {
         setProfile(loginedProfile);
@@ -52,7 +75,11 @@ const CartStep3 = () => {
                     primary
                     width="100%"
                     large
-                    onClick={() => navigate(config.routes.user.cartStep3)}
+                    onClick={() => {
+                        // Chuyển sang trang hoàn tất đặt hàng hoặc trang khác tùy bạn
+                        alert("Đặt hàng thành công!");
+                    }}
+                    disabled={filteredCart.length === 0}
                 >
                     Đặt hàng
                 </Button>

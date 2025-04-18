@@ -44,6 +44,7 @@ Route::post('/review/create', [ReviewController::class, 'createReview']);
     Route::delete('/cart/remove', [CartController::class, 'removeProduct']);
     Route::delete('/cart/clear', [CartController::class, 'deleteCart']);
     Route::get('/cart/{userId}', [CartController::class, 'getCartItems']);
+    Route::post('/cart/selected-items', [CartController::class, 'getSelectedItems']);
 // });
 
 

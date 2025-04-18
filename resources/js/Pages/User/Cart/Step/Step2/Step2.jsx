@@ -4,37 +4,93 @@ import CartStep from "../../Components/CartStep/CartStep";
 import { useCart } from "~/hooks/useCart";
 import { formatPrice } from "~/utils/format";
 import Button from "~/components/Button";
-import { useNavigate } from "react-router-dom"; // Điều hướng
+import { useNavigate, useLocation } from "react-router-dom";
 import config from "~/config";
 import useProfile from "~/hooks/useProfile";
-import Dropdown from "~/components/Dropdown";
 import { useContext, useEffect } from "react";
-import { AuthContext } from "~/context/AuthContext"; // Import context
+import { AuthContext } from "~/context/AuthContext";
 
 const cx = classNames.bind(styles);
 
 const Step2 = () => {
-    const { profile: loginedProfile } = useContext(AuthContext); // Lấy profile từ AuthContext
-    const { profile, setProfile } = useProfile(); // Hook để lấy và set profile
+    const { profile: loginedProfile } = useContext(AuthContext);
+    const { profile, setProfile } = useProfile();
 
-    const { cart, totalProducts, totalQuantity, totalPrice } = useCart();
-    const navigate = useNavigate(); // Khai báo navigate để điều hướng
+    const { cart } = useCart();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    // Kiểm tra và cập nhật thông tin người dùng vào profile khi đăng nhập
+
+
+    // Lấy danh sách ID sản phẩm được chọn từ query
+    const queryParams = new URLSearchParams(location.search);
+    const itemIds = queryParams.get("items")?.split(",") || [];
+
+    // Lọc giỏ hàng để chỉ lấy sản phẩm được chọn
+    const selectedCart =
+        cart?.filter((item) => itemIds.includes(item.product.id.toString())) ||
+        [];
+
+    // Tính tổng
+    const totalProducts = selectedCart.length;
+    const totalQuantity = selectedCart.reduce(
+        (acc, item) => acc + item.quantity,
+        0
+    );
+    const totalPrice = selectedCart.reduce(
+        (acc, item) => acc + item.product.price * item.quantity,
+        0
+    );
+
+
     useEffect(() => {
         if (loginedProfile) {
-            setProfile(loginedProfile); // Nếu đã có thông tin người dùng trong AuthContext, set vào profile
+            setProfile(loginedProfile);
         }
-    }, [loginedProfile, setProfile]); // Chạy lại khi loginedProfile thay đổi
+    }, [loginedProfile, setProfile]);
 
     return (
         <div className={cx("cart-page")}>
             <div className={cx("cart-left")}>
                 <CartStep step={2} />
+                <div className={styles.productListContainer}>
+                    <h2 className={styles.title}>Sản phẩm</h2>
+                    <div className={styles.productList}>
+                        {orderItems.map((item) => (
+                            <div
+                                key={item.cart_item_id}
+                                className={styles.productItem}
+                            >
+                                <img
+                                    src={item.image_url}
+                                    alt={item.product_name}
+                                    className={styles.productImage}
+                                />
+                                <div className={styles.productInfo}>
+                                    <h3 className={styles.productName}>
+                                        {item.product_name}
+                                    </h3>
+                                    <p className={styles.productDetails}>
+                                        {item.color_name} - {item.size}
+                                    </p>
+                                    <p className={styles.productDetails}>
+                                        {item.quantity} ×{" "}
+                                        {item.unit_price.toLocaleString(
+                                            "vi-VN"
+                                        )}
+                                        đ
+                                    </p>
+                                    <p className={styles.productSubtotal}>
+                                        {item.subtotal.toLocaleString("vi-VN")}đ
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
                 <div className={cx("cart-content")}>
                     <div className={cx("title")}>Thông tin người nhận hàng</div>
 
-                    {/* Hiển thị thông tin người dùng đã đăng nhập */}
                     <div className={cx("two-items")}>
                         <div>
                             <span className={cx("label")}>Người nhận: </span>
@@ -62,9 +118,10 @@ const Step2 = () => {
                     </div>
                 </div>
             </div>
+
             <div className={cx("cart-right")}>
                 <h2>Tổng tiền giỏ hàng</h2>
-                {cart ? (
+                {selectedCart.length > 0 ? (
                     <>
                         <div className={cx("cart-right-line")}>
                             <span>Tổng sản phẩm: </span>
@@ -82,14 +139,20 @@ const Step2 = () => {
                         </div>
                     </>
                 ) : (
-                    <p>Đang tải thông tin giỏ hàng...</p>
+                    <p>Không có sản phẩm nào được chọn.</p>
                 )}
                 <div className={cx("cart-right-last-line")}></div>
                 <Button
                     primary
                     width="100%"
                     large
-                    onClick={() => navigate(config.routes.user.step3)} // Khi nhấn nút sẽ gọi hàm handleProceedToStep3
+                    onClick={() => {
+                        const itemsQuery = itemIds.join(",");
+                        navigate(
+                            `${config.routes.user.step3}?items=${itemsQuery}`
+                        );
+                    }}
+                    disabled={selectedCart.length === 0}
                 >
                     Thanh Toán
                 </Button>
