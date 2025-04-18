@@ -77,7 +77,7 @@ const CartProvider = ({ children }) => {
                 quantity,
             });
 
-            refreshCart(); // 🟢 Cập nhật lại giỏ hàng sau khi cập nhật số lượng
+            refreshCart(); // Cập nhật lại giỏ hàng sau khi cập nhật số lượng
             showToast(response.data.message);
         } catch (error) {
             console.error(
@@ -109,10 +109,8 @@ const removeFromCart = async (productId) => {
 };
 
 
-
-const totalProducts = cart.length;
 const safeCart = Array.isArray(cart) ? cart : [];
-
+const totalProducts = cart.length;
 const totalQuantity = safeCart.reduce((sum, item) => sum + item.quantity, 0);
 
 const totalPrice = safeCart.reduce(

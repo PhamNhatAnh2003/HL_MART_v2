@@ -17,8 +17,7 @@ const Step2 = () => {
     const { profile: loginedProfile } = useContext(AuthContext); // Lấy profile từ AuthContext
     const { profile, setProfile } = useProfile(); // Hook để lấy và set profile
 
-    const { cart, totalProducts, totalQuantity, totalPrice } =
-        useCart();
+    const { cart, totalProducts, totalQuantity, totalPrice } = useCart();
     const navigate = useNavigate(); // Khai báo navigate để điều hướng
 
     // Kiểm tra và cập nhật thông tin người dùng vào profile khi đăng nhập
@@ -45,9 +44,7 @@ const Step2 = () => {
                         </div>
                         <div>
                             <span className={cx("label")}>Email: </span>
-                            <span>
-                                {profile.Email || "Chưa có thông tin"}
-                            </span>
+                            <span>{profile.Email || "Chưa có thông tin"}</span>
                         </div>
                     </div>
 
