@@ -122,4 +122,61 @@ public function addToCart(Request $request) {
             'cart_items' => $cartItems
         ], 200);
     }
+    
+public function getSelectedItems(Request $request)
+{
+    try {
+        // Xác thực dữ liệu gửi lên từ client
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id', // Thêm xác thực user_id
+            'selected_items' => 'required|array',
+            'selected_items.*' => 'exists:cart_items,id'
+        ]);
+
+        // Lấy user_id từ request thay vì dùng Auth
+        $userId = $validated['user_id'];
+
+        // Truy vấn các item được chọn thuộc user
+        $cartItems = CartItem::whereIn('id', $validated['selected_items'])
+            ->where('user_id', $userId)
+            ->with('product') // Quan hệ CartItem -> Product
+            ->get();
+
+        // Format lại dữ liệu trả về
+        $items = $cartItems->map(function ($item) {
+            $product = $item->product;
+
+            return [
+                'cart_item_id' => $item->id,
+                'product_id' => $product->id,
+                'product_name' => $product->name ?? 'Không xác định',
+                'unit' => $item->unit ?? 'Chưa rõ',
+                'quantity' => $item->quantity,
+                'unit_price' => round($item->price_at_time),
+                'subtotal' => round($item->price_at_time * $item->quantity),
+                'image_url' => $product->image_url ?? null // nếu có cột ảnh trong bảng products
+            ];
+        });
+
+        // Tổng tiền
+        $total = $items->sum('subtotal');
+
+        // Trả về response JSON
+        return response()->json([
+            'status' => true,
+            'data' => [
+                'items' => $items,
+                'total' => $total
+            ]
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Có lỗi xảy ra khi lấy sản phẩm được chọn',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+
+
 }

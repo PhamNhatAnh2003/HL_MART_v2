@@ -128,7 +128,15 @@ useEffect(() => {
                                                 Array.from(selectedItems).join(
                                                     ","
                                                 );
-                                            navigate(config.routes.user.step2);
+                                                onClose();
+                                            navigate(
+                                                `${
+                                                    config.routes.user.step2
+                                                }?items=${Array.from(
+                                                    selectedItems
+                                                ).join(",")}`
+                                            );
+
                                         }
                                     }}
                                     className={cx("checkout-btn")}
