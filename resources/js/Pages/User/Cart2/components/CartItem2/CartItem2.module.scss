@@ -51,11 +51,17 @@
     margin: 0;
   }
 
-  .price {
-    font-size: 15px;
-    color: #e53935;
+.original-price {
+    margin-left: 15px;
+    text-decoration: line-through;
+    color: gray;
+    font-size: 14px; /* Giảm kích thước giá gốc */
+}
+
+.discount-price {
     font-weight: bold;
-  }
+    color: red;
+}
 
   .actions {
     display: flex;

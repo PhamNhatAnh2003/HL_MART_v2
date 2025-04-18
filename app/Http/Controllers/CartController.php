@@ -125,58 +125,74 @@ public function addToCart(Request $request) {
     
 public function getSelectedItems(Request $request)
 {
+    // Lấy dữ liệu từ body request
+    $userId = $request->input('user_id');
+    $selectedProductIds = $request->input('selected_items'); // mảng [1, 3, 5]
+
+    // Validate
+    $validator = Validator::make([
+        'user_id' => $userId,
+        'selected_items' => $selectedProductIds
+    ], [
+        'user_id' => 'required|exists:users,id',
+        'selected_items' => 'required|array',
+        'selected_items.*' => 'exists:cart_items,product_id'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Dữ liệu không hợp lệ',
+            'errors' => $validator->errors()
+        ], 422);
+    }
+
     try {
-        // Xác thực dữ liệu gửi lên từ client
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id', // Thêm xác thực user_id
-            'selected_items' => 'required|array',
-            'selected_items.*' => 'exists:cart_items,id'
-        ]);
-
-        // Lấy user_id từ request thay vì dùng Auth
-        $userId = $validated['user_id'];
-
-        // Truy vấn các item được chọn thuộc user
-        $cartItems = CartItem::whereIn('id', $validated['selected_items'])
-            ->where('user_id', $userId)
-            ->with('product') // Quan hệ CartItem -> Product
+        // Fetch the cart items for the given user and selected product ids
+        $cartItems = CartItem::where('user_id', $userId)
+            ->whereIn('product_id', $selectedProductIds)
+            ->with('product') // Load related product data
             ->get();
 
-        // Format lại dữ liệu trả về
+        // Format the response data
         $items = $cartItems->map(function ($item) {
             $product = $item->product;
 
             return [
                 'cart_item_id' => $item->id,
-                'product_id' => $product->id,
+                'product_id' => $product->id ?? null,
                 'product_name' => $product->name ?? 'Không xác định',
-                'unit' => $item->unit ?? 'Chưa rõ',
                 'quantity' => $item->quantity,
-                'unit_price' => round($item->price_at_time),
-                'subtotal' => round($item->price_at_time * $item->quantity),
-                'image_url' => $product->image_url ?? null // nếu có cột ảnh trong bảng products
+                'unit' => $product->unit ?? 'N/A', // Default to 'N/A' if unit is not available
+                'price' => $product->price,
+                'discount_price' =>$product->discount_price, // Assuming this field exists in the product table
+                'avatar' => $product->avatar ?? null, // Assuming avatar represents the main image URL
+                'media' => $product->media ?? [], // Assuming media is an array of image URLs
+                'subtotal' => number_format($item->price_at_time * $item->quantity, 2), // Calculating subtotal
+                'created_at' => $item->created_at->toIso8601String(),
+                'updated_at' => $item->updated_at->toIso8601String(),
             ];
         });
 
-        // Tổng tiền
-        $total = $items->sum('subtotal');
+        // Calculate the total price
+        $total = $items->sum(function ($item) {
+            return floatval($item['subtotal']);
+        });
 
-        // Trả về response JSON
         return response()->json([
             'status' => true,
             'data' => [
-                'items' => $items,
-                'total' => $total
+                'items' => $items->toArray(),  // Convert to an array to ensure it returns in a list format
+                'total' => number_format($total, 2)
             ]
         ]);
     } catch (\Exception $e) {
         return response()->json([
             'status' => false,
-            'message' => 'Có lỗi xảy ra khi lấy sản phẩm được chọn',
+            'message' => 'Lỗi server khi lấy sản phẩm được chọn',
             'error' => $e->getMessage()
         ], 500);
     }
 }
-
 
 }

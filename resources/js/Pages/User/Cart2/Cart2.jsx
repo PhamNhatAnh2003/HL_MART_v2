@@ -128,15 +128,20 @@ useEffect(() => {
                                                 Array.from(selectedItems).join(
                                                     ","
                                                 );
-                                                onClose();
+                                            const totalPrice = TotalPrice2(
+                                                cart,
+                                                selectedItems
+                                            ); // Tính tổng tiền
+                                            onClose();
                                             navigate(
                                                 `${
                                                     config.routes.user.step2
                                                 }?items=${Array.from(
                                                     selectedItems
-                                                ).join(",")}`
+                                                ).join(
+                                                    ","
+                                                )}&totalPrice=${totalPrice}`
                                             );
-
                                         }
                                     }}
                                     className={cx("checkout-btn")}

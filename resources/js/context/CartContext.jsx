@@ -88,47 +88,53 @@ const CartProvider = ({ children }) => {
     };
 
     // 7️⃣ Xóa sản phẩm khỏi giỏ hàng
-const removeFromCart = async (productId) => {
-    if (!user?.id) return;
-    try {
-        const response = await axios.delete(`/api/cart/remove`, {
-            data: {
-                user_id: user.id,
-                product_id: productId,
-            },
-        });
-        if (response.data.success) {
-            showToast(response.data.message);
-            // Cập nhật giỏ hàng sau khi xóa thành công
-            // setCart(cart.filter((item) => item.product.id !== productId));
-            refreshCart();
+    const removeFromCart = async (productId) => {
+        if (!user?.id) return;
+        try {
+            const response = await axios.delete(`/api/cart/remove`, {
+                data: {
+                    user_id: user.id,
+                    product_id: productId,
+                },
+            });
+            if (response.data.success) {
+                showToast(response.data.message);
+                // Cập nhật giỏ hàng sau khi xóa thành công
+                // setCart(cart.filter((item) => item.product.id !== productId));
+                refreshCart();
+            }
+        } catch (error) {
+            console.error("Lỗi khi xóa sản phẩm:", error);
         }
-    } catch (error) {
-        console.error("Lỗi khi xóa sản phẩm:", error);
-    }
-};
+    };
 
+    const safeCart = Array.isArray(cart) ? cart : [];
+    const totalProducts = cart.length;
+    const totalQuantity = safeCart.reduce(
+        (sum, item) => sum + item.quantity,
+        0
+    );
 
-const safeCart = Array.isArray(cart) ? cart : [];
-const totalProducts = cart.length;
-const totalQuantity = safeCart.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = safeCart.reduce(
+        (sum, item) => sum + item.quantity * item.product.price,
+        0
+    );
 
-const totalPrice = safeCart.reduce(
-    (sum, item) => sum + item.quantity * item.product.price,
-    0
-);
-
-
-const TotalPrice2 = (cart, selectedItems = null) => {
-    let total = 0;
-    for (let i = 0; i < cart.length; i++) {
-        const item = cart[i];
-        if (!selectedItems || selectedItems.has(item.product.id)) {
-            total += item.quantity * item.product.price;
+    const TotalPrice2 = (cart, selectedItems = null) => {
+        let total = 0;
+        for (let i = 0; i < cart.length; i++) {
+            const item = cart[i];
+            if (!selectedItems || selectedItems.has(item.product.id)) {
+                const { price, discount_price } = item.product;
+                const effectivePrice =
+                    discount_price && discount_price < price
+                        ? discount_price
+                        : price;
+                total += item.quantity * effectivePrice;
+            }
         }
-    }
-    return total;
-};
+        return total;
+    };
 
     return (
         <CartContext.Provider

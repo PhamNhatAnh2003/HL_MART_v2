@@ -4,7 +4,7 @@ import classNames from "classnames/bind";
 import styles from "./CartItem2.module.scss";
 import { formatPrice } from "~/utils/format";
 import { useCart } from "~/hooks/useCart";
-
+import images from "~/assets/images";
 const cx = classNames.bind(styles);
 
 const CartItem2 = ({ item, selectedItems, handleSelectItem }) => {
@@ -28,7 +28,7 @@ const CartItem2 = ({ item, selectedItems, handleSelectItem }) => {
 
             <div className={cx("image-wrapper")}>
                 <img
-                    src={product.image_url}
+                    src={product.avatar ?? images.product}
                     alt={product.name}
                     className={cx("image")}
                 />
@@ -36,7 +36,25 @@ const CartItem2 = ({ item, selectedItems, handleSelectItem }) => {
 
             <div className={cx("item-info")}>
                 <h3>{product.name}</h3>
-                <p className={cx("price")}>{formatPrice(product.price)} đ</p>
+                <div className={cx("columnPrice")}>
+                    <div className={cx("priceWrapper")}>
+                        {product.discount_price &&
+                        product.discount_price < product.price ? (
+                            <>
+                                <span className={cx("discount-price")}>
+                                    {formatPrice(product.discount_price)}
+                                </span>
+                                <span className={cx("original-price")}>
+                                    {formatPrice(product.price)}
+                                </span>
+                            </>
+                        ) : (
+                            <span className={cx("normal-price")}>
+                                {formatPrice(product.price)}
+                            </span>
+                        )}
+                    </div>
+                </div>
 
                 <div className={cx("actions")}>
                     <div className={cx("quantity")}>
