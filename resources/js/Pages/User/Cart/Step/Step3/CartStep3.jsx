@@ -22,6 +22,7 @@ const CartStep3 = () => {
     // Lấy danh sách ID sản phẩm từ query
     const queryParams = new URLSearchParams(location.search);
     const itemIds = queryParams.get("items")?.split(",") || [];
+    const totalPrice = queryParams.get("totalPrice") || 0;
 
     // Lọc giỏ hàng theo itemIds
     const filteredCart = useMemo(() => {
@@ -39,10 +40,7 @@ const CartStep3 = () => {
         (acc, item) => acc + item.quantity,
         0
     );
-    const totalPrice = filteredCart.reduce(
-        (acc, item) => acc + item.product.price * item.quantity,
-        0
-    );
+
 
     useEffect(() => {
         setProfile(loginedProfile);

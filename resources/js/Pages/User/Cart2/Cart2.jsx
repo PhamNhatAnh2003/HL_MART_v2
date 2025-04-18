@@ -142,8 +142,7 @@ useEffect(() => {
                                                     ","
                                                 )}&totalPrice=${totalPrice}`
                                             );
-                                        }
-                                    }}
+                                        }                         }}
                                     className={cx("checkout-btn")}
                                     disabled={selectedItems.size === 0}
                                 >

@@ -5,6 +5,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\AddressController;
 
 
 Route::get('/user', function (Request $request) {
@@ -51,3 +52,10 @@ Route::post('/review/create', [ReviewController::class, 'createReview']);
 // Catelogy
 Route::get('categories', [CategoryController::class, 'index']); // Lấy danh sách danh mục
 Route::get('categories/{id}', [CategoryController::class, 'show']); // Lấy chi tiết một danh mục
+
+
+
+Route::get('/addresses', [AddressController::class, 'getAddresses']);
+Route::post('/add-address', [AddressController::class, 'addAddress']);
+Route::post('address/update/{id}', [AddressController::class, 'updateAddress']);
+Route::delete('/delete-address/{id}', [AddressController::class, 'deleteAddress']);
