@@ -11,7 +11,10 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "~/context/AuthContext";
 import axios from "axios";
 import CartItem from "../../Components/CartItem/CartItem";
-import images from "~/assets/images";
+import { Modal,Radio } from "antd";
+import AddAddress from "../../Components/AddAddress";
+import UpdateAddress from "../../Components/UpdateAddress";
+import showToast from "~/components/message";
 
 const cx = classNames.bind(styles);
 
@@ -24,15 +27,15 @@ const Step2 = () => {
     const location = useLocation();
 
     const [addresses, setAddresses] = useState([]);
-    const [vouchers, setVouchers] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState("COD");
     const [selectedAddress, setSelectedAddress] = useState(null);
     const [orderNote, setOrderNote] = useState("");
-    const [selectedVoucher, setSelectedVoucher] = useState(null);
     const [showAddressModal, setShowAddressModal] = useState(false);
-    const [showVoucherModal, setShowVoucherModal] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [orderItems, setOrderItems] = useState([]);
+    const [showAddAddressModal, setShowAddAddressModal] = useState(false);
+    const [showUpdateAddressModal, setShowUpdateAddressModal] = useState(false); // State for Update Address modal
+    
 
     // Lấy danh sách ID sản phẩm được chọn từ query
     const queryParams = new URLSearchParams(location.search);
@@ -50,7 +53,6 @@ const Step2 = () => {
         (acc, item) => acc + item.quantity,
         0
     );
-
 
     // Sử dụng useEffect để cập nhật profile nếu loginedProfile thay đổi
     useEffect(() => {
@@ -100,6 +102,112 @@ const Step2 = () => {
         }
     }, [loginedProfile, cachedItemIds]);
 
+    useEffect(() => {
+        const fetchAddresses = async () => {
+            try {
+                const response = await axios.get(
+                    `http://127.0.0.1:8000/api/addresses?user_id=${loginedProfile?.id}`
+                );
+
+                if (response.data.status) {
+                    setAddresses(response.data.data);
+                    // Nếu chưa chọn địa chỉ nào, gán địa chỉ mặc định
+                    const defaultAddress = response.data.data.find(
+                        (addr) => addr.is_default === 1
+                    );
+                    if (!selectedAddress && defaultAddress) {
+                        setSelectedAddress(defaultAddress);
+                    }
+                } else {
+                    console.error(
+                        "Không lấy được địa chỉ:",
+                        response.data.message
+                    );
+                }
+            } catch (error) {
+                console.error("Lỗi khi gọi API lấy địa chỉ:", error);
+            }
+        };
+
+        if (loginedProfile?.id) {
+            fetchAddresses();
+        }
+    }, [loginedProfile]);
+
+    const deleteAddress = async (addressId, userId) => {
+        try {
+            const response = await axios.delete(
+                `/api/delete-address/${addressId}`,
+                {
+                    params: { user_id: userId },
+                }
+            );
+
+            if (response.status === 200) {
+                // Cập nhật danh sách địa chỉ sau khi xóa thành công
+                setAddresses((prevAddresses) =>
+                    prevAddresses.filter(
+                        (address) => address.address_id !== addressId
+                    )
+                );
+                showToast("Địa chỉ đã được xóa thành công!");
+            }
+        } catch (error) {
+            console.error("Error deleting address:", error);
+            alert("Có lỗi khi xóa địa chỉ. Vui lòng thử lại!");
+        }
+    };
+
+    const handleShowModal = () => {
+        setShowAddressModal(true);
+    };
+
+    // Hàm xử lý chọn địa chỉ
+    const handleAddressChange = (address) => {
+        setSelectedAddress(address);
+    };
+
+    // Hàm đóng modal
+    const handleCloseModal = () => {
+        setShowAddressModal(false);
+    };
+
+    // Hàm xác nhận địa chỉ
+    const handleConfirmAddress = () => {
+        // Xử lý khi xác nhận địa chỉ
+        setShowAddressModal(false);
+    };
+
+    // Edit address
+    const handleEditAddress = (address) => {
+        setSelectedAddress(address);
+        setShowUpdateAddressModal(true); // Open Update Address modal
+    };
+
+    // Close Update Address Modal
+    const handleCloseUpdateAddressModal = () => {
+        setShowUpdateAddressModal(false);
+    };
+
+    // Hàm xóa địa chỉ
+    const handleDeleteAddress = (addressId) => {
+        if (loginedProfile?.id) {
+            deleteAddress(addressId, loginedProfile.id);
+        } else {
+            alert("Bạn cần đăng nhập để xóa địa chỉ.");
+        }
+    };
+
+    const handleAddNewAddress = () => {
+        setShowAddAddressModal(true);
+    };
+    // Hàm thêm địa chỉ mới vào danh sách
+    const handleAddAddress = (newAddress) => {
+        setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
+    };
+    const handleCloseAddAddressModal = () => {
+        setShowAddAddressModal(false);
+    };
     return (
         <div className={cx("cart-page")}>
             <div className={cx("cart-left")}>
@@ -160,6 +268,136 @@ const Step2 = () => {
                                 </div>
                             )}
                         </div>
+
+                        <Modal
+                            title="Chọn địa chỉ giao hàng"
+                            open={showAddressModal}
+                            onCancel={handleCloseModal}
+                            footer={[
+                                <Button
+                                    style={{ marginRight: "50px" }}
+                                    primary
+                                    key="back"
+                                    onClick={handleCloseModal}
+                                >
+                                    Đóng
+                                </Button>,
+                                <Button
+                                    style={{ marginLeft: "20px" }}
+                                    key="submit"
+                                    primary
+                                    onClick={handleConfirmAddress}
+                                    disabled={!selectedAddress}
+                                >
+                                    Xác nhận
+                                </Button>,
+                            ]}
+                        >
+                            <div>
+                                <Radio.Group
+                                    onChange={(e) =>
+                                        handleAddressChange(e.target.value)
+                                    }
+                                    value={selectedAddress?.address_id}
+                                    style={{ width: "100%" }}
+                                >
+                                    {addresses.map((address) => (
+                                        <Radio
+                                            key={address.address_id}
+                                            value={address}
+                                            style={{ width: "100%" }}
+                                        >
+                                            <div
+                                                className={styles.addressOption}
+                                            >
+                                                <div
+                                                    className={
+                                                        styles.addressContent
+                                                    }
+                                                >
+                                                    <p className="name">
+                                                        {address.receiver_name}
+                                                    </p>
+                                                    <p className="phone">
+                                                        {address.phone}
+                                                    </p>
+                                                    <p className="fullAddress">
+                                                        {address.street_address}
+                                                        , {address.ward},<br />
+                                                        {address.district},{" "}
+                                                        {address.province}
+                                                    </p>
+                                                    <div
+                                                        className={
+                                                            styles.addressActions
+                                                        }
+                                                    >
+                                                        <Button
+                                                            primary
+                                                            onClick={() =>
+                                                                handleEditAddress(
+                                                                    address
+                                                                )
+                                                            }
+                                                            className={
+                                                                styles.editButton
+                                                            }
+                                                        >
+                                                            Sửa
+                                                        </Button>
+                                                        <Button
+                                                            primary
+                                                            onClick={() =>
+                                                                handleDeleteAddress(
+                                                                    address.address_id
+                                                                )
+                                                            }
+                                                            className={
+                                                                styles.deleteButton
+                                                            }
+                                                        >
+                                                            Xóa
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Radio>
+                                    ))}
+                                </Radio.Group>
+
+                                {/* Thêm địa chỉ */}
+                                <Button
+                                    primary
+                                    className={styles.addButton}
+                                    onClick={handleAddNewAddress}
+                                >
+                                    Thêm địa chỉ mới
+                                </Button>
+                                <AddAddress
+                                    visible={showAddAddressModal}
+                                    onCancel={handleCloseAddAddressModal}
+                                    onAddAddress={handleAddAddress}
+                                    userId={loginedProfile?.id}
+                                />
+                            </div>
+                        </Modal>
+                        <UpdateAddress
+                            visible={showUpdateAddressModal}
+                            onCancel={handleCloseUpdateAddressModal}
+                            address={selectedAddress}
+                            userId={loginedProfile?.id}
+                            onUpdateAddress={(updatedAddress) => {
+                                setAddresses((prevAddresses) =>
+                                    prevAddresses.map((addr) =>
+                                        addr.address_id ===
+                                        updatedAddress.address_id
+                                            ? updatedAddress
+                                            : addr
+                                    )
+                                );
+                                setShowUpdateAddressModal(false);
+                            }}
+                        />
                     </div>
                 </div>
             </div>
@@ -194,7 +432,7 @@ const Step2 = () => {
                     onClick={() => {
                         const itemsQuery = cachedItemIds.join(",");
                         navigate(
-                            `${config.routes.user.step3}?items=${itemsQuery}`
+                            `${config.routes.user.step3}?totalPrice=${totalPrice}`
                         );
                     }}
                     disabled={selectedCart.length === 0}

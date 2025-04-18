@@ -82,47 +82,107 @@
     width: 130px;
 }
 
-// .address-shipping{
-//   background-color: white;
-//   padding: 1.5rem;
-//   border-radius: 0.5rem;
-//   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-// }
 
 .wrapper {
-    background: white;
-    padding: 24px;
+    border: 1px solid #e0e0e0;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    margin-top: 16px;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-}
+    margin-bottom: 12px;
 
-.changeButton {
-    color: #2563eb;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: color 0.2s;
-}
+    .title {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+    }
 
-.changeButton:hover {
-    color: #1e40af;
+    .changeButton {
+        font-size: 14px;
+        color: #1677ff;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        font-weight: 500;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }
 
 .addressInfo {
-    color: #4b5563;
+    line-height: 1.7;
+    font-size: 15px;
+    color: #333;
+
+    .name {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    p {
+        margin: 0 0 4px;
+    }
 }
 
-.name {
-    font-weight: 500;
+
+.addressOption {
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background-color: #fafafa;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+
+    &:hover {
+        border-color: #1677ff;
+        background-color: #f0f8ff;
+    }
 }
+
+.addressContent {
+    line-height: 1.6;
+    font-size: 15px;
+
+    .name {
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: #222;
+    }
+
+    .phone {
+        color: #444;
+        margin-bottom: 4px;
+    }
+
+    .fullAddress {
+        color: #555;
+        white-space: pre-line;
+    }
+}
+
+/* Khi được chọn */
+.ant-radio-wrapper-checked .addressOption {
+    border-color: #1677ff;
+    background-color: #e6f4ff;
+}
+
+.addressActions {
+  display: flex;
+  gap: 30px; // Khoảng cách giữa các nút
+}
+
 
 
 // Right
