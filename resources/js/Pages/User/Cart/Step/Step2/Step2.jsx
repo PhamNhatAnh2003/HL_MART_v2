@@ -20,8 +20,6 @@ const Step2 = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-
-
     // Lấy danh sách ID sản phẩm được chọn từ query
     const queryParams = new URLSearchParams(location.search);
     const itemIds = queryParams.get("items")?.split(",") || [];
@@ -42,7 +40,6 @@ const Step2 = () => {
         0
     );
 
-
     useEffect(() => {
         if (loginedProfile) {
             setProfile(loginedProfile);
@@ -53,41 +50,6 @@ const Step2 = () => {
         <div className={cx("cart-page")}>
             <div className={cx("cart-left")}>
                 <CartStep step={2} />
-                <div className={styles.productListContainer}>
-                    <h2 className={styles.title}>Sản phẩm</h2>
-                    <div className={styles.productList}>
-                        {orderItems.map((item) => (
-                            <div
-                                key={item.cart_item_id}
-                                className={styles.productItem}
-                            >
-                                <img
-                                    src={item.image_url}
-                                    alt={item.product_name}
-                                    className={styles.productImage}
-                                />
-                                <div className={styles.productInfo}>
-                                    <h3 className={styles.productName}>
-                                        {item.product_name}
-                                    </h3>
-                                    <p className={styles.productDetails}>
-                                        {item.color_name} - {item.size}
-                                    </p>
-                                    <p className={styles.productDetails}>
-                                        {item.quantity} ×{" "}
-                                        {item.unit_price.toLocaleString(
-                                            "vi-VN"
-                                        )}
-                                        đ
-                                    </p>
-                                    <p className={styles.productSubtotal}>
-                                        {item.subtotal.toLocaleString("vi-VN")}đ
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
                 <div className={cx("cart-content")}>
                     <div className={cx("title")}>Thông tin người nhận hàng</div>
 
