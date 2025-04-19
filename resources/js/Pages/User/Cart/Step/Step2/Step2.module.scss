@@ -106,7 +106,7 @@
 
     .changeButton {
         font-size: 14px;
-        color: #1677ff;
+        color:var(--bg-secondary);
         background: none;
         border: none;
         cursor: pointer;
@@ -118,6 +118,81 @@
         }
     }
 }
+
+.dangerButton {
+    background-color: #f0f0f0;
+    color: black;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+        background-color: #ff4d4f;
+        color: white;
+        border-color: #ff4d4f;
+        cursor: pointer;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+
+.deleteButton{
+    background-color: #f0f0f0;
+    color: black;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: background-color 0.3s, color 0.3s;
+    width: 65px;
+    height: 40px;
+    margin-left: 30px;
+    margin-top: 20px;
+
+    &:hover {
+        background-color: #ff4d4f;
+        color: white;
+        border-color: #ff4d4f;
+        cursor: pointer;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+
+.editButton{
+    background-color: #f0f0f0;
+    color: black;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: background-color 0.3s, color 0.3s;
+    width: 65px;
+    height: 40px;
+    margin-left: 10px;
+    margin-top: 20px;
+
+    &:hover {
+        background-color: #ff4d4f;
+        color: white;
+        border-color: #ff4d4f;
+        cursor: pointer;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+}
+
+
 
 .addressInfo {
     line-height: 1.7;
