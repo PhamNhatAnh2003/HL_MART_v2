@@ -105,7 +105,7 @@
     }
 
     .changeButton {
-        font-size: 14px;
+        font-size: 16px;
         color:var(--bg-secondary);
         background: none;
         border: none;
@@ -128,9 +128,9 @@
     transition: background-color 0.3s, color 0.3s;
 
     &:hover {
-        background-color: #ff4d4f;
+        background-color: var(--bg-secondary);
         color: white;
-        border-color: #ff4d4f;
+        border-color: var(--bg-secondary);
         cursor: pointer;
     }
 
@@ -154,9 +154,9 @@
     margin-top: 20px;
 
     &:hover {
-        background-color: #ff4d4f;
+        background-color: var(--bg-secondary);
         color: white;
-        border-color: #ff4d4f;
+        border-color: var(--bg-secondary);
         cursor: pointer;
     }
 
@@ -180,9 +180,9 @@
     margin-top: 20px;
 
     &:hover {
-        background-color: #ff4d4f;
+        background-color: var(--bg-secondary);
         color: white;
-        border-color: #ff4d4f;
+        border-color: var(--bg-secondary);
         cursor: pointer;
     }
 
