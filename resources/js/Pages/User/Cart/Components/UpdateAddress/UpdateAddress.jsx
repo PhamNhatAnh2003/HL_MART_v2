@@ -11,18 +11,28 @@ const UpdateAddress = ({
     addressId,
 }) => {
     const [form] = Form.useForm(); // Form instance to handle form data
-    const [loading, setLoading] = useState(false);
 
-    // Fetch the existing address data for editing
+    // Lấy thông tin địa chỉ hiện tại từ API
     useEffect(() => {
         const fetchAddress = async () => {
             if (addressId) {
                 try {
                     const response = await axios.get(
-                        `http://127.0.0.1:8000/api/address/${addressId}?user_id=${userId}`
+                        `http://127.0.0.1:8000/api/addresses?address_id=${addressId}&user_id=${userId}`
                     );
+                    console.log("Dữ liệu nhận được từ API:", response.data); // Kiểm tra dữ liệu API
+
                     if (response.data.status) {
-                        form.setFieldsValue(response.data.data); // Pre-fill the form with the address data
+                        // Lọc địa chỉ dựa trên addressId
+                        const address = response.data.data.find(
+                            (item) => item.address_id === addressId
+                        );
+
+                        if (address) {
+                            form.setFieldsValue(address); // Set data từ địa chỉ vào form
+                        } else {
+                            showToast("Không tìm thấy địa chỉ để chỉnh sửa!");
+                        }
                     } else {
                         showToast("Không tìm thấy địa chỉ để chỉnh sửa!");
                     }
@@ -38,72 +48,62 @@ const UpdateAddress = ({
         }
     }, [visible, addressId, userId, form]);
 
-    // Handle update address
-   const handleUpdateAddress = async (values) => {
-       if (!addressId) {
-           showToast("Thiếu mã địa chỉ để cập nhật.");
-           return;
-       }
+    // Hàm cập nhật địa chỉ
+    const handleUpdateAddress = async (values) => {
+        console.log("addressId:", addressId); // Kiểm tra addressId
+        console.log("userId:", userId); // Kiểm tra userId
+        console.log("Dữ liệu từ form:", values); // Kiểm tra dữ liệu form
+        if (!addressId) {
+            showToast("Thiếu mã địa chỉ để cập nhật.");
+            return;
+        }
 
-       setLoading(true);
-       try {
-           const response = await axios.post(
-               `http://127.0.0.1:8000/api/address/update/${addressId}`,
-               {
-                   ...values,
-                   user_id: userId, // gửi kèm user_id trong body
-               }
-           );
+        try {
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/address/update/${addressId}`,
+                {
+                    ...values,
+                    user_id: userId,
+                }
+            );
 
-           if (response.data.status) {
-               showToast("Địa chỉ đã được cập nhật!");
-               onUpdateAddress(response.data.data); // Pass updated address to parent
-               form.resetFields();
-               onCancel();
-           } else {
-               showToast("Cập nhật địa chỉ thất bại. Vui lòng thử lại!");
-           }
-       } catch (error) {
-           console.error("Lỗi khi cập nhật địa chỉ:", error);
-           showToast("Có lỗi khi cập nhật địa chỉ. Vui lòng thử lại!");
-       } finally {
-           setLoading(false);
-       }
-   };
+            if (response.data.status) {
+                showToast("Địa chỉ đã được cập nhật!");
+                onUpdateAddress(response.data.data); // Trả data về cha
+                handleClose(); // Reset và đóng modal
+            } else {
+                showToast("Cập nhật địa chỉ thất bại. Vui lòng thử lại!");
+            }
+        } catch (error) {
+            console.error("Lỗi khi cập nhật địa chỉ:", error);
+            showToast("Có lỗi khi cập nhật địa chỉ. Vui lòng thử lại!");
+        }
+    };
+
+    const handleClose = () => {
+        form.resetFields();
+        onCancel();
+    };
 
     return (
         <Modal
             title="Cập nhật địa chỉ"
             open={visible}
-            onCancel={onCancel}
+            onCancel={handleClose}
             footer={[
-                <Button key="cancel" onClick={onCancel}>
+                <Button key="cancel" onClick={handleClose}>
                     Hủy
                 </Button>,
                 <Button
                     key="submit"
                     type="primary"
-                    onClick={() => form.submit()}
-                    loading={loading}
+                    onClick={() => form.submit()} // Tự động trigger onFinish khi click
                 >
                     Cập nhật địa chỉ
                 </Button>,
             ]}
         >
-            <Form
-                form={form}
-                onFinish={handleUpdateAddress}
-                layout="vertical"
-                initialValues={{
-                    receiver_name: "",
-                    phone: "",
-                    street_address: "",
-                    ward: "",
-                    district: "",
-                    province: "",
-                    is_default: false,
-                }}
-            >
+            <Form form={form} onFinish={handleUpdateAddress} layout="vertical">
                 <Form.Item
                     label="Tên người nhận"
                     name="receiver_name"

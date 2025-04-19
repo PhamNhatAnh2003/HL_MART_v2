@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "~/context/AuthContext";
 import axios from "axios";
 import CartItem from "../../Components/CartItem/CartItem";
-import { Modal,Radio } from "antd";
+import { Modal, Radio } from "antd";
 import AddAddress from "../../Components/AddAddress";
 import UpdateAddress from "../../Components/UpdateAddress";
 import showToast from "~/components/message";
@@ -35,7 +35,6 @@ const Step2 = () => {
     const [orderItems, setOrderItems] = useState([]);
     const [showAddAddressModal, setShowAddAddressModal] = useState(false);
     const [showUpdateAddressModal, setShowUpdateAddressModal] = useState(false); // State for Update Address modal
-    
 
     // Lấy danh sách ID sản phẩm được chọn từ query
     const queryParams = new URLSearchParams(location.search);
@@ -102,6 +101,29 @@ const Step2 = () => {
         }
     }, [loginedProfile, cachedItemIds]);
 
+    // Load selectedAddress từ localStorage khi component mount
+    useEffect(() => {
+        const savedAddress = localStorage.getItem("selectedAddress");
+        if (savedAddress) {
+            try {
+                setSelectedAddress(JSON.parse(savedAddress));
+            } catch (error) {
+                console.error("Lỗi khi parse địa chỉ đã lưu:", error);
+            }
+        }
+    }, []);
+
+    // Lưu selectedAddress vào localStorage mỗi khi thay đổi
+    useEffect(() => {
+        if (selectedAddress) {
+            localStorage.setItem(
+                "selectedAddress",
+                JSON.stringify(selectedAddress)
+            );
+        }
+    }, [selectedAddress]);
+
+    // Fetch địa chỉ và đồng bộ với selectedAddress
     useEffect(() => {
         const fetchAddresses = async () => {
             try {
@@ -110,12 +132,28 @@ const Step2 = () => {
                 );
 
                 if (response.data.status) {
-                    setAddresses(response.data.data);
-                    // Nếu chưa chọn địa chỉ nào, gán địa chỉ mặc định
-                    const defaultAddress = response.data.data.find(
+                    const fetchedAddresses = response.data.data;
+                    setAddresses(fetchedAddresses);
+
+                    const defaultAddress = fetchedAddresses.find(
                         (addr) => addr.is_default === 1
                     );
-                    if (!selectedAddress && defaultAddress) {
+
+                    const saved = localStorage.getItem("selectedAddress");
+                    const savedAddress = saved ? JSON.parse(saved) : null;
+
+                    if (savedAddress) {
+                        const stillExists = fetchedAddresses.find(
+                            (addr) =>
+                                addr.address_id === savedAddress.address_id
+                        );
+                        if (stillExists) {
+                            setSelectedAddress(stillExists);
+                            return;
+                        }
+                    }
+
+                    if (defaultAddress) {
                         setSelectedAddress(defaultAddress);
                     }
                 } else {
@@ -163,10 +201,12 @@ const Step2 = () => {
     };
 
     // Hàm xử lý chọn địa chỉ
-    const handleAddressChange = (address) => {
-        setSelectedAddress(address);
+    const handleAddressChange = (addressId) => {
+        const selected = addresses.find(
+            (addr) => addr.address_id === addressId
+        );
+        setSelectedAddress(selected);
     };
-
     // Hàm đóng modal
     const handleCloseModal = () => {
         setShowAddressModal(false);
@@ -239,21 +279,21 @@ const Step2 = () => {
                     </div>
 
                     <div className={cx("address-shipping")}>
-                        <div className={styles.wrapper}>
-                            <div className={styles.header}>
-                                <h2 className={styles.title}>
+                        <div className={cx("wrapper")}>
+                            <div className={cx("header")}>
+                                <h2 className={cx("title")}>
                                     Địa chỉ giao hàng
                                 </h2>
                                 <button
                                     onClick={() => setShowAddressModal(true)}
-                                    className={styles.changeButton}
+                                    className={cx("changeButton")}
                                 >
                                     Thay đổi
                                 </button>
                             </div>
                             {selectedAddress && (
-                                <div className={styles.addressInfo}>
-                                    <p className={styles.name}>
+                                <div className={cx("addressInfo")}>
+                                    <p className={cx("name")}>
                                         {selectedAddress.receiver_name}
                                     </p>
                                     <p>{selectedAddress.phone}</p>
@@ -267,137 +307,142 @@ const Step2 = () => {
                                     </p>
                                 </div>
                             )}
-                        </div>
 
-                        <Modal
-                            title="Chọn địa chỉ giao hàng"
-                            open={showAddressModal}
-                            onCancel={handleCloseModal}
-                            footer={[
-                                <Button
-                                    style={{ marginRight: "50px" }}
-                                    primary
-                                    key="back"
-                                    onClick={handleCloseModal}
-                                >
-                                    Đóng
-                                </Button>,
-                                <Button
-                                    style={{ marginLeft: "20px" }}
-                                    key="submit"
-                                    primary
-                                    onClick={handleConfirmAddress}
-                                    disabled={!selectedAddress}
-                                >
-                                    Xác nhận
-                                </Button>,
-                            ]}
-                        >
-                            <div>
-                                <Radio.Group
-                                    onChange={(e) =>
-                                        handleAddressChange(e.target.value)
-                                    }
-                                    value={selectedAddress?.address_id}
-                                    style={{ width: "100%" }}
-                                >
-                                    {addresses.map((address) => (
-                                        <Radio
-                                            key={address.address_id}
-                                            value={address}
-                                            style={{ width: "100%" }}
-                                        >
-                                            <div
-                                                className={styles.addressOption}
+                            <Modal
+                                title="Chọn địa chỉ giao hàng"
+                                open={showAddressModal}
+                                onCancel={handleCloseModal}
+                                footer={[
+                                    <button
+                                        style={{ marginRight: "10px" }}
+                                        className={cx("dangerButton")}
+                                        key="back"
+                                        onClick={handleCloseModal}
+                                    >
+                                        Đóng
+                                    </button>,
+                                    <button
+                                        style={{ marginLeft: "10px" }}
+                                        key="submit"
+                                        className={cx("dangerButton")}
+                                        onClick={handleConfirmAddress}
+                                        disabled={!selectedAddress}
+                                    >
+                                        Xác nhận
+                                    </button>,
+                                ]}
+                            >
+                                <div>
+                                    <Radio.Group
+                                        onChange={(e) =>
+                                            handleAddressChange(e.target.value)
+                                        }
+                                        value={selectedAddress?.address_id}
+                                        style={{ width: "100%" }}
+                                    >
+                                        {addresses.map((address) => (
+                                            <Radio
+                                                key={address.address_id}
+                                                value={address.address_id}
+                                                style={{ width: "100%" }}
                                             >
                                                 <div
-                                                    className={
-                                                        styles.addressContent
-                                                    }
+                                                    className={cx(
+                                                        "addressOption"
+                                                    )}
                                                 >
-                                                    <p className="name">
-                                                        {address.receiver_name}
-                                                    </p>
-                                                    <p className="phone">
-                                                        {address.phone}
-                                                    </p>
-                                                    <p className="fullAddress">
-                                                        {address.street_address}
-                                                        , {address.ward},<br />
-                                                        {address.district},{" "}
-                                                        {address.province}
-                                                    </p>
                                                     <div
-                                                        className={
-                                                            styles.addressActions
-                                                        }
+                                                        className={cx(
+                                                            "addressContent"
+                                                        )}
                                                     >
-                                                        <Button
-                                                            primary
-                                                            onClick={() =>
-                                                                handleEditAddress(
-                                                                    address
-                                                                )
+                                                        <p className="name">
+                                                            {
+                                                                address.receiver_name
                                                             }
-                                                            className={
-                                                                styles.editButton
+                                                        </p>
+                                                        <p className="phone">
+                                                            {address.phone}
+                                                        </p>
+                                                        <p className="fullAddress">
+                                                            {
+                                                                address.street_address
                                                             }
+                                                            , {address.ward},
+                                                            <br />
+                                                            {
+                                                                address.district
+                                                            },{" "}
+                                                            {address.province}
+                                                        </p>
+                                                        <div
+                                                            className={cx(
+                                                                "addressActions"
+                                                            )}
                                                         >
-                                                            Sửa
-                                                        </Button>
-                                                        <Button
-                                                            primary
-                                                            onClick={() =>
-                                                                handleDeleteAddress(
-                                                                    address.address_id
-                                                                )
-                                                            }
-                                                            className={
-                                                                styles.deleteButton
-                                                            }
-                                                        >
-                                                            Xóa
-                                                        </Button>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleEditAddress(
+                                                                        address
+                                                                    )
+                                                                }
+                                                                className={cx(
+                                                                    "editButton"
+                                                                )}
+                                                            >
+                                                                Sửa
+                                                            </button>
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleDeleteAddress(
+                                                                        address.address_id
+                                                                    )
+                                                                }
+                                                                className={cx(
+                                                                    "deleteButton"
+                                                                )}
+                                                            >
+                                                                Xóa
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </Radio>
-                                    ))}
-                                </Radio.Group>
+                                            </Radio>
+                                        ))}
+                                    </Radio.Group>
 
-                                {/* Thêm địa chỉ */}
-                                <Button
-                                    primary
-                                    className={styles.addButton}
-                                    onClick={handleAddNewAddress}
-                                >
-                                    Thêm địa chỉ mới
-                                </Button>
-                                <AddAddress
-                                    visible={showAddAddressModal}
-                                    onCancel={handleCloseAddAddressModal}
-                                    onAddAddress={handleAddAddress}
-                                    userId={loginedProfile?.id}
-                                />
-                            </div>
-                        </Modal>
-                        <UpdateAddress
-                            visible={showUpdateAddressModal}
-                            onCancel={handleCloseUpdateAddressModal}
-                            address={selectedAddress}
-                            userId={loginedProfile?.id}
-                            onUpdateAddress={(updatedAddress) => {
-                                setAddresses((prevAddresses) =>
-                                    prevAddresses.map((addr) =>
-                                        addr.address_id ===
-                                        updatedAddress.address_id
-                                            ? updatedAddress
-                                            : addr
-                                    )
-                                );
-                                setShowUpdateAddressModal(false);
-                            }}
-                        />
+                                    <button
+                                        className={cx("dangerButton")}
+                                        onClick={handleAddNewAddress}
+                                    >
+                                        Thêm địa chỉ
+                                    </button>
+                                    <AddAddress
+                                        visible={showAddAddressModal}
+                                        onCancel={handleCloseAddAddressModal}
+                                        onAddAddress={handleAddAddress}
+                                        userId={loginedProfile?.id}
+                                    />
+                                </div>
+                            </Modal>
+                            <UpdateAddress
+                                visible={showUpdateAddressModal}
+                                onCancel={handleCloseUpdateAddressModal}
+                                addressId={selectedAddress?.address_id} // ✅ truyền đúng id
+                                userId={loginedProfile?.id}
+                                onUpdateAddress={(updatedAddress) => {
+                                    setAddresses((prevAddresses) =>
+                                        prevAddresses.map((addr) =>
+                                            addr.address_id ===
+                                            updatedAddress.address_id
+                                                ? updatedAddress
+                                                : addr
+                                        )
+                                    );
+                                    setShowUpdateAddressModal(false);
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
