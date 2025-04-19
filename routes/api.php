@@ -54,8 +54,9 @@ Route::get('categories', [CategoryController::class, 'index']); // Lấy danh s�
 Route::get('categories/{id}', [CategoryController::class, 'show']); // Lấy chi tiết một danh mục
 
 
-
+//address
 Route::get('/addresses', [AddressController::class, 'getAddresses']);
 Route::post('/add-address', [AddressController::class, 'addAddress']);
 Route::post('address/update/{id}', [AddressController::class, 'updateAddress']);
 Route::delete('/delete-address/{id}', [AddressController::class, 'deleteAddress']);
+Route::post('/set-default-address', [AddressController::class, 'setDefault']);

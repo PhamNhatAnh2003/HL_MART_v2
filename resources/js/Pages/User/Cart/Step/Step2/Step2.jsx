@@ -220,11 +220,34 @@ const Step2 = () => {
         setShowAddressModal(false);
     };
 
-    // Hàm xác nhận địa chỉ
-    const handleConfirmAddress = () => {
-        // Xử lý khi xác nhận địa chỉ
+const handleConfirmAddress = async () => {
+    if (!selectedAddress) return;
+console.log("selectedAddress:", selectedAddress);
+console.log(
+    "address_id:",
+    selectedAddress ? selectedAddress.id : "Không có id"
+);
+
+   try {
+    const response = await axios.post(
+        "http://127.0.0.1:8000/api/set-default-address", // Đảm bảo đây là endpoint chính xác
+        {
+            user_id: selectedAddress.user_id, // Đưa user_id vào body thay vì query string
+            address_id: selectedAddress.address_id, // Đưa address_id vào body
+        }
+    );
+
+        // Ẩn modal
         setShowAddressModal(false);
-    };
+
+        // Optional: Thông báo thành công / cập nhật lại danh sách địa chỉ
+        showToast("Đã thay đổi địa chỉ giao hàng");
+        // refreshAddressList(); // Nếu có hàm load lại danh sách địa chỉ
+    } catch (error) {
+        console.error("Lỗi khi đặt địa chỉ mặc định:", error);
+        showToast("Có lỗi xảy ra khi cập nhật địa chỉ giao hàng.");
+    }
+};
 
     // Edit address
     const handleEditAddress = (address) => {
