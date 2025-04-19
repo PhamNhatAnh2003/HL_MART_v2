@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Response;
 use App\Models\CartItem;
 use App\Models\Cart;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -190,5 +191,40 @@ public function deleteAddress(Request $request, $id)
         'message' => 'Địa chỉ đã được xóa'
     ]);
 }
+
+public function setDefault(Request $request)
+{
+     $userId = $request->input('user_id'); // Lấy user_id từ body
+    $addressId = $request->input('address_id'); // Lấy address_id từ body
+
+    // Kiểm tra nếu user_id hoặc address_id không có trong request
+    if (!$userId || !$addressId) {
+        return response()->json(['message' => 'Thiếu thông tin user_id hoặc address_id'], 400);
+    }
+
+    // Lấy user từ database
+    $user = User::find($userId);
+
+    if (!$user) {
+        return response()->json(['message' => 'User không tồn tại'], 404);
+    }
+
+    // Kiểm tra xem địa chỉ có thuộc về user hay không
+    $address = $user->addresses()->where('address_id', $addressId)->first();
+
+    if (!$address) {
+        return response()->json(['message' => 'Địa chỉ không hợp lệ hoặc không thuộc user'], 404);
+    }
+
+    // Đặt tất cả các địa chỉ của user thành không phải mặc định
+    $user->addresses()->update(['is_default' => false]);
+
+    // Cập nhật địa chỉ này thành mặc định
+    $address->is_default = true;
+    $address->save();
+
+    return response()->json(['message' => 'Cập nhật địa chỉ mặc định thành công']);
+}
+
 }
 
