@@ -133,34 +133,42 @@ const Step2 = () => {
 
                 if (response.data.status) {
                     const fetchedAddresses = response.data.data;
-                    setAddresses(fetchedAddresses);
 
-                    const defaultAddress = fetchedAddresses.find(
-                        (addr) => addr.is_default === 1
-                    );
+                    if (fetchedAddresses.length > 0) {
+                        setAddresses(fetchedAddresses);
 
-                    const saved = localStorage.getItem("selectedAddress");
-                    const savedAddress = saved ? JSON.parse(saved) : null;
-
-                    if (savedAddress) {
-                        const stillExists = fetchedAddresses.find(
-                            (addr) =>
-                                addr.address_id === savedAddress.address_id
+                        const defaultAddress = fetchedAddresses.find(
+                            (addr) => addr.is_default === 1
                         );
-                        if (stillExists) {
-                            setSelectedAddress(stillExists);
-                            return;
-                        }
-                    }
 
-                    if (defaultAddress) {
-                        setSelectedAddress(defaultAddress);
+                        const saved = localStorage.getItem("selectedAddress");
+                        const savedAddress = saved ? JSON.parse(saved) : null;
+
+                        if (savedAddress) {
+                            const stillExists = fetchedAddresses.find(
+                                (addr) =>
+                                    addr.address_id === savedAddress.address_id
+                            );
+                            if (stillExists) {
+                                setSelectedAddress(stillExists);
+                                return;
+                            }
+                        }
+
+                        if (defaultAddress) {
+                            setSelectedAddress(defaultAddress);
+                        }
+                    } else {
+                        // Không có địa chỉ, có thể không cần hiển thị gì hoặc hiển thị thông báo
+                        console.log("Chưa có địa chỉ nào.");
+                        // Nếu cần, có thể setSelectedAddress(null) để đảm bảo không có địa chỉ mặc định
+                        setSelectedAddress(null);
                     }
                 } else {
-                    console.error(
-                        "Không lấy được địa chỉ:",
-                        response.data.message
-                    );
+                    // console.error(
+                    //     "Không lấy được địa chỉ:",
+                    //     response.data.message
+                    // );
                 }
             } catch (error) {
                 console.error("Lỗi khi gọi API lấy địa chỉ:", error);
@@ -254,7 +262,7 @@ const Step2 = () => {
                 <CartStep step={2} />
                 <div className={cx("cart-content")}>
                     <div className={cx("productListContainer")}>
-                        <h2 className={cx("title")}>Sản phẩm</h2>
+                        <h2 className={cx("title")}>Danh sách sản phẩm</h2>
                         <div className={cx("productList")}>
                             <div className={cx("container")}>
                                 <div className={cx("columnSTT")}>STT</div>
@@ -291,21 +299,32 @@ const Step2 = () => {
                                     Thay đổi
                                 </button>
                             </div>
-                            {selectedAddress && (
-                                <div className={cx("addressInfo")}>
-                                    <p className={cx("name")}>
-                                        {selectedAddress.receiver_name}
-                                    </p>
-                                    <p>{selectedAddress.phone}</p>
+
+                            {/* Kiểm tra xem có địa chỉ không */}
+                            {addresses.length === 0 ? (
+                                <div className={cx("no-address")}>
                                     <p>
-                                        {selectedAddress.street_address},{" "}
-                                        {selectedAddress.ward},
-                                    </p>
-                                    <p>
-                                        {selectedAddress.district},{" "}
-                                        {selectedAddress.province}
+                                        Chưa có địa chỉ giao hàng. Bạn có thể
+                                        thêm địa chỉ mới.
                                     </p>
                                 </div>
+                            ) : (
+                                selectedAddress && (
+                                    <div className={cx("addressInfo")}>
+                                        <p className={cx("name")}>
+                                            {selectedAddress.receiver_name}
+                                        </p>
+                                        <p>{selectedAddress.phone}</p>
+                                        <p>
+                                            {selectedAddress.street_address},{" "}
+                                            {selectedAddress.ward},
+                                        </p>
+                                        <p>
+                                            {selectedAddress.district},{" "}
+                                            {selectedAddress.province}
+                                        </p>
+                                    </div>
+                                )
                             )}
 
                             <Modal
@@ -428,7 +447,7 @@ const Step2 = () => {
                             <UpdateAddress
                                 visible={showUpdateAddressModal}
                                 onCancel={handleCloseUpdateAddressModal}
-                                addressId={selectedAddress?.address_id} // ✅ truyền đúng id
+                                addressId={selectedAddress?.address_id}
                                 userId={loginedProfile?.id}
                                 onUpdateAddress={(updatedAddress) => {
                                     setAddresses((prevAddresses) =>
