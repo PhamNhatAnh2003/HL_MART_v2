@@ -13,7 +13,7 @@ import { AuthContext } from "~/context/AuthContext";
 const cx = classNames.bind(styles);
 
 const CartStep3 = () => {
-    const { profile: loginedProfile } = useContext(AuthContext);
+    const { user: loginedProfile } = useContext(AuthContext);
     const { profile, setProfile } = useProfile();
     const { cart } = useCart();
     const navigate = useNavigate();
@@ -46,16 +46,12 @@ const CartStep3 = () => {
         setProfile(loginedProfile);
     }, [loginedProfile]);
 
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-    const [orderDetails, setOrderDetails] = useState({
-        // Các thông tin đơn hàng (Sản phẩm, giá trị, địa chỉ giao hàng, v.v.)
-        items: [],
-        totalPrice: 0,
-        shippingAddress: "",
-    });
+     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+    const [qrCodeUrl, setQrCodeUrl] = useState(null);
 
     const handlePaymentMethodChange = (event) => {
         setSelectedPaymentMethod(event.target.value);
+        setQrCodeUrl(null); // Reset QR nếu đổi phương thức
     };
 
     const handleCreateOrder = async () => {
@@ -65,20 +61,23 @@ const CartStep3 = () => {
         }
 
         try {
-            // Gửi yêu cầu tạo đơn hàng lên backend
             const response = await axios.post(
                 "http://127.0.0.1:8000/api/create-order",
                 {
                     payment_method: selectedPaymentMethod,
-                    items: orderDetails.items,
-                    total_price: orderDetails.totalPrice,
-                    shipping_address: orderDetails.shippingAddress,
+                    items: filteredCart,
+                    total_price: totalPrice,
+                    shipping_address: profile?.address || "",
                 }
             );
 
             if (response.data.status) {
-                alert("Đơn hàng đã được tạo thành công!");
-                // Điều hướng đến trang thanh toán hoặc trang xác nhận đơn hàng
+                if (selectedPaymentMethod === "momo" && response.data.qr_url) {
+                    setQrCodeUrl(response.data.qr_url);
+                } else {
+                    alert("Đặt hàng thành công!");
+                    navigate("/order-success"); // điều hướng tùy bạn
+                }
             } else {
                 alert("Có lỗi xảy ra khi tạo đơn hàng!");
             }
@@ -96,48 +95,63 @@ const CartStep3 = () => {
                 <div className={cx("cart-content")}>
                     <div className={cx("cart-right")}>
                         <h1>Chọn phương thức thanh toán</h1>
-                        <form>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="momo"
-                                    checked={selectedPaymentMethod === "momo"}
-                                    onChange={handlePaymentMethodChange}
-                                />
-                                Momo
-                            </label>
-                            <br />
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="credit_card"
-                                    checked={
-                                        selectedPaymentMethod === "credit_card"
-                                    }
-                                    onChange={handlePaymentMethodChange}
-                                />
-                                Thẻ tín dụng
-                            </label>
-                            <br />
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="cash_on_delivery"
-                                    checked={
-                                        selectedPaymentMethod ===
-                                        "cash_on_delivery"
-                                    }
-                                    onChange={handlePaymentMethodChange}
-                                />
-                                Thanh toán khi nhận hàng
-                            </label>
-                            <br />
+                    <form>
+                        <label>
+                            <input
+                                type="radio"
+                                value="momo"
+                                checked={selectedPaymentMethod === "momo"}
+                                onChange={handlePaymentMethodChange}
+                            />
+                            Thanh toán qua Momo
+                        </label>
+                        <br />
+                        <label>
+                            <input
+                                type="radio"
+                                value="credit_card"
+                                checked={
+                                    selectedPaymentMethod === "credit_card"
+                                }
+                                onChange={handlePaymentMethodChange}
+                            />
+                            Thẻ tín dụng
+                        </label>
+                        <br />
+                        <label>
+                            <input
+                                type="radio"
+                                value="cash_on_delivery"
+                                checked={
+                                    selectedPaymentMethod ===
+                                    "cash_on_delivery"
+                                }
+                                onChange={handlePaymentMethodChange}
+                            />
+                            Thanh toán khi nhận hàng
+                        </label>
+                        <br />
 
-                            <button type="button" onClick={handleCreateOrder}>
-                                Tạo đơn hàng
-                            </button>
-                        </form>
-                    </div>
+                        <button
+                            type="button"
+                            onClick={handleCreateOrder}
+                            style={{ marginTop: "16px" }}
+                        >
+                            Tạo đơn hàng
+                        </button>
+                    </form>
+
+                    {selectedPaymentMethod === "momo" && qrCodeUrl && (
+                        <div className={cx("qr-wrapper")}>
+                            <h3>Quét mã QR để thanh toán</h3>
+                            <img
+                                src={qrCodeUrl}
+                                alt="Mã QR Momo"
+                                className={cx("qr-image")}
+                            />
+                        </div>
+                    )}
+                </div>
                 </div>
             </div>
             <div className={cx("cart-right")}>
