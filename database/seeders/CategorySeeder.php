@@ -6,54 +6,68 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         DB::table('categories')->insert([
             [
-                'name' => 'Điện tử',
-                'parent_id' => null, // Danh mục gốc
+                'name' => 'Lương thực',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'Thời trang',
-                'parent_id' => null, // Danh mục gốc
+                'name' => 'Gia vị & Dầu ăn',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'Điện thoại',
-                'parent_id' => null, // Con của "Điện tử"
+                'name' => 'Đồ khô - Đồ hộp',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'Laptop',
-                'parent_id' => null, // Con của "Điện tử"
+                'name' => 'Sữa & Đồ uống',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'name' => 'Quần áo nam',
-                'parent_id' => null, // Con của "Thời trang"
+                'name' => 'Rau củ quả',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-             [
-                'name' => 'Quần áo nu',
-                'parent_id' => null, // Con của "Thời trang"
+            [
+                'name' => 'Trái cây tươi',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
-             [
-                'name' => 'Quần áo na',
-                'parent_id' => null, // Con của "Thời trang"
+            [
+                'name' => 'Bánh kẹo',
+                'parent_id' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Mì - Miến - Bún',
+                'parent_id' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Thực phẩm đông lạnh',
+                'parent_id' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'Nước ngọt & Nước khoáng',
+                'parent_id' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
