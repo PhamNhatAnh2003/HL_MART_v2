@@ -18,6 +18,7 @@
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   height: 100%;
+  margin-right: 10px;
 }
 
 .statsBox {
@@ -29,6 +30,7 @@
   flex-direction: column;
   gap: 20px;
   height: 100%;
+  margin-left: 10px;
 }
 
 .label {
@@ -82,4 +84,29 @@
   font-weight: 700;
   color: #555;
   margin-bottom: 5px;
+}
+ ///fnwjf
+ /// 
+ 
+.summaryGrid {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); // 3 cột
+    gap: 20px;
+    
+    @media (max-width: 992px) {
+        grid-template-columns: repeat(2, 1fr); // nhỏ hơn 992px thì 2 cột
+    }
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr; // nhỏ hơn 600px thì 1 cột
+    }
+}
+
+.summaryItem {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
 }

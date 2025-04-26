@@ -58,17 +58,17 @@ const Dashboard = () => {
                       "#36A2EB",
                       "#FFCE56",
                       "#4BC0C0",
-                      "#9966FF", // Màu sắc hiện tại
+                      "#9966FF",
                       "#FF9F40",
                       "#220066",
                       "#FF7700",
                       "#00FF77",
-                      "#FF5733", // Thêm nhiều màu sắc
+                      "#FF5733",
                       "#C70039",
                       "#900C3F",
                       "#581845",
                       "#1D3557",
-                      "#F1FAEE", // Các màu sắc mới
+                      "#F1FAEE",
                       "#F4A261",
                       "#2A9D8F",
                       "#264653",
@@ -118,7 +118,7 @@ const Dashboard = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/product/most-sold"
             );
-            console.log(response.data);
+            // console.log(response.data);
             // Hiển thị thông tin sản phẩm bán chạy nhất
          if (response.data && response.data.data) {
              const mostSoldProduct = response.data.data;
@@ -142,7 +142,7 @@ const Dashboard = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/product/highest-income"
             );
-            console.log(response.data);
+            // console.log(response.data);
 
             if (response.data && response.data.data) {
                 const highestIncomeProduct = response.data.data;
@@ -176,7 +176,7 @@ const Dashboard = () => {
             }
 
             const newChartInstance = new Chart(chartRef.current, {
-                type: "doughnut",
+                type: "pie",
                 data: chartData,
                 options: {
                     responsive: true,
@@ -191,6 +191,7 @@ const Dashboard = () => {
     return (
         <div className={cx("dashboardContainer")}>
             <h2 className={cx("title")}>Thống kê sản phẩm</h2>
+            
             <Row>
                 <Col xl={12} lg={12} md={12} sm={24} xs={24}>
                     <div className={cx("chartBox")}>
@@ -220,7 +221,7 @@ const Dashboard = () => {
                     </div>
                 </Col>
             </Row>
-            <Row className={cx("summaryBox")}>
+            {/* <Row className={cx("summaryBox")}>
                 <Col span={24} className={cx("summaryItem")}>
                     <h1 className={cx("highlight")}>Sản phẩm bán chạy nhất</h1>
                     <h1 className={cx("productName")}>
@@ -241,10 +242,64 @@ const Dashboard = () => {
                         {highestIncomeProduct.name}
                     </h1>
                     <h1 className={cx("valueGreen")}>
-                        Doanh thu: {formatPrice(highestIncomeProduct.total_price)}
+                        Doanh thu:{" "}
+                        {formatPrice(highestIncomeProduct.total_price)}
                     </h1>
                 </Col>
-            </Row>
+            </Row> */}
+            <div className={cx("summaryGrid")}>
+                <div className={cx("summaryItem")}>
+                    <h1 className={cx("highlight")}>Sản phẩm bán chạy nhất</h1>
+                    <h1 className={cx("productName")}>
+                        {mostSoldProduct.name}
+                    </h1>
+                    <div className={cx("valueRed")}>
+                        Đã bán: {mostSoldProduct.quantity}
+                    </div>
+                    <h1 className={cx("valueGreen")}>
+                        Giá bán: {formatPrice(mostSoldProduct.price)}
+                    </h1>
+                </div>
+
+                <div className={cx("summaryItem")}>
+                    <h1 className={cx("highlight")}>
+                        Sản phẩm có doanh thu cao nhất
+                    </h1>
+                    <h1 className={cx("productName")}>
+                        {highestIncomeProduct.name}
+                    </h1>
+                    <h1 className={cx("valueGreen")}>
+                        Doanh thu:{" "}
+                        {formatPrice(highestIncomeProduct.total_price)}
+                    </h1>
+                </div>
+
+                <div className={cx("summaryItem")}>
+                    <h1 className={cx("highlight")}>
+                        Sản phẩm có doanh thu cao nhất
+                    </h1>
+                    <h1 className={cx("productName")}>
+                        {highestIncomeProduct.name}
+                    </h1>
+                    <h1 className={cx("valueGreen")}>
+                        Doanh thu:{" "}
+                        {formatPrice(highestIncomeProduct.total_price)}
+                    </h1>
+                </div>
+
+                <div className={cx("summaryItem")}>
+                    <h1 className={cx("highlight")}>
+                        Sản phẩm có doanh thu cao nhất
+                    </h1>
+                    <h1 className={cx("productName")}>
+                        {highestIncomeProduct.name}
+                    </h1>
+                    <h1 className={cx("valueGreen")}>
+                        Doanh thu:{" "}
+                        {formatPrice(highestIncomeProduct.total_price)}
+                    </h1>
+                </div>
+            </div>
         </div>
     );
 };
