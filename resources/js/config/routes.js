@@ -2,7 +2,7 @@ const routes = {
     admin: {
         dashboard: "/admin/dashboard",
         productDetail: "/admin/product/:id",
-        productList: "/admin/products",
+        productManage: "/admin/products",
         productCreate: "/admin/product/create",
         customers: "/admin/customers",
     },
