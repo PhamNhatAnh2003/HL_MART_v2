@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 .layout {
     display: flex;
     justify-content: center;
@@ -12,11 +18,14 @@
 }
 
 .popup {
-    width: 1000px;
-    height: fit-content;
+    width: 90%; /* Giới hạn chiều rộng popup để không bị tràn */
+    max-width: 1000px; /* Đảm bảo chiều rộng tối đa */
+    height: auto;
+    max-height: 90%; /* Giới hạn chiều cao để không tràn */
     background-color: var(--bg-secondary-2);
     border-radius: 8px;
-    padding: 10px 24px
+    padding: 20px;
+    overflow: auto; /* Đảm bảo nội dung không bị tràn mà có thể cuộn */
 }
 
 .flex-row {
@@ -24,10 +33,12 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
+    width: 100%; /* Đảm bảo không bị tràn */
+    flex-wrap: wrap; /* Nếu cần, phần tử có thể chuyển sang dòng mới */
+}
 
-    .flex-1 {
-        flex: 1;
-    }
+.flex-1 {
+    flex: 1;
 }
 
 .flex-col {
@@ -37,141 +48,150 @@
 }
 
 .header {
-     margin-top: 10px;
+    margin-top: 10px;
+}
 
-    span {
-        color: var(--cl-primary);
-        font-weight: 700;
-        font-family: "Arial", sans-serif; // Thay bằng font mong muốn
-    }
+.header span {
+    color: var(--cl-primary);
+    font-weight: 700;
+    font-family: "Arial", sans-serif;
+}
 
-    button {
-        padding: 5px 8px;
-        background-color: #666;
-        border-radius: 50%;
-        color: #FFFFFF80;
+.header button {
+    padding: 5px 8px;
+    background-color: #666;
+    border-radius: 50%;
+    color: #FFFFFF80;
+}
 
-        :hover {
-            cursor: pointer;
-        }
-    }
+.header button:hover {
+    cursor: pointer;
 }
 
 .content {
+    display: flex;
     margin-bottom: 8px;
-    
+    width: 100%; /* Đảm bảo không bị tràn */
+}
 
-    .title {
-        color: var(--cl-primary);
-        // letter-spacing: 1px;
-        font-weight: 600;
-    }
+.content .title {
+    color: var(--cl-primary);
+    font-weight: 600;
+}
 
-    input {
-        background-color: var(--bg-secondary-2);
-    }
+.content input {
+    background-color: var(--bg-secondary-2);
+    width: 100%; /* Đảm bảo không bị tràn */
+}
 
-    .content-item {
-        background-color: white;
-        padding: 10px 16px;
-        width: 100%;
-        border-radius: 8px;
-        margin-top: 10px;
+.content .content-item {
+    background-color: white;
+    padding: 10px 16px;
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
 
-        label {
-            font-size: 16px;
-            font-weight: 500;
-        }
+.content .content-item label {
+    font-size: 16px;
+    font-weight: 500;
+}
 
-        &:not(:first-child) {
-            margin-top: 16px;
-        }
-    }
+.content .content-item:not(:first-child) {
+    margin-top: 16px;
+}
 
-    .left {
-        width: 60%;
-    }
+.left, .right {
+    width: 100%; /* Đảm bảo không bị tràn */
+    max-width: 100%; /* Đảm bảo không vượt quá chiều rộng của .content */
+}
 
-    .right {
-        width: 40%;
+.left {
+    flex: 1;
+    width: 60%;
+}
 
-        button {
-            position: absolute;
-            padding: 4px;
-            background-color: var(--cl-primary);
-            border-radius: 4px;
+.right {
+    flex: 1;
+    width: 40%;
+    position: relative;
+}
 
-            svg {
-                color: white;
-            }
+.right button {
+    position: absolute;
+    padding: 4px;
+    background-color: var(--cl-primary);
+    border-radius: 4px;
+}
 
-            :hover {
-                cursor: pointer;
-            }
-        }
+.right button svg {
+    color: white;
+}
 
-        .upload__avatar-wrapper {
-            width: 120px;
-            height: 120px;
-            border-radius: 8px;
-            background-color: var(--bg-secondary-2);
-            border: 1px dashed #797575;
-            position: relative;
-            overflow: hidden;
-            margin: 6px 0;
+.right button:hover {
+    cursor: pointer;
+}
 
-            img {
-                object-fit: cover;
-            }
+.upload__avatar-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    background-color: var(--bg-secondary-2);
+    border: 1px dashed #797575;
+    position: relative;
+    overflow: hidden;
+    margin: 6px 0;
+}
 
-            button {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-        }
+.upload__avatar-wrapper img {
+    object-fit: cover;
+}
 
-        .upload__image-wrapper {
-            height: 247px;
-            width: 100%;
-            border-radius: 8px;
-            background-color: var(--bg-secondary-2);
-            border: 1px dashed #797575;
-            position: relative;
-            padding: 10px;
-            margin-top: 6px;
+.upload__avatar-wrapper button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 
-            .add-btn {
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -20%);
-            }
+.upload__image-wrapper {
+    height: 247px;
+    width: 100%;
+    border-radius: 8px;
+    background-color: var(--bg-secondary-2);
+    border: 1px dashed #797575;
+    position: relative;
+    padding: 10px;
+    margin-top: 6px;
+}
 
-            .image-list {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
+.upload__image-wrapper .add-btn {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+}
 
-                .image-item {
-                    position: relative;
-                    width: 150px;
-                    margin-bottom: 8px;
+.upload__image-wrapper .image-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
 
-                    img {
-                        border-radius: 4px;
-                        object-fit: contain;
-                    }
+.upload__image-wrapper .image-item {
+    position: relative;
+    width: 150px;
+    margin-bottom: 8px;
+}
 
-                    button {
-                        top: -8px;
-                        right: 8px;
-                        padding: 1px 4px;
-                        border-radius: 50%;
-                    }
-                }
-            }
-        }
-    }
+.upload__image-wrapper .image-item img {
+    border-radius: 4px;
+    object-fit: contain;
+}
+
+.upload__image-wrapper .image-item button {
+    top: -8px;
+    right: 8px;
+    padding: 1px 4px;
+    border-radius: 50%;
 }
 
 .VideoInput {
@@ -189,19 +209,19 @@
     border-radius: 8px;
     background-color: var(--bg-secondary-2);
     margin: 6px 0;
+}
 
-    button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -44%);
-    }
+.VideoInput_container button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -44%);
+}
 
-    .VideoInput_btn{
-        top: 0;
-        right: -20px;
-        left: auto;
-    }
+.VideoInput_btn {
+    top: 0;
+    right: -20px;
+    left: auto;
 }
 
 .VideoInput_input {

@@ -13,7 +13,7 @@ import styles from "./AddProduct.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
-const AddProduct = ({ }) => {
+const AddProduct = ({  }) => {
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
     const [price, setPrice] = useState("");
@@ -29,19 +29,17 @@ const AddProduct = ({ }) => {
     const [categories, setCategories] = useState([]); // 🔹 Định nghĩa state cho categories
     const [selectedCategory, setSelectedCategory] = useState(null);
 
+    const [isOpen, setIsOpen] = useState(true); // Quản lý trạng thái đóng/mở popup
 
+    // Hàm đóng popup
+    const onClose = () => {
+        setIsOpen(false);
+    };
 
-        const [isOpen, setIsOpen] = useState(true); // Quản lý trạng thái đóng/mở popup
-
-        // Hàm đóng popup
-        const onClose = () => {
-            setIsOpen(false);
-        };
-
-            const onReFetch = () => {
-                console.log("Dữ liệu đã được cập nhật, thực hiện tải lại...");
-                // Gọi API hoặc cập nhật state tại đây
-            };
+    const onReFetch = () => {
+        console.log("Dữ liệu đã được cập nhật, thực hiện tải lại...");
+        // Gọi API hoặc cập nhật state tại đây
+    };
 
     useEffect(() => {
         axios
@@ -49,7 +47,7 @@ const AddProduct = ({ }) => {
             .then((response) => {
                 console.log("Dữ liệu API trả về:", response.data);
                 setCategories(response.data);
-    })
+            })
             .catch((error) => {
                 console.error("Lỗi khi lấy danh mục:", error);
             });
@@ -125,28 +123,28 @@ const AddProduct = ({ }) => {
             alert("Vui lòng chọn danh mục!");
             return;
         }
-console.log("📤 Dữ liệu gửi lên API:", {
-    product_id: productId,
-    category_id: selectedCategory,
-});
+        console.log("📤 Dữ liệu gửi lên API:", {
+            product_id: productId,
+            category_id: selectedCategory,
+        });
 
         try {
             const response = await axios.post(
                 "/api/product/category/create",
                 {
                     product_id: productId,
-                    category_id: selectedCategory, 
+                    category_id: selectedCategory,
                 },
                 {
                     headers: {
-                        "Content-Type": "application/json", 
+                        "Content-Type": "application/json",
                     },
                 }
             );
 
             alert("Thêm danh mục thành công!");
-             onClose();
-             onReFetch();
+            onClose();
+            onReFetch();
         } catch (error) {
             console.error("Lỗi khi thêm danh mục:", error);
             alert(
@@ -173,7 +171,7 @@ console.log("📤 Dữ liệu gửi lên API:", {
                             <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
                         </button>
                     </div>
-                    <form
+                    <div
                         className={cx("content", "flex-row")}
                         onSubmit={(e) => e.preventDefault()}
                     >
@@ -461,7 +459,7 @@ console.log("📤 Dữ liệu gửi lên API:", {
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                     <div className={cx("flex-row")}>
                         <div className={cx("flex-1")}></div>
                         <Button onClick={(e) => onSubmitHandler(e)} primary>

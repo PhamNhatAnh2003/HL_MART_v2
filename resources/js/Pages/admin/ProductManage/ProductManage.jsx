@@ -16,6 +16,7 @@ import axios from "axios";
 import classNames from "classnames/bind";
 import styles from "./ProductManage.module.scss";
 import { formatPrice } from "~/utils/format";
+import { AddPopup } from "~/components/Popup";
 
 const cx = classNames.bind(styles);
 
@@ -28,6 +29,7 @@ const ProductManage = () => {
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
     const [priceRange, setPriceRange] = useState([200000, 80000000]);
+    const [isShowAddPopup, setIsShowAddPopup] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -70,7 +72,9 @@ const ProductManage = () => {
         return decodedToken.role === "admin";
     };
 
-    
+        const handleReFetch = () => {
+            fetchProducts();
+        };
 
     const columns = [
         {
@@ -119,93 +123,97 @@ const ProductManage = () => {
     ];
 
     return (
-        <div className={cx("wrapper")}>
-            <h2 className={cx("title")}>Quản lý sản phẩm</h2>
+        <>
+            {isShowAddPopup && (
+                <AddPopup
+                    onReFetch={handleReFetch}
+                    onClose={() => setIsShowAddPopup(false)}
+                ></AddPopup>
+            )}
+            <div className={cx("wrapper")}>
+                <h2 className={cx("title")}>Quản lý sản phẩm</h2>
 
-            {/* filter */}
-            <Row className={cx("filter-section")}>
-                <Col span={24}>
-                    <div className={cx("filter-item")}>
-                        <h1 className={cx("filter-label")}>Tên sản phẩm</h1>
-                        <Input
-                            placeholder="Tên sản phẩm"
-                            value={name}
-                            onChange={onNameChange}
-                        />
-                    </div>
-                </Col>
+                {/* filter */}
+                <Row className={cx("filter-section")}>
+                    <Col span={24}>
+                        <div className={cx("filter-item")}>
+                            <h1 className={cx("filter-label")}>Tên sản phẩm</h1>
+                            <Input
+                                placeholder="Tên sản phẩm"
+                                value={name}
+                                onChange={onNameChange}
+                            />
+                        </div>
+                    </Col>
 
-                <Col xl={12} className={cx("filter-item")}>
-                    <h1 className={cx("filter-label")}>Loại sản phẩm</h1>
-                    <Radio.Group
-                        buttonStyle="solid"
-                        onChange={onCategoryChange}
-                        value={category}
-                        className={cx("filter-radio-group")}
-                    >
-                        <Radio value="" className={cx("filter-radio")}>
-                            Tất cả
-                        </Radio>
-                        <Space
-                            direction="vertical"
-                            size={10}
-                            className={cx("filter-radio-space")}
+                    <Col xl={12} className={cx("filter-item")}>
+                        <h1 className={cx("filter-label")}>Loại sản phẩm</h1>
+                        <Radio.Group
+                            buttonStyle="solid"
+                            onChange={onCategoryChange}
+                            value={category}
+                            className={cx("filter-radio-group")}
                         >
-                            <Radio
-                                value="laptop"
-                                className={cx("filter-radio")}
-                            >
-                                Laptop
+                            <Radio value="" className={cx("filter-radio")}>
+                                Tất cả
                             </Radio>
-                        </Space>
-                    </Radio.Group>
-                </Col>
+                            <Space
+                                direction="vertical"
+                                size={10}
+                                className={cx("filter-radio-space")}
+                            >
+                                <Radio
+                                    value="laptop"
+                                    className={cx("filter-radio")}
+                                >
+                                    Laptop
+                                </Radio>
+                            </Space>
+                        </Radio.Group>
+                    </Col>
 
-                <Col xl={12} className={cx("filter-item")}>
-                    <h1 className={cx("filter-label")}>Tầm Giá</h1>
-                    <Slider
-                        range
-                        min={200000}
-                        max={80000000}
-                        value={priceRange}
-                        onChange={onPriceChange}
-                        className={cx("price-slider")}
-                    />
-                    <div className={cx("price-display")}>
-                        <span>
-                            Giá từ: {formatPrice(priceRange[0])}
-                        </span>{" "}
-                        <br />
-                        <span>
-                            Giá đến: {formatPrice(priceRange[1])}
-                        </span>
-                    </div>
-                </Col>
+                    <Col xl={12} className={cx("filter-item")}>
+                        <h1 className={cx("filter-label")}>Tầm Giá</h1>
+                        <Slider
+                            range
+                            min={200000}
+                            max={80000000}
+                            value={priceRange}
+                            onChange={onPriceChange}
+                            className={cx("price-slider")}
+                        />
+                        <div className={cx("price-display")}>
+                            <span>Giá từ: {formatPrice(priceRange[0])}</span>{" "}
+                            <br />
+                            <span>Giá đến: {formatPrice(priceRange[1])}</span>
+                        </div>
+                    </Col>
 
-                <Col span={24}>
-                    <Button
-                        type="primary"
-                        onClick={fetchProducts}
-                        className={cx("search-button")}
-                    >
-                        Tìm kiếm
-                    </Button>
-                </Col>
-            </Row>
+                    <Col span={24}>
+                        <Button
+                            type="primary"
+                            onClick={fetchProducts}
+                            className={cx("search-button")}
+                        >
+                            Tìm kiếm
+                        </Button>
+                    </Col>
+                </Row>
 
-            <Button
-                className={cx("add-button")}
-                onClick={() => setIsModalVisible(true)}
-            >
-                Thêm sản phẩm
-            </Button>
+                <Button
+                    className={cx("add-button")}
+                    onClick={() => setIsShowAddPopup(true)}
+                >
+                    Thêm sản phẩm
+                </Button>
 
-            <Table
-                columns={columns}
-                dataSource={products}
-                rowKey="product_id"
-            />
-        </div>
+                <Table
+                    columns={columns}
+                    dataSource={products}
+                    rowKey="product_id"
+                />
+            </div>
+        </>
     );
 };
 
