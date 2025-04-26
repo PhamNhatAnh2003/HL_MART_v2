@@ -13,7 +13,7 @@ import styles from "./AddProduct.module.scss";
 import classNames from "classnames/bind";
 const cx = classNames.bind(styles);
 
-const AddProduct = ({  }) => {
+const AddProduct = ({ onClose, onReFetch }) => {
     const [name, setName] = useState("");
     const [desc, setDesc] = useState("");
     const [price, setPrice] = useState("");
@@ -32,14 +32,14 @@ const AddProduct = ({  }) => {
     const [isOpen, setIsOpen] = useState(true); // Quản lý trạng thái đóng/mở popup
 
     // Hàm đóng popup
-    const onClose = () => {
-        setIsOpen(false);
-    };
+    // const onClose = () => {
+    //     setIsOpen(false);
+    // };
 
-    const onReFetch = () => {
-        console.log("Dữ liệu đã được cập nhật, thực hiện tải lại...");
-        // Gọi API hoặc cập nhật state tại đây
-    };
+    // const onReFetch = () => {
+    //     console.log("Dữ liệu đã được cập nhật, thực hiện tải lại...");
+    //     // Gọi API hoặc cập nhật state tại đây
+    // };
 
     useEffect(() => {
         axios
@@ -113,8 +113,8 @@ const AddProduct = ({  }) => {
                     addCategoryToProduct(response.data.product.id);
                 });
         } catch (error) {
-            console.error("Error adding restaurant:", error);
-            alert("Error adding restaurant" + error?.response?.data?.message);
+            console.error("Error adding product:", error);
+            alert("Error adding product" + error?.response?.data?.message);
         }
     };
 
@@ -142,11 +142,11 @@ const AddProduct = ({  }) => {
                 }
             );
 
-            alert("Thêm danh mục thành công!");
+            alert("Thêm sản phẩm thành công!");
             onClose();
             onReFetch();
         } catch (error) {
-            console.error("Lỗi khi thêm danh mục:", error);
+            console.error("Lỗi khi thêm danh mục cho sản phẩm:", error);
             alert(
                 "Lỗi khi thêm danh mục: " +
                     (error?.response?.data?.message || "Lỗi không xác định")
