@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AddressController;
+use App\Http\Controllers\AdminController;
 
 
 Route::get('/user', function (Request $request) {
@@ -25,7 +26,6 @@ Route::get('/product', [ProductController::class, 'getProduct']);
 Route::post('/product/create', [ProductController::class, 'createProduct']);
 Route::post('/product/category/create', [ProductController::class, 'productCategoryCreate']);
 Route::get('/products', [ProductController::class, 'getProducts']);
-// Route::get('/products', [ProductController::class, 'getProductsByCategory']);
 Route::get('/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
 
 
@@ -60,3 +60,10 @@ Route::post('/add-address', [AddressController::class, 'addAddress']);
 Route::post('address/update/{id}', [AddressController::class, 'updateAddress']);
 Route::delete('/delete-address/{id}', [AddressController::class, 'deleteAddress']);
 Route::post('/set-default-address', [AddressController::class, 'setDefault']);
+
+
+//admin
+Route::get('product_v', [AdminController::class, 'getProduct_v']);
+Route::get('dashboard/stats', [AdminController::class, 'dashboardStats']);
+Route::get('/product/most-sold', [AdminController::class, 'getMostSoldProduct']);
+Route::get('/product/highest-income', [AdminController::class, 'getHighestIncomeProduct']);

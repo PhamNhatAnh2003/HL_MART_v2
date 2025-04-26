@@ -2,8 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import axios from "axios";
 import { Col, Row } from "antd";
-// import { formatCash } from "../utils/formatCash";
+import { formatPrice } from "~/utils/format";
 import styles from "./Dashboard.module.scss"
+import classNames from "classnames/bind";
+
+const cx = classNames.bind(styles);
 
 
 const Dashboard = () => {
@@ -12,7 +15,7 @@ const Dashboard = () => {
     const [chartData, setChartData] = useState({});
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalProductsSold, setTotalProductsSold] = useState(0);
-    const [totalIncome, setTotalIncome] = useState(0);
+    const [totalPrice, setTotalPrice] = useState(0);
     const [mostSoldProduct, setMostSoldProduct] = useState({});
     const [highestIncomeProduct, setHighestIncomeProduct] = useState({});
     const [mostSoldCategory, setMostSoldCategory] = useState({});
@@ -21,17 +24,17 @@ const Dashboard = () => {
    useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/products");
-      console.log('Phản hồi API:', response.data); // Kiểm tra lại cấu trúc của phản hồi
+      const response = await axios.get("http://127.0.0.1:8000/api/product_v");
+    //   console.log('Phản hồi API:', response.data); // Kiểm tra lại cấu trúc của phản hồi
 
-      const products = response.data.products.data; // Đảm bảo bạn truy cập đúng nơi chứa mảng sản phẩm
+      const products = response.data.products; // Đảm bảo bạn truy cập đúng nơi chứa mảng sản phẩm
       if (!products || products.length === 0) {
         console.error('Không có dữ liệu sản phẩm');
         return; // Dừng thực thi nếu không có dữ liệu sản phẩm
       }
 
       const categoryCounts = products.reduce((acc, product) => {
-        const category = product.category_id || 'Không xác định'; // Thêm kiểm tra nếu không có category_name
+        const category = product.category.name || 'Không xác định'; // Thêm kiểm tra nếu không có category_name
         if (!acc[category]) acc[category] = 0;
         acc[category]++;
         return acc;
@@ -43,19 +46,38 @@ const Dashboard = () => {
         { category: "Không xác định", count: 0 } // Mặc định là "Không xác định" nếu không có category
       );
 
-      console.log('Most Sold Category:', mostSoldCategory); // Kiểm tra giá trị category
+    //   console.log('Most Sold Category:', mostSoldCategory); // Kiểm tra giá trị category
 
       const data = {
-        labels: Object.keys(categoryCounts),
-        datasets: [
-          {
-            data: Object.values(categoryCounts),
-            backgroundColor: [
-              "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF",
-              "#FF9F40", "#220066", "#FF7700", "#00FF77"
-            ],
-          },
-        ],
+          labels: Object.keys(categoryCounts),
+          datasets: [
+              {
+                  data: Object.values(categoryCounts),
+                  backgroundColor: [
+                      "#FF6384",
+                      "#36A2EB",
+                      "#FFCE56",
+                      "#4BC0C0",
+                      "#9966FF", // Màu sắc hiện tại
+                      "#FF9F40",
+                      "#220066",
+                      "#FF7700",
+                      "#00FF77",
+                      "#FF5733", // Thêm nhiều màu sắc
+                      "#C70039",
+                      "#900C3F",
+                      "#581845",
+                      "#1D3557",
+                      "#F1FAEE", // Các màu sắc mới
+                      "#F4A261",
+                      "#2A9D8F",
+                      "#264653",
+                      "#E9C46A",
+                      "#F1FAEE",
+                  ],
+                  label: "Số lượng sản phẩm", // Nhãn cho biểu đồ
+              },
+          ],
       };
 
       setChartData(data); // Lưu dữ liệu biểu đồ vào state
@@ -65,114 +87,87 @@ const Dashboard = () => {
   };
 
 
-        // const fetchUserCount = async () => {
-        //     try {
-        //         const token = localStorage.getItem("token");
-        //         if (!token) {
-        //             console.error("No token found");
-        //             return;
-        //         }
+       const fetchUserCount = async () => {
+           try {
+               const response = await axios.get(
+                   "http://127.0.0.1:8000/api/dashboard/stats"
+               );
+            //    console.log("Phản hồi API:", response.data); // Kiểm tra lại cấu trúc của phản hồi
 
-        //         const response = await axios.get(
-        //             "https://web-back-end-1.onrender.com/api/v1/auth/admin/all-users",
-        //             {
-        //                 headers: {
-        //                     Authorization: `Bearer ${token}`,
-        //                 },
-        //             }
-        //         );
+               if (response.data && response.data.data) {
+                   setTotalUsers(response.data.data.total_users); // Lấy total_users từ response
+                   setTotalProductsSold(response.data.data.total_sold_products); // Lấy total_sold_products từ response
+                   setTotalPrice(response.data.data.total_revenue); // Lấy total_revenue từ response
+               } else {
+                   console.error(
+                       "Dữ liệu không hợp lệ hoặc không có thông tin thống kê"
+                   );
+               }
+           } catch (error) {
+               console.error("Lỗi khi lấy dữ liệu thống kê:", error);
+           }
+       };
 
-        //         if (response.data.success) {
-        //             setTotalUsers(response.data.data.length);
-        //         } else {
-        //             console.error("Failed to fetch user data");
-        //         }
-        //     } catch (error) {
-        //         console.error("Error fetching user data:", error);
-        //     }
-        // };
-
-        // const fetchTotalProductsSold = async () => {
-        //     try {
-        //         const token = localStorage.getItem("token");
-        //         if (!token) {
-        //             console.error("No token found");
-        //             return;
-        //         }
-
-        //         const response = await axios.get(
-        //             "https://web-back-end-1.onrender.com/api/v1/cart/admin/total-paid-items",
-        //             {
-        //                 headers: {
-        //                     Authorization: `Bearer ${token}`,
-        //                 },
-        //             }
-        //         );
-
-        //         if (response.data.success) {
-        //             const products = response.data.data;
-
-        //             const totalSold = products.reduce((acc, product) => {
-        //                 return acc + parseInt(product.totalQuantitySold, 10);
-        //             }, 0);
-        //             setTotalProductsSold(totalSold);
-
-        //             const totalIncome = products.reduce((acc, product) => {
-        //                 const quantity = parseInt(
-        //                     product.totalQuantitySold,
-        //                     10
-        //                 );
-        //                 const price = parseFloat(product.price);
-        //                 const discount = product.discount / 100;
-        //                 const discountedPrice = price * (1 - discount);
-        //                 return acc + quantity * discountedPrice;
-        //             }, 0);
-        //             setTotalIncome(totalIncome);
-
-        //             // Calculate most sold quantity product
-        //             const mostSoldProduct = products.reduce(
-        //                 (max, product) => {
-        //                     const quantity = parseInt(
-        //                         product.totalQuantitySold,
-        //                         10
-        //                     );
-        //                     return quantity > max.quantity
-        //                         ? { name: product.product_name, quantity }
-        //                         : max;
-        //                 },
-        //                 { name: "", quantity: 0 }
-        //             );
-        //             setMostSoldProduct(mostSoldProduct);
-
-        //             // Calculate highest income product
-        //             const highestIncomeProduct = products.reduce(
-        //                 (max, product) => {
-        //                     const quantity = parseInt(
-        //                         product.totalQuantitySold,
-        //                         10
-        //                     );
-        //                     const price = parseFloat(product.price);
-        //                     const discount = product.discount / 100;
-        //                     const income = quantity * price * (1 - discount);
-        //                     return income > max.income
-        //                         ? { name: product.product_name, income }
-        //                         : max;
-        //                 },
-        //                 { name: "", income: 0 }
-        //             );
-        //             setHighestIncomeProduct(highestIncomeProduct);
-        //         } else {
-        //             console.error("Failed to fetch total sold items");
-        //         }
-        //     } catch (error) {
-        //         console.error("Error fetching total sold items:", error);
-        //     }
-        // };
 
         fetchData();
-        // fetchUserCount();
-        // fetchTotalProductsSold();
+        fetchUserCount();
     }, []);
+
+    const fetchMostSoldProduct = async () => {
+        try {
+            const response = await axios.get(
+                "http://127.0.0.1:8000/api/product/most-sold"
+            );
+            console.log(response.data);
+            // Hiển thị thông tin sản phẩm bán chạy nhất
+         if (response.data && response.data.data) {
+             const mostSoldProduct = response.data.data;
+             setMostSoldProduct({
+                 name: mostSoldProduct.product_name,
+                 quantity: mostSoldProduct.quantity,
+                 price: mostSoldProduct.price
+             });
+         } else {
+             console.error(
+                 "Dữ liệu không hợp lệ hoặc không có thông tin sản phẩm bán chạy nhất"
+             );
+         }
+        } catch (error) {
+            console.error("Error fetching most sold product:", error);
+        }
+    };
+
+    const fetchHighestIncomeProduct = async () => {
+        try {
+            const response = await axios.get(
+                "http://127.0.0.1:8000/api/product/highest-income"
+            );
+            console.log(response.data);
+
+            if (response.data && response.data.data) {
+                const highestIncomeProduct = response.data.data;
+                setHighestIncomeProduct({
+                    name: highestIncomeProduct.product_name,
+                    total_price: highestIncomeProduct.total_price,
+                    price: highestIncomeProduct.price,
+                });
+            } else {
+                console.error(
+                    "Dữ liệu không hợp lệ hoặc không có thông tin sản phẩm có doanh thu cao nhất"
+                );
+            }
+        } catch (error) {
+            console.error("Lỗi khi lấy sản phẩm có doanh thu cao nhất:", error);
+        }
+    };
+
+    // Call API trong useEffect hoặc sự kiện
+    useEffect(() => {
+        fetchMostSoldProduct();
+        fetchHighestIncomeProduct();
+    }, []);
+
+
 
     useEffect(() => {
         if (chartData.labels) {
@@ -194,56 +189,59 @@ const Dashboard = () => {
     }, [chartData]);
 
     return (
-        <div className={styles.dashboardContainer}>
-            <h2 className={styles.title}>Thống kê sản phẩm</h2>
+        <div className={cx("dashboardContainer")}>
+            <h2 className={cx("title")}>Thống kê sản phẩm</h2>
             <Row>
                 <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                    <div className={styles.chartBox}>
+                    <div className={cx("chartBox")}>
                         <canvas ref={chartRef} />
                     </div>
                 </Col>
                 <Col xl={12} lg={12} md={12} sm={24} xs={24}>
-                    <div className={styles.statsBox}>
+                    <div className={cx("statsBox")}>
                         <div>
-                            <h1 className={styles.label}>
-                                Tổng số người dùng:
-                            </h1>
-                            <h1 className={styles.valueRed}>{totalUsers}</h1>
+                            <h1 className={cx("label")}>Tổng số người dùng:</h1>
+                            <h1 className={cx("valueRed")}>{totalUsers}</h1>
                         </div>
                         <div>
-                            <h1 className={styles.label}>
+                            <h1 className={cx("label")}>
                                 Tổng số sản phẩm đã bán:
                             </h1>
-                            <h1 className={styles.valueBlue}>
+                            <h1 className={cx("valueBlue")}>
                                 {totalProductsSold}
                             </h1>
                         </div>
                         <div>
-                            <h1 className={styles.label}>Tổng số doanh thu:</h1>
-                            <h1 className={styles.valueGreen}>{totalIncome}</h1>
+                            <h1 className={cx("label")}>Tổng số doanh thu:</h1>
+                            <h1 className={cx("valueGreen")}>
+                                {formatPrice(totalPrice)}
+                            </h1>
                         </div>
                     </div>
                 </Col>
             </Row>
-            <Row className={styles.summaryBox}>
-                <Col span={24} className={styles.summaryItem}>
-                    <h1 className={styles.highlight}>Sản phẩm bán chạy nhất</h1>
-                    <h1 className={styles.productName}>
+            <Row className={cx("summaryBox")}>
+                <Col span={24} className={cx("summaryItem")}>
+                    <h1 className={cx("highlight")}>Sản phẩm bán chạy nhất</h1>
+                    <h1 className={cx("productName")}>
                         {mostSoldProduct.name}
                     </h1>
-                    <h1 className={styles.valueRed}>
-                        {mostSoldProduct.quantity}
+                    <div className={cx("valueRed")}>
+                        Đã bán: {mostSoldProduct.quantity}
+                    </div>
+                    <h1 className={cx("valueGreen")}>
+                        Giá bán: {formatPrice(mostSoldProduct.price)}
                     </h1>
                 </Col>
-                <Col span={24} className={styles.summaryItem}>
-                    <h1 className={styles.highlight}>
+                <Col span={24} className={cx("summaryItem")}>
+                    <h1 className={cx("highlight")}>
                         Sản phẩm có doanh thu cao nhất
                     </h1>
-                    <h1 className={styles.productName}>
+                    <h1 className={cx("productName")}>
                         {highestIncomeProduct.name}
                     </h1>
-                    <h1 className={styles.valueGreen}>
-                        {highestIncomeProduct.income}
+                    <h1 className={cx("valueGreen")}>
+                        Doanh thu: {formatPrice(highestIncomeProduct.total_price)}
                     </h1>
                 </Col>
             </Row>

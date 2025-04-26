@@ -7,6 +7,8 @@ import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '~/context/AuthContext';
 import { useContext } from 'react';
+
+
 const cx = classNames.bind(styles);
 
 export default function HeaderAdmin() {
@@ -28,44 +30,43 @@ export default function HeaderAdmin() {
         };
     }, []);
 
-    return (
-        <div className={cx('header')}>
-            <h1 className={styles.logoText}>HL_MART</h1>
+return (
+    <div className={cx("header")}>
+        <div className={cx("logoText")}>HL_MART</div>
 
-            
-            <div className={cx('user-hugs')} ref={menuRef}>
-                <img
-                    className={cx('avatar-header')}
-                    src={images.avatarUser}
-                    alt="avatar"
-                    onClick={() => setShowMenu((prev) => !prev)}
-                />
-                <FontAwesomeIcon
-                    icon={showMenu ? faChevronUp : faChevronDown}
-                    onClick={() => setShowMenu((prev) => !prev)}
-                />
-                {showMenu && (
-                    <div className={cx('dropdown-menu')}>
-                        <div
-                            className={cx('menu-item')}
-                            onClick={() => {
-                                navigate('/adminInfor');
-                            }}
-                        >
-                            Admin
-                        </div>
-                        <div
-                            className={cx('menu-item')}
-                            onClick={() => {
-                                handleLogout();
-                                navigate('/login');
-                            }}
-                        >
-                            Logout
-                        </div>
+        <div className={cx("user-hugs")} ref={menuRef}>
+            <img
+                className={cx("avatar-header")}
+                src={images.avatarUser}
+                alt="avatar"
+                onClick={() => setShowMenu((prev) => !prev)}
+            />
+            <FontAwesomeIcon
+                icon={showMenu ? faChevronUp : faChevronDown}
+                onClick={() => setShowMenu((prev) => !prev)}
+            />
+            {showMenu && (
+                <div className={cx("dropdown-menu")}>
+                    <div
+                        className={cx("menu-item")}
+                        onClick={() => {
+                            navigate("/adminInfor");
+                        }}
+                    >
+                        Admin
                     </div>
-                )}
-            </div>
+                    <div
+                        className={cx("menu-item")}
+                        onClick={() => {
+                            handleLogout();
+                            navigate("/login");
+                        }}
+                    >
+                        Logout
+                    </div>
+                </div>
+            )}
         </div>
-    );
+    </div>
+);
 }
