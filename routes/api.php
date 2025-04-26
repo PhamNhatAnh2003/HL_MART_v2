@@ -67,3 +67,4 @@ Route::get('product_v', [AdminController::class, 'getProduct_v']);
 Route::get('dashboard/stats', [AdminController::class, 'dashboardStats']);
 Route::get('/product/most-sold', [AdminController::class, 'getMostSoldProduct']);
 Route::get('/product/highest-income', [AdminController::class, 'getHighestIncomeProduct']);
+Route::get('products/filter', [AdminController::class, 'filter']);

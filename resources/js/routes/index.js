@@ -29,11 +29,6 @@ const publicRoutes = [
         component: pages.other.register,
         layout: layouts.other.noHeader,
     },
-    // {
-    //     path: config.routes.other.test,
-    //     component: pages.other.test,
-    //     layout: layouts.other.noHeader,
-    // },
     {
         path: config.routes.user.userInfor,
         component: pages.user.userInfor,
@@ -69,7 +64,10 @@ const publicRoutes = [
         component: pages.admin.dashboard,
         role: "admin",
     },
-    // { path: config.routes.admin.productDetail, component: pages.admin.productDetail, role: 'admin' },
+    { 
+        path: config.routes.admin.productManage, 
+        component: pages.admin.productManage, 
+        role: 'admin' },
 ];
 
 const privateRoutes = [

@@ -13,14 +13,24 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [currentUser, setCurrentUser] = useState({});
     const [headPhone, setHeadPhone] = useState("+84");
-
-    // console.log(user);
-    // console.log(currentUser);
+    const [admin, setAdmin] = useState(null); // <<< Thêm admin state mới
 
     const fetchUser = async () => {
-        const resonse = await axios.get(`/api/user?id=${userId}`);
-        setUser(resonse.data.user);
-        setCurrentUser(resonse.data.user);
+        try {
+            const response = await axios.get(`/api/user?id=${userId}`);
+            const fetchedUser = response.data.user;
+            setUser(fetchedUser);
+            setCurrentUser(fetchedUser);
+
+            // Nếu user có role là admin, setAdmin luôn
+            if (role === "admin") {
+                setAdmin(fetchedUser);
+            } else {
+                setAdmin(null);
+            }
+        } catch (error) {
+            console.error("Error fetching user:", error);
+        }
     };
 
     useEffect(() => {
@@ -29,20 +39,17 @@ const AuthProvider = ({ children }) => {
         } else {
             setUser({});
             setCurrentUser({});
+            setAdmin(null);
         }
-    }, [userId]);
+    }, [userId, role]); 
 
     const updateUser = async () => {
         const formData = new FormData();
-
-        // Duyệt qua các thuộc tính của currentUser và thêm vào formData
         Object.entries(currentUser).forEach(([key, value]) => {
             if (value !== null && value !== undefined) {
                 if (key === "phone") {
-                    // Ghép mã quốc gia với số điện thoại
                     formData.append("phone", `${headPhone}${value}`);
                 } else if (key === "desired_distance") {
-                    // Chỉ lưu giá trị số cho desired_distance
                     formData.append(key, parseInt(value));
                 } else {
                     formData.append(key, value);
@@ -51,25 +58,19 @@ const AuthProvider = ({ children }) => {
         });
 
         try {
-            // Gửi yêu cầu POST tới API
             const response = await axios.post(
                 `/api/user/${currentUser.id}`,
                 formData
             );
 
             if (response.status === 200) {
-                // Nếu cập nhật thành công, hiển thị thông báo và gọi fetchUser để lấy dữ liệu mới
-                // console.log(response.data.user.phone);
-                // console.log(currentUser);
                 showToast(response.data.message);
-                fetchUser(); // Gọi lại hàm để tải lại dữ liệu người dùng mới
+                fetchUser();
             }
         } catch (error) {
-            // Xử lý lỗi nếu có
             console.error("Error updating user:", error);
         }
     };
-
 
     const handleLogin = (token, userRole, user_id) => {
         localStorage.setItem("token", token);
@@ -78,6 +79,11 @@ const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
         setRole(userRole);
         setUserId(user_id);
+
+        // Nếu role là admin thì sau khi login sẽ fetch lại user và setAdmin
+        if (userRole === "admin") {
+            fetchUser();
+        }
     };
 
     const handleLogout = () => {
@@ -87,6 +93,7 @@ const AuthProvider = ({ children }) => {
         setIsAuthenticated(false);
         setRole("");
         setUserId("");
+        setAdmin(null);
     };
 
     return (
@@ -99,6 +106,7 @@ const AuthProvider = ({ children }) => {
                 userId,
                 user,
                 currentUser,
+                admin, 
                 setUser,
                 setCurrentUser,
                 updateUser,

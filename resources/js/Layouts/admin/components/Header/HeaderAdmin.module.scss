@@ -14,7 +14,30 @@
         line-height: 46.23px;
         text-align: left;
         color: var(--cl-primary);
+        cursor: pointer;
     }
+
+        .tab-menu {
+    margin-left: 120px;
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+
+    .tab-item {
+        font-weight: 400;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .tab-item:hover {
+        font-weight: 500;
+    }
+
+    .tab-item.active {
+        font-weight: 600;
+    }
+}
 }
 
 .logo {

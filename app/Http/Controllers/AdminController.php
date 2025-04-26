@@ -121,4 +121,39 @@ class AdminController extends Controller
             ]);
         }
     }
+
+
+    public function filter(Request $request)
+    {
+        // Lấy các tham số đầu vào từ request
+        $category = $request->input('category');
+        $minPrice = $request->input('minPrice');
+        $maxPrice = $request->input('maxPrice');
+        $name = $request->input('name');
+
+        // Xây dựng query để lọc sản phẩm
+        $query = Product::query();
+
+        // Thêm điều kiện lọc cho từng tham số nếu có
+        if ($category) {
+            $query->where('category_name', $category);
+        }
+        
+        if ($name) {
+            $query->where('product_name', 'like', '%' . $name . '%');
+        }
+
+        if ($minPrice && $maxPrice) {
+            $query->whereBetween('price', [$minPrice, $maxPrice]);
+        }
+
+        // Lấy danh sách sản phẩm sau khi lọc
+        $products = $query->get();
+
+        // Trả về kết quả dưới dạng JSON
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
 }
