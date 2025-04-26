@@ -48,8 +48,7 @@ const Card = ({ product = Product }) => {
                     <span className={cx("price-label")}>Giá bán:</span>
                     <div className={cx("price-container")}>
                         {product.discount_price &&
-                        product.discount_price <
-                            product.price ? (
+                        product.discount_price < product.price ? (
                             <>
                                 <span className={cx("discount-price")}>
                                     {formatPrice(product.discount_price)}
@@ -75,13 +74,12 @@ const Card = ({ product = Product }) => {
             </div>
             <Button
                 className={cx("view-btn")}
-                small
-                primary
+                secondary
                 curved
                 shadow
                 onClick={handleAddToCart}
             >
-                Thêm vào giỏ
+                 Thêm vào giỏ
             </Button>
         </div>
     );

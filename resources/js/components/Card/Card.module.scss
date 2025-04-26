@@ -98,28 +98,13 @@
 }
 
 .view-btn {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(135deg, #ff4b2b, #ff416c); /* Màu đỏ gradient */
+    margin-left: 65px;
+    margin-bottom: 15px;
     color: white;
-    font-size: 16px;
-    font-weight: bold;
     padding: 12px 24px;
-    border-radius: 50px; /* Bo tròn góc */
-    border: none;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    box-shadow: 0 4px 10px rgba(255, 65, 108, 0.3); /* Đổ bóng */
 }
 
 .view-btn:hover {
-    background: linear-gradient(135deg, #ff416c, #ff4b2b);
-    transform: translateX(-50%) scale(1.05); /* Phóng to nhẹ */
-    box-shadow: 0 6px 15px rgba(255, 65, 108, 0.5);
-}
-
-.view-btn:active {
-    transform: translateX(-50%) scale(0.95); /* Nhấn xuống */
+    box-shadow: 0 6px 15px rgba(241, 6, 6, 0.992);
 }
