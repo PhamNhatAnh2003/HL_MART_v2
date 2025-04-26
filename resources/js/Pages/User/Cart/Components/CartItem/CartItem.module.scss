@@ -31,6 +31,13 @@
 .columnImage {
     width: 100px;
 }
+.columnImage img {
+    width: 80%; /* Chiếm toàn bộ chiều rộng của cột */
+    height: auto; /* Giữ tỷ lệ khung hình cho hình ảnh */
+    object-fit: cover; /* Đảm bảo hình ảnh không bị biến dạng và phủ đầy khu vực */
+    border-radius: 8px; /* Bo góc hình ảnh */
+    border: 1px solid #ddd; /* Đường viền mờ nhẹ */
+}
 
 .columnName {
     width: 345px;

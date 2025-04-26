@@ -31,7 +31,7 @@ const CartItem = ({ item, index }) => {
             <div className={cx("columnImage")}>
                 <img
                     className={cx("image")}
-                    src={avatar || "/default-avatar.jpg"}
+                    src={avatar ||"/default-avatar.jpg"}
                     alt={product_name}
                 />
             </div>
