@@ -43,6 +43,29 @@ const ProductManage = () => {
         setPriceRange(value);
     };
 
+const handleDelete = async (id) => {
+    try {
+        const response = await axios.delete(
+            `http://127.0.0.1:8000/api/product/delete/${id}`
+        );
+
+        if (response.status === 200) {
+            // Cập nhật lại danh sách sản phẩm sau khi xóa
+            setProducts((prevProducts) =>
+                prevProducts.filter((product) => product.id !== id)
+            );
+            notification.success({
+                message: "Sản phẩm đã được xóa thành công!",
+            });
+        } else {
+            notification.error({ message: "Xóa sản phẩm thất bại!" });
+        }
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        notification.error({ message: "Đã xảy ra lỗi khi xóa sản phẩm." });
+    }
+};
+
     const fetchProducts = async () => {
         try {
             const response = await axios.get(
@@ -118,7 +141,7 @@ const ProductManage = () => {
 
                     <Button
                         primary
-                        onClick={() => handleDelete(record.product.id)}
+                        onClick={() => handleDelete(record.id)}
                     >
                         Xoá
                     </Button>

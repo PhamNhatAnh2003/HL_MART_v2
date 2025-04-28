@@ -71,3 +71,4 @@ Route::get('/product/most-sold', [AdminController::class, 'getMostSoldProduct'])
 Route::get('/product/highest-income', [AdminController::class, 'getHighestIncomeProduct']);
 Route::get('products/filter', [AdminController::class, 'filter']);
 Route::get('/productlist', [AdminController::class, 'getProductList']);
+Route::delete('/product/delete/{id}', [AdminController::class, 'deleteProduct']);
