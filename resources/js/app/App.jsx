@@ -3,19 +3,10 @@ import { Fragment } from "react";
 
 import { publicRoutes, privateRoutes } from "../routes";
 import layouts from "../layouts";
-import HeaderAdmin from "../layouts/admin/components/Header/HeaderAdmin";
-import Filter from "../components/Filter";
-import UserInfor from "../Pages/user/UserInfor";
-import { UpdateProduct } from "../components/Popup";
+
 
 const App = () => {
     return (
-        // <CartItem2 />
-        // <HeaderAdmin />
-        // <UserInfor />
-        // <Step2 />
-        // <Filter />
-        // <UpdateProduct />
         <Router>
             <div className="App">
                 <Routes>

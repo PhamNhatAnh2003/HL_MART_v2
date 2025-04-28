@@ -159,4 +159,38 @@ class AdminController extends Controller
             'products' => ProductResource::collection($products),
         ]);
     }
+
+    public function deleteProduct($id)
+{
+    try {
+        // Tìm sản phẩm theo ID
+        $product = Product::findOrFail($id);
+
+        // Xóa avatar nếu có
+        if ($product->avatar) {
+            UploadController::deleteImage($product->avatar);
+        }
+
+        // Xóa media nếu có
+        if ($product->media) {
+            $mediaImages = json_decode($product->media, true);
+            if (is_array($mediaImages)) {
+                foreach ($mediaImages as $mediaImage) {
+                    UploadController::deleteImage($mediaImage);
+                }
+            }
+        }
+
+        // Xóa sản phẩm
+        $product->delete();
+
+        return response()->json([
+            'message' => 'Sản phẩm đã được xóa thành công!',
+        ], 200);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return response()->json([
+            'message' => 'Không tìm thấy sản phẩm.',
+        ], 404);
+    }
+}
 }

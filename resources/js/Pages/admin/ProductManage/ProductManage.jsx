@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-    Table,
-    notification,
-    Col,
-    Slider,
-    Radio,
-    Space,
-    Row,
-} from "antd";
+import { Table, notification, Col, Slider, Radio, Space, Row } from "antd";
 import axios from "axios";
-import Button from "~/components/Button"
-import { DefaultInput, Input } from "~/components/Input"
+import Button from "~/components/Button";
+import { DefaultInput, Input } from "~/components/Input";
 import classNames from "classnames/bind";
 import styles from "./ProductManage.module.scss";
 import { formatPrice } from "~/utils/format";
 import { AddProduct, UpdateProduct } from "~/components/Popup";
+import { Modal } from "antd";
 
 const cx = classNames.bind(styles);
 
@@ -26,6 +19,8 @@ const ProductManage = () => {
     const [priceRange, setPriceRange] = useState([200000, 80000000]);
     const [isShowAddPopup, setIsShowAddPopup] = useState(false);
     const [isShowUpdatePopup, setIsShowUpdatePopup] = useState(false);
+    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -43,27 +38,61 @@ const ProductManage = () => {
         setPriceRange(value);
     };
 
+    const showDeleteConfirm = (id) => {
+        Modal.confirm({
+            title: "Xác nhận xóa",
+            content: "Bạn có chắc chắn muốn xóa sản phẩm này không?",
+            okText: "Xóa",
+            cancelText: "Hủy",
+            onOk: async () => {
+                try {
+                    const response = await axios.delete(
+                        `http://127.0.0.1:8000/api/product/delete/${id}`
+                    );
+                    if (response.status === 200) {
+                        // Cập nhật lại danh sách sản phẩm sau khi xóa
+                        setProducts((prevProducts) =>
+                            prevProducts.filter((product) => product.id !== id)
+                        );
+                        notification.success({
+                            message: "Sản phẩm đã được xóa thành công!",
+                        });
+                    } else {
+                        notification.error({
+                            message: "Xóa sản phẩm thất bại!",
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error deleting product:", error);
+                    notification.error({
+                        message: "Đã xảy ra lỗi khi xóa sản phẩm.",
+                    });
+                }
+            },
+        });
+    };
+
     const fetchProducts = async () => {
         try {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/productlist"
             );
             console.log(response.data);
-             if (
-                 response.data?.success &&
-                 response.data?.products &&
-                 Array.isArray(response.data.products)
-             ) {
-                 const mappedProducts = response.data.products.map(
-                     (product) => ({
-                         ...product,
-                         key: product.id, // thêm key bằng id
-                     })
-                 );
-                 setProducts(mappedProducts);
-             } else {
-                 console.error("Failed to fetch products");
-             }
+            if (
+                response.data?.success &&
+                response.data?.products &&
+                Array.isArray(response.data.products)
+            ) {
+                const mappedProducts = response.data.products.map(
+                    (product) => ({
+                        ...product,
+                        key: product.id, // thêm key bằng id
+                    })
+                );
+                setProducts(mappedProducts);
+            } else {
+                console.error("Failed to fetch products");
+            }
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -79,9 +108,9 @@ const ProductManage = () => {
         return decodedToken.role === "admin";
     };
 
-        const handleReFetch = () => {
-            fetchProducts();
-        };
+    const handleReFetch = () => {
+        fetchProducts();
+    };
 
     const columns = [
         {
@@ -115,10 +144,9 @@ const ProductManage = () => {
                     >
                         Chỉnh sửa
                     </Button>
-
                     <Button
-                        primary
-                        onClick={() => handleDelete(record.product.id)}
+                        danger
+                        onClick={() => showDeleteConfirm(record.id)} // Gọi Modal xác nhận xóa
                     >
                         Xoá
                     </Button>

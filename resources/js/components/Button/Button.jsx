@@ -14,6 +14,7 @@ const Button = ({
     extra = false,
     noBackground = false,
     text = false,
+    danger = false,
 
     shadow = false,
     disabled = false,
@@ -65,6 +66,7 @@ const Button = ({
         primary,
         secondary,
         extra,
+        danger,
         "no-background": noBackground,
         text,
 
