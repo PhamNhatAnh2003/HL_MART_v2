@@ -85,6 +85,16 @@
     }
 }
 
+.danger {
+    background-color: rgb(12, 197, 248);
+    color: white;
+
+    &:hover,
+    &.active {
+        background-color: rgb(86, 183, 248);
+    }
+}
+
 .extra {
     background-color: #e8e8e8;
     color: var(--text-color);

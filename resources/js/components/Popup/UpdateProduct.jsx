@@ -535,7 +535,16 @@ const onSubmitHandler = async (e) => {
                     <div className={cx("flex-row")}>
                         <div className={cx("flex-1")}></div>
                         <Button onClick={(e) => onSubmitHandler(e)} primary>
-                            TẢI LÊN
+                            Cập nhật
+                        </Button>
+                        <Button
+                        danger
+                            onClick={() => {
+                                onClose();
+                            }}
+                            style={{ marginLeft: "10px" }}
+                        >
+                            Hủy
                         </Button>
                     </div>
                 </div>
