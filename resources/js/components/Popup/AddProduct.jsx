@@ -162,14 +162,15 @@ const AddProduct = ({ onClose, onReFetch }) => {
                         <h1>
                             <span>THÊM MẶT HÀNG</span>
                         </h1>
-                        <button
+                        <Button
+                        primary
                             className={cx("close-btn")}
                             onClick={() => {
                                 onClose();
                             }}
                         >
                             <FontAwesomeIcon icon={faTimes}></FontAwesomeIcon>
-                        </button>
+                        </Button>
                     </div>
                     <div
                         className={cx("content", "flex-row")}
@@ -340,7 +341,9 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                                 accept=".mp4"
                                             />
                                             {!source && (
-                                                <button onClick={handleChoose}>
+                                                <button
+                                                 
+                                                onClick={handleChoose}>
                                                     <FontAwesomeIcon
                                                         icon={faPlus}
                                                     ></FontAwesomeIcon>
@@ -357,7 +360,8 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                                         controls
                                                         src={source}
                                                     />
-                                                    <button
+                                                    <Button
+                                                    primary
                                                         onClick={() =>
                                                             setSource()
                                                         }
@@ -368,7 +372,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                                         <FontAwesomeIcon
                                                             icon={faTimes}
                                                         ></FontAwesomeIcon>
-                                                    </button>
+                                                    </Button>
                                                 </>
                                             )}
                                         </div>

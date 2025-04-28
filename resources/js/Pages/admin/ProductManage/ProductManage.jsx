@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
     Table,
-    Button,
-    Modal,
-    Input,
-    Form,
     notification,
     Col,
     Slider,
@@ -13,6 +9,8 @@ import {
     Row,
 } from "antd";
 import axios from "axios";
+import Button from "~/components/Button"
+import { DefaultInput, Input } from "~/components/Input"
 import classNames from "classnames/bind";
 import styles from "./ProductManage.module.scss";
 import { formatPrice } from "~/utils/format";
@@ -22,9 +20,6 @@ const cx = classNames.bind(styles);
 
 const ProductManage = () => {
     const [products, setProducts] = useState([]);
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [editingProduct, setEditingProduct] = useState(null);
-    const [form] = Form.useForm();
 
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
@@ -50,13 +45,24 @@ const ProductManage = () => {
     const fetchProducts = async () => {
         try {
             const response = await axios.get(
-                ``
+                "http://127.0.0.1:8000/api/productlist"
             );
-            if (response.data.success) {
-                setProducts(response.data.data);
-            } else {
-                console.error("Failed to fetch products");
-            }
+            console.log(response.data);
+             if (
+                 response.data?.success &&
+                 response.data?.products &&
+                 Array.isArray(response.data.products)
+             ) {
+                 const mappedProducts = response.data.products.map(
+                     (product) => ({
+                         ...product,
+                         key: product.id, // thêm key bằng id
+                     })
+                 );
+                 setProducts(mappedProducts);
+             } else {
+                 console.error("Failed to fetch products");
+             }
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -79,7 +85,7 @@ const ProductManage = () => {
     const columns = [
         {
             title: "Tên sản phẩm",
-            dataIndex: "product_name",
+            dataIndex: "name",
             key: "name",
             render: (text) => <div className={cx("ellipsis-text")}>{text}</div>,
         },
@@ -87,13 +93,13 @@ const ProductManage = () => {
             title: "Giá",
             dataIndex: "price",
             key: "price",
-            render: (text) => <span>{text?.toLocaleString()} đ</span>,
+            render: (text) => <span>{formatPrice(text)}</span>,
         },
         {
             title: "Giá khuyến mãi",
-            dataIndex: "discount",
+            dataIndex: "discount_price",
             key: "discount",
-            render: (text) => <span>{text}%</span>,
+            render: (text) => <span>{formatPrice(text)}</span>,
         },
         { title: "Số lượng", dataIndex: "stock", key: "stock" },
         { title: "Loại sản phẩm", dataIndex: "category_name", key: "category" },
@@ -103,7 +109,7 @@ const ProductManage = () => {
             render: (_, record) => (
                 <Space>
                     <Button
-                        type="primary"
+                        primary
                         onClick={() => {
                             setEditingProduct(record);
                             setIsModalVisible(true);
@@ -111,8 +117,9 @@ const ProductManage = () => {
                     >
                         Chỉnh sửa
                     </Button>
+
                     <Button
-                        danger
+                        primary
                         onClick={() => handleDelete(record.product_id)}
                     >
                         Xoá
@@ -138,15 +145,25 @@ const ProductManage = () => {
                     <Col span={24}>
                         <div className={cx("filter-item")}>
                             <h1 className={cx("filter-label")}>Tên sản phẩm</h1>
-                            <Input
+                            <DefaultInput
                                 placeholder="Tên sản phẩm"
                                 value={name}
+                                setValue={setName}
                                 onChange={onNameChange}
                             />
+                            <Col span={24}>
+                                <Button
+                                    primary
+                                    onClick={fetchProducts}
+                                    className={cx("search-button")}
+                                >
+                                    Tìm kiếm
+                                </Button>
+                            </Col>
                         </div>
                     </Col>
 
-                    <Col xl={12} className={cx("filter-item")}>
+                    {/* <Col xl={12} className={cx("filter-item")}>
                         <h1 className={cx("filter-label")}>Loại sản phẩm</h1>
                         <Radio.Group
                             buttonStyle="solid"
@@ -187,20 +204,21 @@ const ProductManage = () => {
                             <br />
                             <span>Giá đến: {formatPrice(priceRange[1])}</span>
                         </div>
-                    </Col>
+                    </Col> */}
 
-                    <Col span={24}>
+                    {/* <Col span={24}>
                         <Button
-                            type="primary"
+                            primary
                             onClick={fetchProducts}
                             className={cx("search-button")}
                         >
                             Tìm kiếm
                         </Button>
-                    </Col>
+                    </Col> */}
                 </Row>
 
                 <Button
+                    primary
                     className={cx("add-button")}
                     onClick={() => setIsShowAddPopup(true)}
                 >
@@ -210,7 +228,7 @@ const ProductManage = () => {
                 <Table
                     columns={columns}
                     dataSource={products}
-                    rowKey="product_id"
+                    // rowKey="product_id"
                 />
             </div>
         </>
