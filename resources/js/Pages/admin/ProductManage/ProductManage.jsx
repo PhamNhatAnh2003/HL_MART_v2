@@ -14,7 +14,7 @@ import { DefaultInput, Input } from "~/components/Input"
 import classNames from "classnames/bind";
 import styles from "./ProductManage.module.scss";
 import { formatPrice } from "~/utils/format";
-import { AddPopup } from "~/components/Popup";
+import { AddProduct, UpdateProduct } from "~/components/Popup";
 
 const cx = classNames.bind(styles);
 
@@ -25,6 +25,7 @@ const ProductManage = () => {
     const [name, setName] = useState("");
     const [priceRange, setPriceRange] = useState([200000, 80000000]);
     const [isShowAddPopup, setIsShowAddPopup] = useState(false);
+    const [isShowUpdatePopup, setIsShowUpdatePopup] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -110,17 +111,14 @@ const ProductManage = () => {
                 <Space>
                     <Button
                         primary
-                        onClick={() => {
-                            setEditingProduct(record);
-                            setIsModalVisible(true);
-                        }}
+                        onClick={() => setIsShowUpdatePopup(record.id)}
                     >
                         Chỉnh sửa
                     </Button>
 
                     <Button
                         primary
-                        onClick={() => handleDelete(record.product_id)}
+                        onClick={() => handleDelete(record.product.id)}
                     >
                         Xoá
                     </Button>
@@ -132,11 +130,20 @@ const ProductManage = () => {
     return (
         <>
             {isShowAddPopup && (
-                <AddPopup
+                <AddProduct
                     onReFetch={handleReFetch}
                     onClose={() => setIsShowAddPopup(false)}
-                ></AddPopup>
+                ></AddProduct>
             )}
+
+            {isShowUpdatePopup && (
+                <UpdateProduct
+                    productId={isShowUpdatePopup}
+                    onReFetch={handleReFetch}
+                    onClose={() => setIsShowUpdatePopup(false)}
+                ></UpdateProduct>
+            )}
+
             <div className={cx("wrapper")}>
                 <h2 className={cx("title")}>Quản lý sản phẩm</h2>
 

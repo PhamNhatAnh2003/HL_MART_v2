@@ -22,9 +22,9 @@ class Product extends Model
         'category_id',
     ];
 
-    protected $casts = [
-        'media' => 'array',
-    ];
+    // protected $casts = [
+    //     'media' => 'array',
+    // ];
     protected $appends = ['category_name'];
 
     public function categories()

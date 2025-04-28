@@ -6,7 +6,7 @@ import layouts from "../layouts";
 import HeaderAdmin from "../layouts/admin/components/Header/HeaderAdmin";
 import Filter from "../components/Filter";
 import UserInfor from "../Pages/user/UserInfor";
-import { AddPopup } from "../components/Popup";
+import { UpdateProduct } from "../components/Popup";
 
 const App = () => {
     return (
@@ -15,7 +15,7 @@ const App = () => {
         // <UserInfor />
         // <Step2 />
         // <Filter />
-        // <AddPopup />
+        // <UpdateProduct />
         <Router>
             <div className="App">
                 <Routes>
