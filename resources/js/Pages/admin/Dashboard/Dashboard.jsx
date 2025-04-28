@@ -18,13 +18,12 @@ const Dashboard = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [mostSoldProduct, setMostSoldProduct] = useState({});
     const [highestIncomeProduct, setHighestIncomeProduct] = useState({});
-    const [mostSoldCategory, setMostSoldCategory] = useState({});
 
 
    useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/product_v");
+      const response = await axios.get("http://127.0.0.1:8000/api/productlist");
     //   console.log('Phản hồi API:', response.data); // Kiểm tra lại cấu trúc của phản hồi
 
       const products = response.data.products; // Đảm bảo bạn truy cập đúng nơi chứa mảng sản phẩm
@@ -34,7 +33,7 @@ const Dashboard = () => {
       }
 
       const categoryCounts = products.reduce((acc, product) => {
-        const category = product.category.name || 'Không xác định'; // Thêm kiểm tra nếu không có category_name
+        const category = product.category_name || 'Không xác định'; // Thêm kiểm tra nếu không có category_name
         if (!acc[category]) acc[category] = 0;
         acc[category]++;
         return acc;

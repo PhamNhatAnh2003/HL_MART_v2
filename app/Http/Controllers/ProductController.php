@@ -104,6 +104,127 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function updateProduct(Request $request, $id)
+    {
+    try {
+        // Tìm sản phẩm theo ID
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Không tìm thấy sản phẩm.'], 404);
+        }
+
+        // Định nghĩa các quy tắc validate
+        $rules = [
+            'name' => 'required|string|max:255',
+            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'discount_price' => 'nullable|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'sold' => 'nullable|integer|min:0',
+            'unit' => 'required|string|max:50',
+        ];    
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Dữ liệu không hợp lệ.',
+                'errors' => $validator->errors(),
+            ], 422); // HTTP 422: Unprocessable Entity
+        }
+
+        $validatedData = $validator->validated();
+
+        // Xử lý ảnh avatar (nếu có)
+            if ($request->hasFile('avatar')) {
+                $avatar = $request->file('avatar');
+                $avatarName = time() . '_avatar_' . uniqid() . '.' . $avatar->extension();
+                $avatar->storeAs('images', $avatarName, 'public');
+                $validatedData['avatar'] = "/storage/images/$avatarName";
+            }
+
+        if ($request->input('media') === null) {
+                // Xóa old media
+                $oldMedia = json_decode($product->media, true);
+                if (is_array($oldMedia)) {
+                    foreach ($oldMedia as $oldMediaPath) {
+                       $filePath = public_path($oldMediaPath);
+if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
+    unlink($filePath);
+}
+                    }
+                }
+                $validatedData['media'] = null;
+            }
+
+            // Xử lý media (nếu có)
+            if ($request->hasFile('media')) {
+                $oldMedia = [];
+                if ($product->media) {
+                    $oldMedia = json_decode($product->media, true);
+                    if ($request->has('media')) {
+                        $mediaStrings = $request->input('media');
+                        // Ensure $mediaStrings is an array
+                        if (!is_array($mediaStrings)) {
+                            $mediaStrings = [$mediaStrings];
+                        }
+                        // Delete old media that are not in the new media strings
+                        foreach ($oldMedia as $oldMediaPath) {
+    $filePath = public_path($oldMediaPath);
+    if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
+        unlink($filePath);
+    }
+}
+                        $oldMedia = array_merge([], $mediaStrings);
+                    }
+                }
+                $mediaPaths = [];
+                foreach ($request->file('media') as $media) {
+                    $mediaName = time() . '_media_' . uniqid() . '.' . $media->extension();
+                    $media->storeAs('images', $mediaName, 'public');
+                    $mediaPaths[] = "/storage/images/$mediaName";
+                }
+
+                $mediaPaths = array_merge($mediaPaths, $oldMedia);
+
+                // Lưu các đường dẫn media mới vào cơ sở dữ liệu
+                $validatedData['media'] = json_encode($mediaPaths);
+            } else if ($request->has('media')) {
+                $mediaStrings = $request->input('media');
+                // Ensure $mediaStrings is an array
+                if (!is_array($mediaStrings)) {
+                    $mediaStrings = [$mediaStrings];
+                }
+                $oldMedia = json_decode($product->media, true);
+                foreach ($oldMedia as $oldMediaPath) {
+    $filePath = public_path($oldMediaPath);
+    if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
+        unlink($filePath);
+    }
+}
+                $validatedData['media'] = json_encode($mediaStrings);
+            }
+
+
+        // Cập nhật thông tin sản phẩm
+        $product->update($validatedData);
+
+        return response()->json([
+            'message' => 'Cập nhật sản phẩm thành công.',
+            'data' => new ProductResource($product), // Trả về dữ liệu của sản phẩm đã cập nhật
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'message' => 'Đã xảy ra lỗi khi cập nhật sản phẩm.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+    }
+
+
     public function productCategoryCreate(Request $request)
     {
         try {
@@ -278,6 +399,33 @@ class ProductController extends Controller
         ],
     ], 200);
     }
+
+   public function getProduct_v(Request $request, $id)
+{
+    // Kiểm tra xem ID có phải là số hợp lệ không
+    if (!is_numeric($id)) {
+        return response()->json([
+            'message' => 'ID không hợp lệ.',
+        ], 400); // Trả về mã lỗi 400 nếu ID không hợp lệ
+    }
+
+    // Lấy sản phẩm cùng với danh mục
+    $product = Product::with('category')->find($id);
+
+    // Nếu không tìm thấy sản phẩm
+    if (!$product) {
+        return response()->json([
+            'message' => 'Sản phẩm không tồn tại.',
+        ], 404); // Trả về mã lỗi 404 nếu sản phẩm không tồn tại
+    }
+
+    // Trả về sản phẩm kèm theo danh mục
+    return response()->json([
+        'message' => 'Lấy sản phẩm thành công.',
+        'product' =>  new ProductResource($product),
+    ], 200); // Trả về mã 200 khi lấy sản phẩm thành công
+}
+
 
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;  // Nếu có bảng orders
 use App\Models\Product;
 use App\Models\User;
+use App\Http\Resources\ProductResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -13,17 +14,6 @@ use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
-        public function getProduct_v()
-    {
-        // Lấy tất cả sản phẩm kèm theo tên danh mục
-        $products = Product::with('category')->get();
-
-        return response()->json([
-            'message' => 'Lấy danh sách sản phẩm thành công.',
-            'products' => $products,
-        ]);
-    }
-
     public function dashboardStats()
     {
         // Tổng số người dùng
@@ -166,7 +156,7 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Lấy danh sách sản phẩm thành công.',
-            'products' => $products,
+            'products' => ProductResource::collection($products),
         ]);
     }
 }

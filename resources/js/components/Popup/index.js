@@ -1,4 +1,5 @@
-import AddPopup from "./AddProduct";
+import AddProduct from "./AddProduct";
+import UpdateProduct from "./UpdateProduct"
 
 
-export { AddPopup };
+export { AddProduct, UpdateProduct  };

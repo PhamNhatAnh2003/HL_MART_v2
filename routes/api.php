@@ -27,6 +27,8 @@ Route::post('/product/create', [ProductController::class, 'createProduct']);
 Route::post('/product/category/create', [ProductController::class, 'productCategoryCreate']);
 Route::get('/products', [ProductController::class, 'getProducts']);
 Route::get('/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
+Route::post('/product/update/{id}', [ProductController::class, 'updateProduct']);
+Route::get('product_v/{id}', [ProductController::class, 'getProduct_v']);
 
 
 //Upload
@@ -63,7 +65,7 @@ Route::post('/set-default-address', [AddressController::class, 'setDefault']);
 
 
 //admin
-Route::get('product_v', [AdminController::class, 'getProduct_v']);
+
 Route::get('dashboard/stats', [AdminController::class, 'dashboardStats']);
 Route::get('/product/most-sold', [AdminController::class, 'getMostSoldProduct']);
 Route::get('/product/highest-income', [AdminController::class, 'getHighestIncomeProduct']);
