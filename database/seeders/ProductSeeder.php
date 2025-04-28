@@ -90,7 +90,7 @@ class ProductSeeder extends Seeder
                 'name' => $name,
                 'description' => $description,
                 'price' => $faker->numberBetween(10000, 100000),
-                'discount_price' => $faker->numberBetween(5000, 90000),
+                'discount_price' => $faker->numberBetween(5000, 9000),
                 'unit' => $units[array_rand($units)],
                 'avatar' => 'images/products/' . $image,
                 'media' => json_encode([

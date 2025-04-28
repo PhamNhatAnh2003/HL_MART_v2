@@ -156,4 +156,17 @@ class AdminController extends Controller
             'data' => $products
         ]);
     }
+
+     public function getProductList()
+    {
+        $products = Product::with('category') // nếu có quan hệ với Category
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy danh sách sản phẩm thành công.',
+            'products' => $products,
+        ]);
+    }
 }

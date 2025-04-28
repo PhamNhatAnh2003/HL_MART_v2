@@ -25,14 +25,13 @@ class Product extends Model
     protected $casts = [
         'media' => 'array',
     ];
+    protected $appends = ['category_name'];
 
-public function categories()
-{
+    public function categories()
+    {
     return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
-}
+    }
 
-
-   
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -41,5 +40,10 @@ public function categories()
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category ? $this->category->name : null;
     }
 }
