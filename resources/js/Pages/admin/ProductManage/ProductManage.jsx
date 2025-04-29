@@ -24,11 +24,25 @@ const ProductManage = () => {
 
     useEffect(() => {
         fetchProducts();
+        fillters();
     }, []);
 
-    const onCategoryChange = (e) => {
-        setCategory(e.target.value);
-    };
+
+     const fillters = async () => {
+         try {
+             const response = await axios.get(
+                 `http://127.0.0.1:8000/api/products/filter?category=${category}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}&name=${name}`
+             );
+             if (response.data.success) {
+                 setProducts(response.data.data);
+             } else {
+                 console.error("Failed to fetch products");
+             }
+         } catch (error) {
+             console.error("Error fetching products:", error);
+         }
+     };
+
 
     const onNameChange = (e) => {
         setName(e.target.value);
@@ -77,7 +91,7 @@ const ProductManage = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/productlist"
             );
-            console.log(response.data);
+            // console.log(response.data);
             if (
                 response.data?.success &&
                 response.data?.products &&
@@ -189,7 +203,7 @@ const ProductManage = () => {
                             <Col span={24}>
                                 <Button
                                     danger
-                                    onClick={fetchProducts}
+                                    onClick={fillters}
                                     className={cx("search-button")}
                                 >
                                     Tìm kiếm
@@ -198,38 +212,13 @@ const ProductManage = () => {
                         </div>
                     </Col>
 
-                    {/* <Col xl={12} className={cx("filter-item")}>
-                        <h1 className={cx("filter-label")}>Loại sản phẩm</h1>
-                        <Radio.Group
-                            buttonStyle="solid"
-                            onChange={onCategoryChange}
-                            value={category}
-                            className={cx("filter-radio-group")}
-                        >
-                            <Radio value="" className={cx("filter-radio")}>
-                                Tất cả
-                            </Radio>
-                            <Space
-                                direction="vertical"
-                                size={10}
-                                className={cx("filter-radio-space")}
-                            >
-                                <Radio
-                                    value="laptop"
-                                    className={cx("filter-radio")}
-                                >
-                                    Laptop
-                                </Radio>
-                            </Space>
-                        </Radio.Group>
-                    </Col>
-
+                
                     <Col xl={12} className={cx("filter-item")}>
                         <h1 className={cx("filter-label")}>Tầm Giá</h1>
                         <Slider
                             range
-                            min={200000}
-                            max={80000000}
+                            min={20000}
+                            max={800000}
                             value={priceRange}
                             onChange={onPriceChange}
                             className={cx("price-slider")}
@@ -239,17 +228,7 @@ const ProductManage = () => {
                             <br />
                             <span>Giá đến: {formatPrice(priceRange[1])}</span>
                         </div>
-                    </Col> */}
-
-                    {/* <Col span={24}>
-                        <Button
-                            primary
-                            onClick={fetchProducts}
-                            className={cx("search-button")}
-                        >
-                            Tìm kiếm
-                        </Button>
-                    </Col> */}
+                    </Col> 
                 </Row>
 
                 <Button
@@ -263,7 +242,7 @@ const ProductManage = () => {
                 <Table
                     columns={columns}
                     dataSource={products}
-                    // rowKey="product_id"
+                    rowKey="id"
                 />
             </div>
         </>
