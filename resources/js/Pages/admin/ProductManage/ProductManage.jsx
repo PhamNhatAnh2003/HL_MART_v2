@@ -188,7 +188,7 @@ const ProductManage = () => {
                             />
                             <Col span={24}>
                                 <Button
-                                    primary
+                                    danger
                                     onClick={fetchProducts}
                                     className={cx("search-button")}
                                 >
