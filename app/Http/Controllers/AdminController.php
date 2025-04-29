@@ -114,38 +114,38 @@ class AdminController extends Controller
 
 
     public function filter(Request $request)
-    {
-        // Lấy các tham số đầu vào từ request
-        $category = $request->input('category');
-        $minPrice = $request->input('minPrice');
-        $maxPrice = $request->input('maxPrice');
-        $name = $request->input('name');
+{
+    $category = $request->query('category');
+    $minPrice = $request->query('minPrice');
+    $maxPrice = $request->query('maxPrice');
+    $name = $request->query('name');
 
-        // Xây dựng query để lọc sản phẩm
-        $query = Product::query();
+    $query = Product::query();
 
-        // Thêm điều kiện lọc cho từng tham số nếu có
-        if ($category) {
-            $query->where('category_name', $category);
-        }
-        
-        if ($name) {
-            $query->where('product_name', 'like', '%' . $name . '%');
-        }
-
-        if ($minPrice && $maxPrice) {
-            $query->whereBetween('price', [$minPrice, $maxPrice]);
-        }
-
-        // Lấy danh sách sản phẩm sau khi lọc
-        $products = $query->get();
-
-        // Trả về kết quả dưới dạng JSON
-        return response()->json([
-            'success' => true,
-            'data' => $products
-        ]);
+    // Lọc theo danh mục (join bảng categories)
+    if (!empty($category)) {
+        $query->join('categories', 'products.category_id', '=', 'categories.id')
+              ->where('categories.name', $category);
     }
+
+    // Lọc theo tên sản phẩm (dùng đúng tên cột trong bảng products)
+    if (!empty($name)) {
+        $query->where('products.name', 'like', '%' . $name . '%'); // Đổi từ 'product_name' thành 'name'
+    }
+
+    // Lọc theo giá
+    if (is_numeric($minPrice) && is_numeric($maxPrice)) {
+        $query->whereBetween('products.price', [$minPrice, $maxPrice]);
+    }
+
+    // Lấy sản phẩm sau khi lọc
+    $products = $query->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => ProductResource::collection($products),
+    ]);
+}
 
      public function getProductList()
     {
