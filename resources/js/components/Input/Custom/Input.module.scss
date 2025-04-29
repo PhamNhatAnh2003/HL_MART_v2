@@ -49,8 +49,8 @@
     font-size: calc(var(--font-size) - 2px);
     font-weight: 400;
     // background-color: var(--bg-primary);
-    text-shadow: 0 0 0px #ffff33, 0 0 1px #ffff33, 0 0 2px #ffff33, 0 0 3px #ffff33, 0 0 4px #ffff33, 0 0 5px #ffff33,
-        0 0 6px #ffff33, 0 0 7px #ffff33;
+    // text-shadow: 0 0 0px #ffff33, 0 0 1px #ffff33, 0 0 2px #ffff33, 0 0 3px #ffff33, 0 0 4px #ffff33, 0 0 5px #ffff33,
+    //     0 0 6px #ffff33, 0 0 7px #ffff33;
 }
 
 .custom-input input:not(:placeholder-shown) + label {
