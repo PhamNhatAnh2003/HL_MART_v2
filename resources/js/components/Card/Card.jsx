@@ -71,6 +71,9 @@ const Card = ({ product = Product }) => {
                 <div className={cx("number")}>
                     (<span>{product.number}</span> Đánh giá)
                 </div>
+                <div className={cx("number")}>
+                    Đã bán: <span>{product.sold}</span>
+                </div>
             </div>
             <Button
                 className={cx("view-btn")}
@@ -79,7 +82,7 @@ const Card = ({ product = Product }) => {
                 shadow
                 onClick={handleAddToCart}
             >
-                 Thêm vào giỏ
+                Thêm vào giỏ
             </Button>
         </div>
     );
