@@ -163,7 +163,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                             <span>THÊM MẶT HÀNG</span>
                         </h1>
                         <Button
-                        primary
+                            primary
                             className={cx("close-btn")}
                             onClick={() => {
                                 onClose();
@@ -309,6 +309,9 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                                         />
                                                     ) : (
                                                         <button
+                                                            className={cx(
+                                                                "avatar-btn"
+                                                            )}
                                                             onClick={
                                                                 onImageUpload
                                                             }
@@ -342,8 +345,9 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                             />
                                             {!source && (
                                                 <button
-                                                 
-                                                onClick={handleChoose}>
+                                                    className={cx("btn1")}
+                                                    onClick={handleChoose}
+                                                >
                                                     <FontAwesomeIcon
                                                         icon={faPlus}
                                                     ></FontAwesomeIcon>
@@ -361,7 +365,7 @@ const AddProduct = ({ onClose, onReFetch }) => {
                                                         src={source}
                                                     />
                                                     <Button
-                                                    primary
+                                                        primary
                                                         onClick={() =>
                                                             setSource()
                                                         }

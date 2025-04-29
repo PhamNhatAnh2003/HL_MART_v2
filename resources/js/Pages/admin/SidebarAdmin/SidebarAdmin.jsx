@@ -27,6 +27,7 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         <div
                             onClick={() => {
                                 navigate(config.routes.admin.dashboard);
+                                onClose();
                             }}
                             className={cx("tab-item", {
                                 active:
@@ -39,6 +40,7 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         <div
                             onClick={() => {
                                 navigate(config.routes.admin.productManage);
+                                onClose();
                             }}
                             className={cx("tab-item", {
                                 active:
@@ -51,6 +53,7 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         <div
                             onClick={() => {
                                 navigate(config.routes.admin.userList);
+                                onClose();
                             }}
                             className={cx("tab-item", {
                                 active:
@@ -59,6 +62,19 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                             })}
                         >
                             Quản lý người dùng
+                        </div>
+                        <div
+                            onClick={() => {
+                                navigate(config.routes.admin.oderList);
+                                onClose();
+                            }}
+                            className={cx("tab-item", {
+                                active:
+                                    location.pathname ===
+                                    config.routes.admin.orderList,
+                            })}
+                        >
+                            Quản lý đơn hàng
                         </div>
                     </div>
                 </div>

@@ -34,7 +34,6 @@ const UpdateProduct = ({ productId, onClose, onReFetch }) => {
     const [files, setfiles] = useState([]);
     const [source, setSource] = useState();
 
-
     // Handle file change (for media and images)
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -49,34 +48,34 @@ const UpdateProduct = ({ productId, onClose, onReFetch }) => {
     };
 
     // Fetch product details when component is mounted
-useEffect(() => {
-    const fetchProduct = async () => {
-        try {
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/product_v/${productId}`
-            );
-            console.log(response.data.product)
-            if (response.status === 200) {
-                const product = response.data.product; // Lấy dữ liệu product từ API
-                setProduct(product); // Save product details into state
-                setName(product.name);
-                setPrice(product.price);
-                setDesc(product.description);
-                setDiscount_price(product.discount_price);
-                setUnit(product.unit);
-                setNumber(product.stock);
-                setNumbers(product.sold);
-                setAvatar(product.avatar);
-                setfiles(product.media || []); // Nếu media là null hoặc không có, gán mảng rỗng
-                setSelectedCategory(product.category_id);
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await axios.get(
+                    `http://127.0.0.1:8000/api/product_v/${productId}`
+                );
+                console.log(response.data.product);
+                if (response.status === 200) {
+                    const product = response.data.product; // Lấy dữ liệu product từ API
+                    setProduct(product); // Save product details into state
+                    setName(product.name);
+                    setPrice(product.price);
+                    setDesc(product.description);
+                    setDiscount_price(product.discount_price);
+                    setUnit(product.unit);
+                    setNumber(product.stock);
+                    setNumbers(product.sold);
+                    setAvatar(product.avatar);
+                    setfiles(product.media || []); // Nếu media là null hoặc không có, gán mảng rỗng
+                    setSelectedCategory(product.category_id);
+                }
+            } catch (error) {
+                console.error("Error fetching product:", error);
             }
-        } catch (error) {
-            console.error("Error fetching product:", error);
-        }
-    };
+        };
 
-    fetchProduct();
-}, [productId]);
+        fetchProduct();
+    }, [productId]);
 
     // Fetch categories for product
     useEffect(() => {
@@ -91,20 +90,20 @@ useEffect(() => {
     }, []);
 
     // Update images and media state when files change
-        useEffect(() => {
-            const newImages = [];
-            let newMedia = "";
-               if (Array.isArray(files) && files.length > 0) {
-                   files.forEach((file) => {
-                       if (file && !file.includes(".mp4")) newImages.push(file);
-                       else newMedia = file;
-                   });
-               }
-            setImages(newImages);
-            setImagesFile(newImages);
-            setSource(newMedia);
-            setMedia([newMedia]);
-        }, [files]);
+    useEffect(() => {
+        const newImages = [];
+        let newMedia = "";
+        if (Array.isArray(files) && files.length > 0) {
+            files.forEach((file) => {
+                if (file && !file.includes(".mp4")) newImages.push(file);
+                else newMedia = file;
+            });
+        }
+        setImages(newImages);
+        setImagesFile(newImages);
+        setSource(newMedia);
+        setMedia([newMedia]);
+    }, [files]);
 
     const onAvatarChange = (image) => {
         setAvatar(image.dataURL);
@@ -117,76 +116,76 @@ useEffect(() => {
     };
 
     // Submit handler when form is submitted
-const onSubmitHandler = async (e) => {
-    e.preventDefault();
-    if (media[0]) imagesFile.unshift(media[0]);
- console.log({
-     name,
-     desc,
-     price,
-     Discount_price,
-     unit,
-     Number,
-     Numbers,
-     avatar,
-     images,
-     media,
-     selectedCategory,
- });
+    const onSubmitHandler = async (e) => {
+        e.preventDefault();
+        if (media[0]) imagesFile.unshift(media[0]);
+        console.log({
+            name,
+            desc,
+            price,
+            Discount_price,
+            unit,
+            Number,
+            Numbers,
+            avatar,
+            images,
+            media,
+            selectedCategory,
+        });
 
-    if (!name || !price || !desc) {
-        alert("Vui lòng điền đầy đủ các trường thông tin!");
-        return;
-    }
-
-    try {
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("description", desc);
-        formData.append("price", price);
-        formData.append("discount_price", Discount_price || 0);
-        formData.append("unit", unit);
-        formData.append("sold", Numbers || 0);
-        formData.append("stock", Number || 0);
-
-        // Gửi avatar
-        if (avatarFile) {
-            formData.append("avatar", avatarFile);
+        if (!name || !price || !desc) {
+            alert("Vui lòng điền đầy đủ các trường thông tin!");
+            return;
         }
 
-        // Merge media (video + ảnh) đúng chuẩn
-        let mergedFiles = [...imagesFile];
-        if (media[0] && !imagesFile.includes(media[0])) {
-            mergedFiles.unshift(media[0]);
-        }
+        try {
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("description", desc);
+            formData.append("price", price);
+            formData.append("discount_price", Discount_price || 0);
+            formData.append("unit", unit);
+            formData.append("sold", Numbers || 0);
+            formData.append("stock", Number || 0);
 
-        if (mergedFiles.length > 0) {
-            mergedFiles.forEach((file, index) => {
-                formData.append(`media[${index}]`, file);
-            });
-        }
-        console.log(...formData);
-        const response = await axios.post(
-            `/api/product/update/${productId}`,
-            formData,
-            {
-                headers: { "Content-Type": "multipart/form-data" },
+            // Gửi avatar
+            if (avatarFile) {
+                formData.append("avatar", avatarFile);
             }
-        );
 
-        if (response.data.success) {
-            addCategoryToProduct(response.data.product.id);
-        } else {
-            alert("Cập nhật sản phẩm thành công!");
+            // Merge media (video + ảnh) đúng chuẩn
+            let mergedFiles = [...imagesFile];
+            if (media[0] && !imagesFile.includes(media[0])) {
+                mergedFiles.unshift(media[0]);
+            }
+
+            if (mergedFiles.length > 0) {
+                mergedFiles.forEach((file, index) => {
+                    formData.append(`media[${index}]`, file);
+                });
+            }
+            console.log(...formData);
+            const response = await axios.post(
+                `/api/product/update/${productId}`,
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                }
+            );
+
+            if (response.data.success) {
+                addCategoryToProduct(response.data.product.id);
+            } else {
+                alert("Cập nhật sản phẩm thành công!");
+            }
+        } catch (error) {
+            console.error("Error updating product:", error.response);
+            alert(
+                "Lỗi khi cập nhật sản phẩm: " +
+                    (error?.response?.data?.message || "Lỗi không xác định")
+            );
         }
-    } catch (error) {
-        console.error("Error updating product:", error.response);
-        alert(
-            "Lỗi khi cập nhật sản phẩm: " +
-                (error?.response?.data?.message || "Lỗi không xác định")
-        );
-    }
-};
+    };
 
     // Add category to the product
     const addCategoryToProduct = async (productId) => {
@@ -411,7 +410,10 @@ const onSubmitHandler = async (e) => {
                                                 accept=".mp4"
                                             />
                                             {!source && (
-                                                <button onClick={handleChoose}>
+                                                <button
+                                                    className={cx("btn1")}
+                                                    onClick={handleChoose}
+                                                >
                                                     <FontAwesomeIcon
                                                         icon={faPlus}
                                                     ></FontAwesomeIcon>
@@ -428,7 +430,7 @@ const onSubmitHandler = async (e) => {
                                                         controls
                                                         src={source}
                                                     />
-                                                    <button
+                                                    <Button
                                                         onClick={() => {
                                                             setSource();
                                                             setMedia([]);
@@ -440,7 +442,7 @@ const onSubmitHandler = async (e) => {
                                                         <FontAwesomeIcon
                                                             icon={faTimes}
                                                         ></FontAwesomeIcon>
-                                                    </button>
+                                                    </Button>
                                                 </>
                                             )}
                                         </div>
@@ -538,7 +540,7 @@ const onSubmitHandler = async (e) => {
                             Cập nhật
                         </Button>
                         <Button
-                        danger
+                            danger
                             onClick={() => {
                                 onClose();
                             }}

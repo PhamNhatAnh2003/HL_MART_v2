@@ -131,22 +131,22 @@ const ProductManage = () => {
             key: "discount",
             render: (text) => <span>{formatPrice(text)}</span>,
         },
-        { title: "Số lượng", dataIndex: "stock", key: "stock" },
+        { title: "Số lượng trong kho", dataIndex: "stock", key: "stock" },
         { title: "Loại sản phẩm", dataIndex: "category_name", key: "category" },
         {
-            title: "Actions",
+            title: "Tác vụ",
             key: "actions",
-            render: (_, record) => (
+            render: (_, product) => (
                 <Space>
                     <Button
                         primary
-                        onClick={() => setIsShowUpdatePopup(record.id)}
+                        onClick={() => setIsShowUpdatePopup(product.id)}
                     >
                         Chỉnh sửa
                     </Button>
                     <Button
                         danger
-                        onClick={() => showDeleteConfirm(record.id)} // Gọi Modal xác nhận xóa
+                        onClick={() => showDeleteConfirm(product.id)} // Gọi Modal xác nhận xóa
                     >
                         Xoá
                     </Button>
