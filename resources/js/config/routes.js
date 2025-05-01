@@ -4,7 +4,7 @@ const routes = {
         productDetail: "/admin/product/:id",
         productManage: "/admin/managers",
         userManage: "/admin/userManage",
-        customers: "/admin/customers",
+        orderManage: "/admin/orderManage",
     },
 
     user: {
