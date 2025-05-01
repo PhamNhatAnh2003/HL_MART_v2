@@ -64,17 +64,21 @@ const publicRoutes = [
         component: pages.admin.dashboard,
         role: "admin",
     },
-    { 
-        path: config.routes.admin.productManage, 
-        component: pages.admin.productManage, 
-        role: 'admin' 
+    {
+        path: config.routes.admin.productManage,
+        component: pages.admin.productManage,
+        role: "admin",
     },
-    { 
-        path: config.routes.admin.userManage, 
-        component: pages.admin.userManage, 
-        role: 'admin' 
+    {
+        path: config.routes.admin.userManage,
+        component: pages.admin.userManage,
+        role: "admin",
     },
-    
+    {
+        path: config.routes.admin.orderManage,
+        component: pages.admin.orderManage,
+        role: "admin",
+    },
 ];
 
 const privateRoutes = [

@@ -16,7 +16,7 @@ const ProductManage = () => {
 
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
-    const [priceRange, setPriceRange] = useState([200000, 80000000]);
+    const [priceRange, setPriceRange] = useState([20000, 800000]);
     const [isShowAddPopup, setIsShowAddPopup] = useState(false);
     const [isShowUpdatePopup, setIsShowUpdatePopup] = useState(false);
 

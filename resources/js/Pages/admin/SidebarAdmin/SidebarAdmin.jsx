@@ -65,13 +65,13 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         </div>
                         <div
                             onClick={() => {
-                                navigate(config.routes.admin.oderList);
+                                navigate(config.routes.admin.orderManage);
                                 onClose();
                             }}
                             className={cx("tab-item", {
                                 active:
                                     location.pathname ===
-                                    config.routes.admin.orderList,
+                                    config.routes.admin.orderManage,
                             })}
                         >
                             Quản lý đơn hàng
