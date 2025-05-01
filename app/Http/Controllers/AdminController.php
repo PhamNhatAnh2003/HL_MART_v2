@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 class AdminController extends Controller
 {
@@ -114,7 +116,7 @@ class AdminController extends Controller
 
 
     public function filter(Request $request)
-{
+    {
     $category = $request->query('category');
     $minPrice = $request->query('minPrice');
     $maxPrice = $request->query('maxPrice');
@@ -145,7 +147,7 @@ class AdminController extends Controller
         'success' => true,
         'data' => ProductResource::collection($products),
     ]);
-}
+    }
 
      public function getProductList()
     {
@@ -161,7 +163,7 @@ class AdminController extends Controller
     }
 
     public function deleteProduct($id)
-{
+    {
     try {
         // Tìm sản phẩm theo ID
         $product = Product::findOrFail($id);
@@ -192,5 +194,59 @@ class AdminController extends Controller
             'message' => 'Không tìm thấy sản phẩm.',
         ], 404);
     }
-}
+    }
+
+    public function getFilteredUsers(Request $request)
+    {
+    $query = User::query();
+
+    // Thêm các điều kiện lọc theo tên, email, điện thoại, và địa chỉ
+    if ($request->has('name')) {
+        $query->where('name', 'like', '%' . $request->name . '%');
+    }
+
+    if ($request->has('email')) {
+        $query->where('email', 'like', '%' . $request->email . '%');
+    }
+
+    if ($request->has('phone')) {
+        $query->where('phone', 'like', '%' . $request->phone . '%');
+    }
+
+    if ($request->has('address')) {
+        $query->where('address', 'like', '%' . $request->address . '%');
+    }
+
+    // Sử dụng with() để tải luôn quan hệ cartItems của mỗi người dùng
+    $users = $query->with('cartItems.product')->get(); // Thêm 'cartItems.product' để lấy thông tin sản phẩm của mỗi cart item
+
+    return response()->json([
+        'success' => true,
+        'data' => $users
+    ]);
+    }
+
+
+    public function deleteUser($id)
+    {
+        // Tìm người dùng theo ID
+        $user = User::find($id);
+
+        // Nếu không tìm thấy người dùng, trả về lỗi
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        // Xóa người dùng
+        $user->delete();
+
+        // Trả về phản hồi thành công
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully'
+        ]);
+    }
 }

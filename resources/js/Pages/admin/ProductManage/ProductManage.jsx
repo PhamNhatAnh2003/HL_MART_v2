@@ -19,8 +19,7 @@ const ProductManage = () => {
     const [priceRange, setPriceRange] = useState([200000, 80000000]);
     const [isShowAddPopup, setIsShowAddPopup] = useState(false);
     const [isShowUpdatePopup, setIsShowUpdatePopup] = useState(false);
-    const [confirmDeleteId, setConfirmDeleteId] = useState(null);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+
 
     useEffect(() => {
         fetchProducts();
@@ -112,15 +111,6 @@ const ProductManage = () => {
         }
     };
 
-    const isAdmin = () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            notification.error({ message: "Không tìm thấy token" });
-            return false;
-        }
-        const decodedToken = jwtDecode(token);
-        return decodedToken.role === "admin";
-    };
 
     const handleReFetch = () => {
         fetchProducts();
