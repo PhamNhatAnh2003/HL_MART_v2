@@ -66,4 +66,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Address::class);
     }
+
+     // Quan hệ 1-n với bảng cart_items
+    public function cartItems()
+    {
+        return $this->hasMany(CartItem::class);
+    }
 }

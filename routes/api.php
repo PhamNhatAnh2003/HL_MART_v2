@@ -14,7 +14,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // User
-Route::post('/login', [UserController::class, 'login']); // Lấy danh sách user
+Route::post('/login', [UserController::class, 'login']); 
 Route::post('/register', [UserController::class, 'register']); // Đăng ký user
 Route::get('/user', [UserController::class, 'getUser']); // Lấy user theo ID\
 Route::post('/user/{id}', [UserController::class, 'updateUser']);
@@ -72,3 +72,7 @@ Route::get('/product/highest-income', [AdminController::class, 'getHighestIncome
 Route::get('products/filter', [AdminController::class, 'filter']);
 Route::get('/productlist', [AdminController::class, 'getProductList']);
 Route::delete('/product/delete/{id}', [AdminController::class, 'deleteProduct']);
+Route::get('/v1/users', [AdminController::class, 'getFilteredUsers']);
+Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
+
+

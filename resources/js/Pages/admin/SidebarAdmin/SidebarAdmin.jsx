@@ -52,13 +52,13 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         </div>
                         <div
                             onClick={() => {
-                                navigate(config.routes.admin.userList);
+                                navigate(config.routes.admin.userManage);
                                 onClose();
                             }}
                             className={cx("tab-item", {
                                 active:
                                     location.pathname ===
-                                    config.routes.admin.userList,
+                                    config.routes.admin.userManage,
                             })}
                         >
                             Quản lý người dùng
