@@ -48,6 +48,9 @@ public function createOrder(Request $request)
         'status' => true,
         'message' => 'Đặt hàng thành công!',
         'order_id' => $order->id,
+        'qr_url' => $validated['payment_method'] === 'momo' 
+        ? $this->generateMomoQr($order) 
+        : null,
     ]);
 }
 private function generateMomoQr($order)

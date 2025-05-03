@@ -10,7 +10,9 @@ import useProfile from "~/hooks/useProfile";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "~/context/AuthContext";
 import axios from "axios";
-import { Table, Radio } from "antd"; // Import của Ant Design
+import { Table, Radio, Modal } from "antd"; // Import của Ant Design
+import images from "~/assets/images";
+import showToast from "~/components/message";
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +20,7 @@ const CartStep3 = () => {
     const { user: loginedProfile } = useContext(AuthContext);
     const { profile, setProfile } = useProfile();
     const { cart } = useCart();
+    const [showQrModal, setShowQrModal] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -100,9 +103,14 @@ const handleCreateOrder = async () => {
         console.log(response.data.status)
 
         if (response.data.status) {
-            if (selectedPaymentMethod === "momo" && response.data.qr_url) {
-                setQrCodeUrl(response.data.qr_url);
+            const qrUrl = response.data.qr_url;
+            if (qrUrl) {
+                // Hiển thị mã QR nếu là thanh toán Momo
+                setQrCodeUrl(qrUrl); // hoặc state nào đó bạn dùng
+                setShowQrModal(true); // hoặc mở modal
             } else {
+                // Hiển thị thông báo thành công thông thường
+                showToast("Đặt hàng thành công!");
                 navigate("/order-success");
             }
         } else {
@@ -212,7 +220,7 @@ const handleCreateOrder = async () => {
                         <Table
                             columns={columns}
                             dataSource={data}
-                            pagination={false}
+                            pagination={true}
                         />
 
                         <h2>Chọn phương thức thanh toán</h2>
@@ -252,7 +260,7 @@ const handleCreateOrder = async () => {
                             <div className={cx("qr-wrapper")}>
                                 <h3>Quét mã QR để thanh toán</h3>
                                 <img
-                                    src={qrCodeUrl}
+                                    src={images.QR}
                                     alt="Mã QR Momo"
                                     className={cx("qr-image")}
                                 />
@@ -288,6 +296,34 @@ const handleCreateOrder = async () => {
                     Xác nhận đặt hàng
                 </Button>
             </div>
+            <Modal
+                title="Quét mã QR Momo để thanh toán"
+                open={showQrModal}
+                onCancel={() => setShowQrModal(false)}
+                footer={null}
+                centered
+            >
+                <div style={{ textAlign: "center" }}>
+                    <img
+                        src={images.image}
+                        alt="Mã QR Momo"
+                        style={{
+                            width: "100%",
+                            maxWidth: 360,
+                            marginBottom: 16,
+                        }}
+                    />
+                    <p style={{ fontWeight: 500 }}>
+                        Vui lòng mở ứng dụng Momo và quét mã để thanh toán.
+                        <Button 
+                        primary
+                        onClick={() => {navigate("/order-success");}}
+                        >
+                            Hoàn thành
+                        </Button>
+                    </p>
+                </div>
+            </Modal>
         </div>
     );
 };
