@@ -10,3 +10,4 @@ Mức độ	    Mã màu	        Ghi chú
 8	      #0050b3	       Rất đậm
 9	      #003a8c	       Gần như đen xanh
 10	      #002766	       Tối nhất
+ahhihia
