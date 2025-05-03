@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('order_items', function (Blueprint $table) {
-    $table->id(); // ID của order item
-    $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng orders
-    $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Khóa ngoại đến bảng products
-    $table->integer('quantity'); // Số lượng sản phẩm trong đơn hàng
-    $table->integer('price'); // Giá sản phẩm tại thời điểm đặt hàng
-    $table->integer('total_price'); // Tổng giá trị của sản phẩm (giá * số lượng)
-    $table->timestamps(); // Thời gian tạo và cập nhật bản ghi
+Schema::create('order_items', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+    $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+    $table->integer('quantity');
+    $table->decimal('price_at_time', 10, 2);
+    $table->decimal('total_price', 10, 2); // PHẢI có cột này!
+    $table->timestamps();
 });
+
     }
 
     /**

@@ -62,14 +62,19 @@ class User extends Authenticatable
         return $this->hasOne(Cart::class, 'user_id', 'id');
     }
 
-     public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
+    //  public function addresses()
+    // {
+    //     return $this->hasMany(Address::class);
+    // }
 
      // Quan hệ 1-n với bảng cart_items
     public function cartItems()
     {
         return $this->hasMany(CartItem::class);
+    }
+
+    public function addresses()
+    {
+    return $this->hasMany(Address::class, 'user_id', 'id');
     }
 }

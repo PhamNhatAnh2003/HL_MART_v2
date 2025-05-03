@@ -101,24 +101,32 @@ class UserController extends Controller
     }
 
 public function getUser(Request $request)
-    {
-        $id = $request->query('id'); // Lấy ID từ query parameter
+{
+    $id = $request->query('id');
 
-        if (!$id) {
-            return response()->json(['message' => 'Thiếu ID người dùng'], 400);
-        }
-
-        $user = User::find($id); // Hoặc dùng with() nếu có liên kết khác
-
-        if (!$user) {
-            return response()->json(['message' => 'Không tìm thấy người dùng!'], 404);
-        }
-
-        return response()->json([
-            'message' => "Lấy thông tin người dùng thành công.",
-            'user' => $user
-        ], 200);
+    if (!$id) {
+        return response()->json(['message' => 'Thiếu ID người dùng'], 400);
     }
+
+    // Lấy user cùng địa chỉ mặc định
+    $user = User::with(['addresses' => function ($query) {
+        $query->where('is_default', true);
+    }])->find($id);
+
+    if (!$user) {
+        return response()->json(['message' => 'Không tìm thấy người dùng!'], 404);
+    }
+
+    // Lấy địa chỉ mặc định nếu có
+    $defaultAddress = $user->addresses->first();
+
+    return response()->json([
+        'message' => "Lấy thông tin người dùng thành công.",
+        'user' => $user,
+        'default_address' => $defaultAddress
+    ], 200);
+}
+
 
 
 public function updateUser(Request $request, $id)

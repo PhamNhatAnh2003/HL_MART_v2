@@ -15,23 +15,27 @@ const AuthProvider = ({ children }) => {
     const [headPhone, setHeadPhone] = useState("+84");
     const [admin, setAdmin] = useState(null); // <<< Thêm admin state mới
 
-    const fetchUser = async () => {
-        try {
-            const response = await axios.get(`/api/user?id=${userId}`);
-            const fetchedUser = response.data.user;
-            setUser(fetchedUser);
-            setCurrentUser(fetchedUser);
+  const fetchUser = async () => {
+      try {
+          // Gửi request để lấy thông tin người dùng và địa chỉ mặc định
+          const response = await axios.get(`/api/user?id=${userId}`);
+          const fetchedUser = response.data.user;
+          const defaultAddress = response.data.default_address; // Lấy địa chỉ mặc định từ API
 
-            // Nếu user có role là admin, setAdmin luôn
-            if (role === "admin") {
-                setAdmin(fetchedUser);
-            } else {
-                setAdmin(null);
-            }
-        } catch (error) {
-            console.error("Error fetching user:", error);
-        }
-    };
+          // Cập nhật state với dữ liệu người dùng và địa chỉ mặc định
+          setUser({ ...fetchedUser, default_address: defaultAddress });
+          setCurrentUser(fetchedUser);
+
+          // Nếu user có role là admin, setAdmin luôn
+          if (role === "admin") {
+              setAdmin(fetchedUser);
+          } else {
+              setAdmin(null);
+          }
+      } catch (error) {
+          console.error("Error fetching user:", error);
+      }
+  };
 
     useEffect(() => {
         if (userId) {

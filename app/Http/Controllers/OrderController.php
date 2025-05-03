@@ -1,37 +1,61 @@
 <?php
 
-use App\Models\Order;
+namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class OrderController extends Controller
 {
-    public function store(Request $request)
-    {
-        // Xác thực user
-        $userId = Auth::id();
+public function createOrder(Request $request)
+{
+    // Validate dữ liệu từ frontend
+    $validated = $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'payment_method' => 'required|string',
+        'items' => 'required|array',
+        'total_price' => 'required|numeric',
+        'shipping_address' => 'required|string',
+    ]);
 
-        // Kiểm tra dữ liệu từ request
-        $request->validate([
-            'total_price' => 'required|numeric|min:1',
-            'payment_method' => 'required|string',
-            'shipping_address' => 'required|string',
+    // Tạo đơn hàng
+    $order = Order::create([
+        'user_id' => $validated['user_id'],
+        'status' => 'pending',
+        'payment_method' => $validated['payment_method'],
+        'total_price' => $validated['total_price'],
+        'shipping_address' => $validated['shipping_address'],
+        'ordered_at' => Carbon::now(),
+    ]);
+
+    // Thêm các item vào bảng order_items
+    foreach ($validated['items'] as $item) {
+        $totalItemPrice = $item['quantity'] * $item['price_at_time']; // Tính tổng cho mỗi item
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $item['product_id'],
+            'quantity' => $item['quantity'],
+            'price_at_time' => $item['price_at_time'],
+            'total_price' => $totalItemPrice, // Thêm trường này
         ]);
-
-        // Tạo đơn hàng mới với total_price từ UI
-        $order = Order::create([
-            'user_id' => $userId,
-            'status' => 'pending',
-            'total_price' => $request->total_price, // Nhận total_price từ UI
-            'payment_method' => $request->payment_method,
-            'shipping_address' => $request->shipping_address,
-            'ordered_at' => now(),
-        ]);
-
-        return response()->json([
-            'message' => 'Đơn hàng đã được tạo thành công!',
-            'order' => $order
-        ], 201);
     }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Đặt hàng thành công!',
+        'order_id' => $order->id,
+    ]);
 }
+private function generateMomoQr($order)
+{
+    // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
+    return 'https://dummy-momo-qr.com/order/' . $order->id;
+}
+
+}
+
 

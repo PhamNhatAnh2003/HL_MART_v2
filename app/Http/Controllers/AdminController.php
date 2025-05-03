@@ -37,13 +37,12 @@ class AdminController extends Controller
         ]);
     }
 
-
     public function getHighestIncomeProduct()
     {
         try {
             // Lấy sản phẩm có doanh thu cao nhất từ bảng `order_items`
             $highestIncomeProduct = DB::table('order_items')
-                ->select('product_id', DB::raw('SUM(quantity * price) as total_price'))
+                ->select('product_id', DB::raw('SUM(quantity * price_at_time) as total_price'))
                 ->groupBy('product_id')
                 ->orderByDesc('total_price')
                 ->first();  // Chọn sản phẩm có doanh thu cao nhất
@@ -58,7 +57,7 @@ class AdminController extends Controller
                     'data' => [
                         'product_name' => $product->name,
                         'total_price' => $highestIncomeProduct->total_price,
-                        'price' => $product->price,
+                        'price_at_time' => $product->price_at_time,
                     ],
                     'message' => 'Lấy sản phẩm có doanh thu cao nhất thành công.'
                 ]);
@@ -113,7 +112,6 @@ class AdminController extends Controller
             ]);
         }
     }
-
 
     public function filter(Request $request)
     {

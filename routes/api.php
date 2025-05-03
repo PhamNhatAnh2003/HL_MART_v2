@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OrderController;
 
 
 Route::get('/user', function (Request $request) {
@@ -55,6 +56,8 @@ Route::post('/review/create', [ReviewController::class, 'createReview']);
 Route::get('categories', [CategoryController::class, 'index']); // Lấy danh sách danh mục
 Route::get('categories/{id}', [CategoryController::class, 'show']); // Lấy chi tiết một danh mục
 
+//Order
+Route::post('/create-order', [OrderController::class, 'CreateOrder']);
 
 //address
 Route::get('/addresses', [AddressController::class, 'getAddresses']);
@@ -65,7 +68,6 @@ Route::post('/set-default-address', [AddressController::class, 'setDefault']);
 
 
 //admin
-
 Route::get('dashboard/stats', [AdminController::class, 'dashboardStats']);
 Route::get('/product/most-sold', [AdminController::class, 'getMostSoldProduct']);
 Route::get('/product/highest-income', [AdminController::class, 'getHighestIncomeProduct']);

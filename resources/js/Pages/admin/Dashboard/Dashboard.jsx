@@ -141,7 +141,7 @@ const Dashboard = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/product/highest-income"
             );
-            // console.log(response.data);
+            console.log(response.data);
 
             if (response.data && response.data.data) {
                 const highestIncomeProduct = response.data.data;

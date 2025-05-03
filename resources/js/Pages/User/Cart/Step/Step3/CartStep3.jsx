@@ -9,6 +9,8 @@ import config from "~/config";
 import useProfile from "~/hooks/useProfile";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { AuthContext } from "~/context/AuthContext";
+import axios from "axios";
+import { Table, Radio } from "antd"; // Import của Ant Design
 
 const cx = classNames.bind(styles);
 
@@ -19,12 +21,10 @@ const CartStep3 = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Lấy danh sách ID sản phẩm từ query
     const queryParams = new URLSearchParams(location.search);
     const itemIds = queryParams.get("items")?.split(",") || [];
     const totalPrice = queryParams.get("totalPrice") || 0;
 
-    // Lọc giỏ hàng theo itemIds
     const filteredCart = useMemo(() => {
         if (itemIds.length === 0) return cart;
         return (
@@ -34,58 +34,140 @@ const CartStep3 = () => {
         );
     }, [cart, itemIds]);
 
-    // Tính tổng
     const totalProducts = filteredCart.length;
     const totalQuantity = filteredCart.reduce(
         (acc, item) => acc + item.quantity,
         0
     );
 
-
     useEffect(() => {
         setProfile(loginedProfile);
     }, [loginedProfile]);
 
-     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
     const [qrCodeUrl, setQrCodeUrl] = useState(null);
 
     const handlePaymentMethodChange = (event) => {
         setSelectedPaymentMethod(event.target.value);
-        setQrCodeUrl(null); // Reset QR nếu đổi phương thức
+        setQrCodeUrl(null); // reset nếu đổi
     };
 
-    const handleCreateOrder = async () => {
-        if (!selectedPaymentMethod) {
-            alert("Vui lòng chọn phương thức thanh toán!");
-            return;
-        }
+const handleCreateOrder = async () => {
+    if (!selectedPaymentMethod) {
+        alert("Vui lòng chọn phương thức thanh toán!");
+        return;
+    }
 
-        try {
-            const response = await axios.post(
-                "http://127.0.0.1:8000/api/create-order",
-                {
-                    payment_method: selectedPaymentMethod,
-                    items: filteredCart,
-                    total_price: totalPrice,
-                    shipping_address: profile?.address || "",
-                }
-            );
+    if (!filteredCart.length) {
+        alert("Giỏ hàng không có sản phẩm.");
+        return;
+    }
 
-            if (response.data.status) {
-                if (selectedPaymentMethod === "momo" && response.data.qr_url) {
-                    setQrCodeUrl(response.data.qr_url);
-                } else {
-                    alert("Đặt hàng thành công!");
-                    navigate("/order-success"); // điều hướng tùy bạn
-                }
-            } else {
-                alert("Có lỗi xảy ra khi tạo đơn hàng!");
+    if (!totalPrice || totalPrice <= 0) {
+        alert("Giá trị tổng đơn hàng không hợp lệ.");
+        return;
+    }
+
+    // Kiểm tra địa chỉ giao hàng
+    if (!profile?.default_address) {
+        alert("Vui lòng cung cấp địa chỉ giao hàng.");
+        return;
+    }
+
+    try {
+        const response = await axios.post(
+            "http://127.0.0.1:8000/api/create-order", // Đảm bảo URL chính xác
+            {
+                user_id: loginedProfile?.id, // Gửi user_id từ loginedProfile
+                payment_method: selectedPaymentMethod,
+                items: filteredCart.map((item) => ({
+                    product_id: item.product.id,
+                    quantity: item.quantity,
+                    price_at_time:
+                        item.product.discount_price || item.product.price,
+                })),
+                total_price: totalPrice,
+                shipping_address: [
+                    profile?.default_address?.street_address,
+                    profile?.default_address?.ward,
+                    profile?.default_address?.district,
+                    profile?.default_address?.province,
+                ]
+                    .filter(Boolean)
+                    .join(", "),
             }
-        } catch (error) {
-            console.error("Lỗi khi tạo đơn hàng:", error);
-            alert("Có lỗi xảy ra khi tạo đơn hàng.");
+        );
+        console.log(response.data.status)
+
+        if (response.data.status) {
+            if (selectedPaymentMethod === "momo" && response.data.qr_url) {
+                setQrCodeUrl(response.data.qr_url);
+            } else {
+                navigate("/order-success");
+            }
+        } else {
+            alert("Có lỗi xảy ra khi tạo đơn hàng!");
         }
-    };
+    } catch (error) {
+        console.error(
+            "Lỗi khi tạo đơn hàng:",
+            error.response?.data || error.message
+        );
+        alert("Đặt hàng thất bại.");
+    }
+};
+
+
+  const columns = [
+      {
+          title: "Tên sản phẩm",
+          dataIndex: "name",
+          key: "name",
+      },
+      {
+          title: "Số lượng",
+          dataIndex: "quantity",
+          key: "quantity",
+      },
+      {
+          title: "Giá",
+          dataIndex: "price",
+          key: "price",
+          render: (_, record) => {
+              if (record.hasDiscount) {
+                  return (
+                      <span>
+                          <span
+                              style={{ color: "#ff4d4f", fontWeight: "bold" }}
+                          >
+                              {formatPrice(record.price)}
+                          </span>{" "}
+                          <span
+                              style={{
+                                  textDecoration: "line-through",
+                                  color: "#999",
+                                  marginLeft: 8,
+                              }}
+                          >
+                              {formatPrice(record.originalPrice)}
+                          </span>
+                      </span>
+                  );
+              }
+              return <span>{formatPrice(record.price)}</span>;
+          },
+      },
+  ];
+
+
+    const data = filteredCart.map((item) => ({
+        key: item.product.id,
+        name: item.product.name,
+        quantity: item.quantity,
+        price: item.product.discount_price || item.product.price,
+        originalPrice: item.product.price,
+        hasDiscount: !!item.product.discount_price,
+    }));
 
 
     return (
@@ -93,79 +175,104 @@ const CartStep3 = () => {
             <div className={cx("cart-left")}>
                 <CartStep step={3} />
                 <div className={cx("cart-content")}>
-                    <div className={cx("cart-right")}>
-                        <h1>Chọn phương thức thanh toán</h1>
-                    <form>
-                        <label>
-                            <input
-                                type="radio"
-                                value="momo"
-                                checked={selectedPaymentMethod === "momo"}
-                                onChange={handlePaymentMethodChange}
-                            />
-                            Thanh toán qua Momo
-                        </label>
-                        <br />
-                        <label>
-                            <input
-                                type="radio"
-                                value="credit_card"
-                                checked={
-                                    selectedPaymentMethod === "credit_card"
-                                }
-                                onChange={handlePaymentMethodChange}
-                            />
-                            Thẻ tín dụng
-                        </label>
-                        <br />
-                        <label>
-                            <input
-                                type="radio"
-                                value="cash_on_delivery"
-                                checked={
-                                    selectedPaymentMethod ===
-                                    "cash_on_delivery"
-                                }
-                                onChange={handlePaymentMethodChange}
-                            />
-                            Thanh toán khi nhận hàng
-                        </label>
-                        <br />
-
-                        <button
-                            type="button"
-                            onClick={handleCreateOrder}
-                            style={{ marginTop: "16px" }}
-                        >
-                            Tạo đơn hàng
-                        </button>
-                    </form>
-
-                    {selectedPaymentMethod === "momo" && qrCodeUrl && (
-                        <div className={cx("qr-wrapper")}>
-                            <h3>Quét mã QR để thanh toán</h3>
-                            <img
-                                src={qrCodeUrl}
-                                alt="Mã QR Momo"
-                                className={cx("qr-image")}
-                            />
+                    <h2>Thông tin khách hàng</h2>
+                    <div className={cx("profile-info")}>
+                        <div>
+                            <strong>Tên:</strong> {profile?.name}
                         </div>
-                    )}
-                </div>
+                        <div>
+                            <strong>Email:</strong> {profile?.email}
+                        </div>
+                        <div>
+                            {profile?.default_address ? (
+                                <>
+                                    <div>
+                                        <strong>Người nhận:</strong>{" "}
+                                        {
+                                            profile?.default_address
+                                                ?.receiver_name
+                                        }
+                                    </div>
+                                    <div>
+                                        <strong>SĐT:</strong>{" "}
+                                        {profile?.default_address?.phone}
+                                    </div>
+                                    <div>
+                                        <strong>Địa chỉ:</strong>{" "}
+                                        {`${profile?.default_address?.street_address}, ${profile?.default_address?.ward}, ${profile?.default_address?.district}, ${profile?.default_address?.province}`}
+                                    </div>
+                                </>
+                            ) : (
+                                <span>Chưa có địa chỉ mặc định</span>
+                            )}
+                        </div>
+                    </div>
+                    <h2>Chi tiết đơn hàng</h2>
+                    <div className={cx("order-items")}>
+                        <Table
+                            columns={columns}
+                            dataSource={data}
+                            pagination={false}
+                        />
+
+                        <h2>Chọn phương thức thanh toán</h2>
+                        <form className={cx("payment-methods")}>
+                            <label>
+                                <Radio
+                                    value="momo"
+                                    checked={selectedPaymentMethod === "momo"}
+                                    onChange={handlePaymentMethodChange}
+                                />
+                                Thanh toán qua Momo
+                            </label>
+                            <label>
+                                <Radio
+                                    value="credit_card"
+                                    checked={
+                                        selectedPaymentMethod === "credit_card"
+                                    }
+                                    onChange={handlePaymentMethodChange}
+                                />
+                                Thẻ tín dụng
+                            </label>
+                            <label>
+                                <Radio
+                                    value="cash_on_delivery"
+                                    checked={
+                                        selectedPaymentMethod ===
+                                        "cash_on_delivery"
+                                    }
+                                    onChange={handlePaymentMethodChange}
+                                />
+                                Thanh toán khi nhận hàng
+                            </label>
+                        </form>
+
+                        {selectedPaymentMethod === "momo" && qrCodeUrl && (
+                            <div className={cx("qr-wrapper")}>
+                                <h3>Quét mã QR để thanh toán</h3>
+                                <img
+                                    src={qrCodeUrl}
+                                    alt="Mã QR Momo"
+                                    className={cx("qr-image")}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className={cx("cart-right")}>
-                <h2>Tổng tiền giỏ hàng</h2>
+                <h2>Tóm tắt đơn hàng</h2>
                 <div className={cx("cart-right-line")}>
-                    <span>Tổng sản phẩm: </span>
+                    <span>Tổng sản phẩm:</span>
                     <span>{totalProducts}</span>
                 </div>
                 <div className={cx("cart-right-line")}>
-                    <span>Tổng số lượng: </span>
+                    <span>Tổng số lượng:</span>
                     <span>{totalQuantity}</span>
                 </div>
                 <div className={cx("cart-right-line")}>
-                    <span>Tổng tiền: </span>
+                    <span>Tổng tiền:</span>
                     <span style={{ fontWeight: 600 }}>
                         {formatPrice(totalPrice)}
                     </span>
@@ -173,15 +280,12 @@ const CartStep3 = () => {
                 <div className={cx("cart-right-last-line")}></div>
                 <Button
                     primary
-                    width="100%"
                     large
-                    onClick={() => {
-                        // Chuyển sang trang hoàn tất đặt hàng hoặc trang khác tùy bạn
-                        alert("Đặt hàng thành công!");
-                    }}
-                    disabled={filteredCart.length === 0}
+                    width="100%"
+                    onClick={handleCreateOrder}
+                    className={cx("order-button")}
                 >
-                    Đặt hàng
+                    Xác nhận đặt hàng
                 </Button>
             </div>
         </div>
