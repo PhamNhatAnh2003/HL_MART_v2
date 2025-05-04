@@ -100,7 +100,7 @@ const handleCreateOrder = async () => {
                     .join(", "),
             }
         );
-        console.log(response.data.status)
+        
 
         if (response.data.status) {
             const qrUrl = response.data.qr_url;

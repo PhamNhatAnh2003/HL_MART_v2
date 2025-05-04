@@ -519,7 +519,7 @@ console.log(
                     onClick={() => {
                         const itemsQuery = cachedItemIds.join(",");
                         navigate(
-                            `${config.routes.user.step3}?totalPrice=${totalPrice}`
+                            `${config.routes.user.step3}?items=${itemsQuery}&totalPrice=${totalPrice}`
                         );
                     }}
                     disabled={selectedCart.length === 0}

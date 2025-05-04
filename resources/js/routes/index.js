@@ -45,6 +45,16 @@ const publicRoutes = [
         layout: layouts.user.default,
     },
     {
+        path: config.routes.user.success,
+        component: pages.user.success,
+        layout: layouts.user.default,
+    },
+    {
+        path: config.routes.user.orderDetail,
+        component: pages.user.orderDetail,
+        layout: layouts.user.default,
+    },
+    {
         path: config.routes.user.productList,
         component: pages.user.productList,
         layout: layouts.user.default,

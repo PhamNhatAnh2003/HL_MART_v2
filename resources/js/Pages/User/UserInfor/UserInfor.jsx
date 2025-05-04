@@ -9,13 +9,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DefaultInput } from "~/components/Input";
 import Dropdown from "~/components/Dropdown";
 import { AuthContext } from "~/context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import config from "~/config";
 
 const cx = classNames.bind(styles);
 
 export default function UserInfor() {
     const { currentUser, setCurrentUser, updateUser, setHeadPhone } =
         useContext(AuthContext);
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (currentUser.phone) {
@@ -73,16 +75,16 @@ export default function UserInfor() {
                             </label>
                         </div>
                         <div className={cx("title")}>
-                            <p className={cx("title1")}>Mobina Milvageri</p>
-                            <p className={cx("title2")}>
-                                Tài khoản đã sẵn sàng. Bạn có thể chinh sua
+                            <p className={cx("title1")}>Xin chào {currentUser.name}</p>
+                            <p
+                                className={cx("title2")}
+                                onClick={() =>
+                                    navigate(config.routes.user.orderDetail)
+                                }
+                            >
+                                Xem chi tiết các đơn hàng
                             </p>
                         </div>
-                        <img
-                            className={cx("icon1")}
-                            src={images.iconUserInfor1}
-                            alt=""
-                        />
                     </div>
                     <div className={cx("container-input")}>
                         <div className={cx("header-profile-tile")}>
@@ -103,7 +105,7 @@ export default function UserInfor() {
                                     label="Tên"
                                     inputClassName={cx("input")}
                                 />
-                                <DefaultInput
+                                {/* <DefaultInput
                                     value={currentUser.birth || ""}
                                     setValue={(value) =>
                                         setCurrentUser({
@@ -115,7 +117,7 @@ export default function UserInfor() {
                                     placeholder="Chọn ngày sinh"
                                     label="📅 Ngày sinh"
                                     inputClassName={cx("input")}
-                                />
+                                /> */}
                                 <DefaultInput
                                     value={currentUser.address || ""} // Chuỗi rỗng nếu không có giá trị
                                     setValue={(value) =>

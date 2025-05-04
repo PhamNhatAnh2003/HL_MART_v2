@@ -6,6 +6,8 @@ import ProductDetail from "./ProductDetail";
 import UserInfor from "./UserInfor";
 import CategoryProduct from "./CategoryProduct";
 import ProductList from "./ProductList";
+import Success from "./Cart/Step/Success";
+import OrderDetail from "./OrderDetail";
 // import Favorite from "./Favorite";
 
 const user = {
@@ -17,6 +19,8 @@ const user = {
     cart: Cart,
     step2: Step2,
     step3: Step3,
+    success: Success,
+    orderDetail: OrderDetail,
 };
 
 export default user;

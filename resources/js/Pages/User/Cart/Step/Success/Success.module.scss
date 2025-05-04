@@ -1,0 +1,29 @@
+// src/pages/SuccessPage/SuccessPage.module.scss
+
+.container {
+background-color: white;
+text-align: center;
+width: 100%;
+}
+
+.content{
+    margin-top: 70px;
+}
+
+
+.icon {
+  font-size: 80px;
+  color: #52c41a;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.message {
+  font-size: 16px;
+  margin-bottom: 30px;
+}

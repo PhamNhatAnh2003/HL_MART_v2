@@ -16,6 +16,8 @@ const routes = {
         cart: "/cart",
         step2: "/cart/step2",
         step3: "/cart/step3",
+        success: "/order-success",
+        orderDetail: "/order-detail",
         // map: '/map',
     },
 
