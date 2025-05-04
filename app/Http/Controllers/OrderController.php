@@ -53,12 +53,67 @@ public function createOrder(Request $request)
         : null,
     ]);
 }
+
 private function generateMomoQr($order)
 {
     // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
     return 'https://dummy-momo-qr.com/order/' . $order->id;
 }
 
+public function getOrdersByUser($userId)
+{
+    $orders = Order::where('user_id', $userId)->orderBy('created_at', 'desc')->get();
+    return response()->json(['orders' => $orders]);
 }
 
+public function getOrderDetail($id)
+{
+    $order = Order::with(['orderItems.product'])->findOrFail($id);
 
+    $items = $order->orderItems->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'product_name' => $item->product->name,
+            'quantity' => $item->quantity,
+            'price_at_time' => $item->price_at_time,
+        ];
+    });
+
+    return response()->json([
+        'order_items' => $items
+    ]);
+}
+
+public function cancel($id)
+{
+try {
+        $order = Order::findOrFail($id);
+
+        if ($order->status !== 'pending') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Chỉ có thể huỷ đơn hàng đang chờ xử lý.'
+            ], 400);
+        }
+
+        // Nếu có liên kết với order_items, xóa trước
+        $order->orderItems()->delete();
+
+        // Xóa đơn hàng
+        $order->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đơn hàng đã được xoá.'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Lỗi khi xoá đơn hàng.',
+            'error' => $e->getMessage()
+        ], 500);
+    }
+
+}
+
+}

@@ -58,6 +58,9 @@ Route::get('categories/{id}', [CategoryController::class, 'show']); // Lấy chi
 
 //Order
 Route::post('/create-order', [OrderController::class, 'CreateOrder']);
+Route::get('/orders/user/{userId}', [OrderController::class, 'getOrdersByUser']);
+Route::get('/orders/{id}', [OrderController::class, 'getOrderDetail']);
+Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel']);
 
 //address
 Route::get('/addresses', [AddressController::class, 'getAddresses']);
