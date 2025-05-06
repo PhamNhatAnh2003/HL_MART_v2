@@ -6,6 +6,11 @@ import images from "~/assets/images";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "~/hooks/useCart";
 import { formatPrice } from "~/utils/format";
+import React, { useEffect, useState, useContext } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { AuthContext } from "~/context/AuthContext";
+import showToast from "~/components/message";
 
 const cx = classNames.bind(styles);
 
@@ -21,9 +26,10 @@ const Product = {
 };
 
 const Card = ({ product = Product }) => {
+    const [isFavorite, setIsFavorite] = useState(false);
     const navigate = useNavigate();
     const { addToCart } = useCart(); // 🔥 Lấy hàm addToCart từ context
-
+    const { user: loginedProfile } = useContext(AuthContext);
     const handleSeeDetail = () => {
         navigate(`/product/${product.id}`);
     };
@@ -31,6 +37,48 @@ const Card = ({ product = Product }) => {
     const handleAddToCart = () => {
         addToCart(product); // 🔥 Gọi hàm thêm vào giỏ hàng
     };
+
+    const handleToggleFavorite = async () => {
+        try {
+            const res = await axios.post(
+                "http://127.0.0.1:8000/api/favorite-toggle",
+                {
+                    user_id: loginedProfile?.id,
+                    product_id: product.id,
+                }
+            );
+
+            if (res.data.status) {
+                setIsFavorite(res.data.is_favorite);
+                showToast(res.data.message);
+            }
+        } catch (err) {
+            console.error("Lỗi khi xử lý yêu thích:", err);
+        }
+    };
+
+    useEffect(() => {
+        const fetchFavoriteStatus = async () => {
+            try {
+                const res = await axios.get(
+                    `http://127.0.0.1:8000/api/is-favorite`,
+                    {
+                        params: {
+                            user_id: loginedProfile?.id,
+                            product_id: product.id,
+                        },
+                    }
+                );
+                setIsFavorite(res.data.is_favorite); // true hoặc false
+             } catch (err) {
+                console.error("Không thể kiểm tra trạng thái yêu thích:", err);
+                }
+             };
+
+         if (loginedProfile?.id) {
+             fetchFavoriteStatus();
+                }
+    }, [loginedProfile, product.id]);
 
     return (
         <div className={cx("card")}>
@@ -40,6 +88,14 @@ const Card = ({ product = Product }) => {
                     src={product.avatar ?? images.product}
                     alt="avatar"
                 />
+                <div
+                    className={cx("favorite-icon", { active: isFavorite })}
+                    onClick={() => {
+                        handleToggleFavorite();
+                    }}
+                >
+                    <FontAwesomeIcon icon={faHeart} />
+                </div>
             </div>
 
             <div onClick={handleSeeDetail} className={cx("content")}>
@@ -67,12 +123,16 @@ const Card = ({ product = Product }) => {
 
                 <div className={cx("rating-box")}>
                     <Rating rate={product.rating} />
+                    <div className={cx("number")}>
+                        (<span>{product.number}</span> Đánh giá)
+                    </div>
+                </div>
+
+                <div className={cx("number")}>
+                    Đã bán: <span>{product.sold}</span> {product.unit}
                 </div>
                 <div className={cx("number")}>
-                    (<span>{product.number}</span> Đánh giá)
-                </div>
-                <div className={cx("number")}>
-                    Đã bán: <span>{product.sold}</span>
+                    SL trong kho: <span>{product.stock}</span> {product.unit}
                 </div>
             </div>
             <Button

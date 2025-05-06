@@ -25,6 +25,19 @@ class ProductController extends Controller
     ]);
     }
 
+    public function getTopProducts()
+{
+    $topProducts = Product::orderByDesc('sold')
+        ->take(4)
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Top 4 sản phẩm bán chạy nhất',
+        'data' => ProductResource::collection($topProducts)
+    ]);
+}
+
     public function getProduct(Request $request)
     {
         $id = $request->query('id');
@@ -106,7 +119,7 @@ class ProductController extends Controller
 
     public function updateProduct(Request $request, $id)
     {
-    try {
+         try {
         // Tìm sản phẩm theo ID
         $product = Product::find($id);
 
@@ -151,9 +164,9 @@ class ProductController extends Controller
                 if (is_array($oldMedia)) {
                     foreach ($oldMedia as $oldMediaPath) {
                        $filePath = public_path($oldMediaPath);
-if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
-    unlink($filePath);
-}
+        if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
+                unlink($filePath);
+            }
                     }
                 }
                 $validatedData['media'] = null;
@@ -172,11 +185,11 @@ if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
                         }
                         // Delete old media that are not in the new media strings
                         foreach ($oldMedia as $oldMediaPath) {
-    $filePath = public_path($oldMediaPath);
-    if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
+        $filePath = public_path($oldMediaPath);
+        if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
         unlink($filePath);
-    }
-}
+        }
+        }
                         $oldMedia = array_merge([], $mediaStrings);
                     }
                 }
@@ -199,11 +212,11 @@ if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
                 }
                 $oldMedia = json_decode($product->media, true);
                 foreach ($oldMedia as $oldMediaPath) {
-    $filePath = public_path($oldMediaPath);
-    if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
+        $filePath = public_path($oldMediaPath);
+        if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
         unlink($filePath);
-    }
-}
+     }
+     }
                 $validatedData['media'] = json_encode($mediaStrings);
             }
 
@@ -216,12 +229,12 @@ if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
             'data' => new ProductResource($product), // Trả về dữ liệu của sản phẩm đã cập nhật
         ], 200);
 
-    } catch (\Exception $e) {
+        } catch (\Exception $e) {
         return response()->json([
             'message' => 'Đã xảy ra lỗi khi cập nhật sản phẩm.',
             'error' => $e->getMessage(),
         ], 500);
-    }
+        }
     }
 
 

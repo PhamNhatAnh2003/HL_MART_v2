@@ -225,7 +225,6 @@ class AdminController extends Controller
     ]);
     }
 
-
     public function deleteUser($id)
     {
         // Tìm người dùng theo ID

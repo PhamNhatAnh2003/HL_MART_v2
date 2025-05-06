@@ -73,7 +73,7 @@ public function createOrder(Request $request)
 private function generateMomoQr($order)
 {
     // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
-    return 'https://dummy-momo-qr.com/order/' . $order->id;
+    return 'https://dummy-momo-qr.com/images/qr_3.png' . $order->id;
 }
 
 public function getOrdersByUser($userId)

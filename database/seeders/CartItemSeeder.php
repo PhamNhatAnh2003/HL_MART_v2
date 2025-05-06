@@ -16,7 +16,7 @@ class CartItemSeeder extends Seeder
         // Thêm dữ liệu vào giỏ hàng
         DB::table('cart_items')->insert([
             [
-                'user_id' => 1,
+                'user_id' => 3,
                 'product_id' => 1,
                 'unit' => 'Thùng',
                 'quantity' => 2,
@@ -25,7 +25,7 @@ class CartItemSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'user_id' => 1,
+                'user_id' => 3,
                 'product_id' => 2,
                 'unit' => 'Lon',
                 'quantity' => 5,
@@ -34,7 +34,7 @@ class CartItemSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
             [
-                'user_id' => 1,
+                'user_id' => 3,
                 'product_id' => 3,
                 'unit' => 'Thùng',
                 'quantity' => 1,
