@@ -103,6 +103,7 @@ const handleCreateOrder = async () => {
         
 
         if (response.data.status) {
+            console.log(response.data.qr_url);
             const qrUrl = response.data.qr_url;
             if (qrUrl) {
                 // Hiển thị mã QR nếu là thanh toán Momo
@@ -211,7 +212,7 @@ const handleCreateOrder = async () => {
                                     </div>
                                 </>
                             ) : (
-                                <span>Chưa có địa chỉ mặc định</span>
+                                <span>Chưa có địa chỉ giao hàng</span>
                             )}
                         </div>
                     </div>
@@ -260,7 +261,7 @@ const handleCreateOrder = async () => {
                             <div className={cx("qr-wrapper")}>
                                 <h3>Quét mã QR để thanh toán</h3>
                                 <img
-                                    src={images.QR}
+                                    src={qrCodeUrl}
                                     alt="Mã QR Momo"
                                     className={cx("qr-image")}
                                 />
@@ -305,7 +306,7 @@ const handleCreateOrder = async () => {
             >
                 <div style={{ textAlign: "center" }}>
                     <img
-                        src={images.image}
+                        src={qrCodeUrl}
                         alt="Mã QR Momo"
                         style={{
                             width: "100%",
@@ -315,9 +316,11 @@ const handleCreateOrder = async () => {
                     />
                     <p style={{ fontWeight: 500 }}>
                         Vui lòng mở ứng dụng Momo và quét mã để thanh toán.
-                        <Button 
-                        primary
-                        onClick={() => {navigate("/order-success");}}
+                        <Button
+                            primary
+                            onClick={() => {
+                                navigate("/order-success");
+                            }}
                         >
                             Hoàn thành
                         </Button>

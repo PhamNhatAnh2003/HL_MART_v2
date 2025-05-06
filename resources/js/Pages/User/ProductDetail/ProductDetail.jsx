@@ -22,6 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import CommentInput from "./CommentInput/CommentInput";
 import images from "~/assets/images";
+import { useCart } from "~/hooks/useCart";
 import { Input } from "~/components/Input";
 import config from "~/config";
 import { formatTimeStr } from "antd/es/statistic/utils";
@@ -30,6 +31,7 @@ const cx = classNames.bind(styles);
 
 const ProductDetail = () => {
     const navigate = useNavigate();
+    const { addToCart } = useCart(); // 🔥 Lấy hàm addToCart từ context
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
@@ -82,6 +84,9 @@ const ProductDetail = () => {
     const handleComment = () => {
         fetchProduct();
         fetchReviews();
+    };
+    const handleAddToCart = () => {
+        addToCart(product); // 🔥 Gọi hàm thêm vào giỏ hàng
     };
 
     return (
@@ -153,6 +158,17 @@ const ProductDetail = () => {
                                         <strong>Xuất xứ:</strong>{" "}
                                         <span>Pham Nhat Anh</span>
                                     </div>
+                                </div>
+                                <div className={cx("btn")}>
+                                    <Button
+                                        className={cx("view-btn")}
+                                        secondary
+                                        curved
+                                        shadow
+                                        onClick={handleAddToCart}
+                                    >
+                                        Thêm vào giỏ
+                                    </Button>
                                 </div>
                             </div>
                         </div>

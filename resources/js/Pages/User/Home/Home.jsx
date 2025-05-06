@@ -15,9 +15,8 @@ import styles from "./Home.module.scss";
 const cx = classNames.bind(styles);
 
 const Home = () => {
-    const { user, userId } = useContext(AuthContext);
     const [newProducts, setNewProducts] = useState([]);
-    const [favoriteRestaurant, setFavoriteRestaurant] = useState([]);
+    const [topProducts, setTopProducts] = useState([]);
     const navigate = useNavigate();
 
     const medias = [images.slider1, images.slider2];
@@ -26,7 +25,7 @@ const Home = () => {
         const fetchNewProducts = async () => {
             try {
                 const response = await axios.get("/api/products/latest");
-                console.log("Dữ liệu từ API:", response.data); // Kiểm tra dữ liệu
+                // console.log("Dữ liệu từ API:", response.data); // Kiểm tra dữ liệu
 
                 if (response.status === 200) {
                     setNewProducts(response.data.data || []); // Đổi từ response.data.products -> response.data.data
@@ -39,6 +38,24 @@ const Home = () => {
         fetchNewProducts();
     }, []);
 
+
+    useEffect(() => {
+        const fetchTopProducts = async () => {
+            try {
+                const response = await axios.get("/api/top-products");
+                console.log("Dữ liệu từ API:", response.data); // Kiểm tra dữ liệu
+
+                if (response.status === 200) {
+                    setTopProducts(response.data.data || []); // Đổi từ response.data.products -> response.data.data
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy sản phẩm mới:", error);
+                setTopProducts([]); // Tránh lỗi undefined
+            }
+        };
+        fetchTopProducts();
+    }, []);
+
     return (
         <div className={cx("homePage")}>
             {/* QC Bar Section */}
@@ -48,8 +65,8 @@ const Home = () => {
                 </div>
 
                 <div className={cx("banner")}>
-                    <img src={images.slider1} alt="Restaurant Banner" />
-                    <img src={images.slider2} alt="Restaurant Banner" />
+                    <img src={images.slider1} alt="Product Banner" />
+                    <img src={images.slider2} alt="Product Banner" />
                 </div>
             </div>
 
@@ -66,7 +83,7 @@ const Home = () => {
             <section className={cx("newStyleSection")}>
                 <h2 className={cx("sectionHeading")}>SẢN PHẨM MỚI NHẤT</h2>
                 <div className={cx("productList")}>
-                    {newProducts.map((product, index) => (
+                    {topProducts.map((product, index) => (
                         <Card key={index} product={product} />
                     ))}
                 </div>

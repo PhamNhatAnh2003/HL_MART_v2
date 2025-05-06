@@ -8,6 +8,7 @@ use App\Http\Controllers\UploadController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\FavoriteController;
 
 
 Route::get('/user', function (Request $request) {
@@ -30,6 +31,7 @@ Route::get('/products', [ProductController::class, 'getProducts']);
 Route::get('/category/{category_id}', [ProductController::class, 'getProductsByCategory']);
 Route::post('/product/update/{id}', [ProductController::class, 'updateProduct']);
 Route::get('product_v/{id}', [ProductController::class, 'getProduct_v']);
+Route::get('/top-products', [ProductController::class, 'getTopProducts']);
 
 
 //Upload
@@ -79,5 +81,10 @@ Route::get('/productlist', [AdminController::class, 'getProductList']);
 Route::delete('/product/delete/{id}', [AdminController::class, 'deleteProduct']);
 Route::get('/v1/users', [AdminController::class, 'getFilteredUsers']);
 Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
+
+// favorite
+Route::post('/favorite-toggle', [FavoriteController::class, 'toggleFavorite']);
+Route::get('/is-favorite', [FavoriteController::class, 'isFavorite']);
+Route::get('/favorites_home', [FavoriteController::class, 'getFavoritesInHome']);
 
 

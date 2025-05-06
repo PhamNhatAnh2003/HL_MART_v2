@@ -150,3 +150,17 @@
         }
     }
 }
+
+.btn{
+    color: white;
+    margin-top: 50px;
+    margin-left: 100px;
+}
+.view-btn {
+    color: white;
+    cursor: pointer;
+}
+
+.view-btn:hover {
+    box-shadow: 0 6px 15px rgba(241, 6, 6, 0.992);
+}

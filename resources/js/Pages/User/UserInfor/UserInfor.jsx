@@ -11,13 +11,21 @@ import Dropdown from "~/components/Dropdown";
 import { AuthContext } from "~/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import config from "~/config";
+import Card from "~/components/Card";
 
 const cx = classNames.bind(styles);
 
 export default function UserInfor() {
-    const { currentUser, setCurrentUser, updateUser, setHeadPhone } =
-        useContext(AuthContext);
+    const {
+        user,
+        userId,
+        currentUser,
+        setCurrentUser,
+        updateUser,
+        setHeadPhone,
+    } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [favoriteProducts, setFavoriteProduct] = useState([]);
 
     useEffect(() => {
         if (currentUser.phone) {
@@ -33,6 +41,24 @@ export default function UserInfor() {
             }
         }
     }, [currentUser.phone]);
+
+    useEffect(() => {
+        const fetchFavorite = async () => {
+            try {
+                const response = await axios.get(
+                    `/api/favorites_home?user_id=${userId}`
+                );
+                console.log(response);
+                if (response.status === 200) {
+                    setFavoriteProduct(response.data.products.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchFavorite();
+    }, [user]);
 
     return (
         <>
@@ -75,7 +101,9 @@ export default function UserInfor() {
                             </label>
                         </div>
                         <div className={cx("title")}>
-                            <p className={cx("title1")}>Xin chào {currentUser.name}</p>
+                            <p className={cx("title1")}>
+                                Xin chào {currentUser.name}
+                            </p>
                             <p
                                 className={cx("title2")}
                                 onClick={() =>
@@ -175,6 +203,19 @@ export default function UserInfor() {
                                 Hủy
                             </Button>
                         </div>
+                    </div>
+
+                    <div className={cx("favorite")}>
+                        <section className={cx("newStyleSection")}>
+                            <h2 className={cx("sectionHeading")}>
+                                SẢN PHẨM YÊU THÍCH
+                            </h2>
+                            <div className={cx("productList")}>
+                                {favoriteProducts.map((product, index) => (
+                                    <Card key={index} product={product} />
+                                ))}
+                            </div>
+                        </section>
                     </div>
                 </div>
             )}
