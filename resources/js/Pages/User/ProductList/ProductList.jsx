@@ -4,7 +4,6 @@ import axios from "axios";
 import { Pagination } from "antd";
 import classNames from "classnames/bind";
 import styles from "./ProductList.module.scss";
-
 import Filter from "../../../components/Filter";
 import { useSearchParams } from "react-router-dom";
 
@@ -59,12 +58,12 @@ const ProductList = () => {
 
 
     return (
-        <div className={styles.container}>
+        <div className={cx("container")}>
             <Filter onFilterChange={setFilters} />
-            <h1 className={styles.title}>Tất Cả Sản Phẩm</h1>
-            <div className={styles.grid}>
+            <h1 className={cx("title")}>Tất Cả Sản Phẩm</h1>
+            <div className={cx("grid")}>
                 {noProducts ? (
-                    <p className={styles.noProducts}>
+                    <p className={cx("noProducts")}>
                         Không tìm thấy sản phẩm nào.
                     </p>
                 ) : (
@@ -72,8 +71,8 @@ const ProductList = () => {
                         <Card key={index} product={product} />
                     ))
                 )}
-            </div>
-            <div className={styles.pagination}>
+            </div> 
+            <div className={cx("pagination")}>
                 <Pagination
                     
                     align="center"

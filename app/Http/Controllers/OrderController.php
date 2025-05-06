@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +34,30 @@ public function createOrder(Request $request)
 
     // Thêm các item vào bảng order_items
     foreach ($validated['items'] as $item) {
-        $totalItemPrice = $item['quantity'] * $item['price_at_time']; // Tính tổng cho mỗi item
+    $totalItemPrice = $item['quantity'] * $item['price_at_time'];
 
-        OrderItem::create([
-            'order_id' => $order->id,
-            'product_id' => $item['product_id'],
-            'quantity' => $item['quantity'],
-            'price_at_time' => $item['price_at_time'],
-            'total_price' => $totalItemPrice, // Thêm trường này
-        ]);
+    OrderItem::create([
+        'order_id' => $order->id,
+        'product_id' => $item['product_id'],
+        'quantity' => $item['quantity'],
+        'price_at_time' => $item['price_at_time'],
+        'total_price' => $totalItemPrice,
+    ]);
+
+    // ✅ Cập nhật số lượng tồn kho và đã bán
+    $product = Product::findOrFail($item['product_id']);
+
+    // Kiểm tra tồn kho trước khi trừ (phòng tránh gian lận)
+    if ($product->stock < $item['quantity']) {
+        return response()->json([
+            'status' => false,
+            'message' => "Sản phẩm '{$product->name}' không đủ hàng trong kho.",
+        ], 400);
+    }
+
+    $product->stock -= $item['quantity'];
+    $product->sold += $item['quantity'];
+    $product->save();
     }
 
     return response()->json([
@@ -86,8 +102,8 @@ public function getOrderDetail($id)
 
 public function cancel($id)
 {
-try {
-        $order = Order::findOrFail($id);
+    try {
+        $order = Order::with('orderItems')->findOrFail($id);
 
         if ($order->status !== 'pending') {
             return response()->json([
@@ -96,7 +112,20 @@ try {
             ], 400);
         }
 
-        // Nếu có liên kết với order_items, xóa trước
+        // ✅ Cập nhật lại số lượng tồn kho và đã bán
+        foreach ($order->orderItems as $item) {
+            $product = Product::find($item->product_id);
+            if ($product) {
+                $product->stock += $item->quantity;
+                $product->sold -= $item->quantity;
+                if ($product->sold < 0) {
+                    $product->sold = 0; // Đảm bảo không âm
+                }
+                $product->save();
+            }
+        }
+
+        // Xóa order_items trước khi xóa order
         $order->orderItems()->delete();
 
         // Xóa đơn hàng
@@ -104,16 +133,16 @@ try {
 
         return response()->json([
             'success' => true,
-            'message' => 'Đơn hàng đã được xoá.'
+            'message' => 'Đơn hàng đã được huỷ và cập nhật lại kho.'
         ]);
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
-            'message' => 'Lỗi khi xoá đơn hàng.',
+            'message' => 'Lỗi khi huỷ đơn hàng.',
             'error' => $e->getMessage()
         ], 500);
     }
-
 }
+
 
 }

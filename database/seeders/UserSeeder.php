@@ -46,9 +46,9 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Phạm Nhật Anh',
             'email' => 'anhpham090423@gmail.com',
-            'password' => Hash::make('123456'),
+            'password' => Hash::make('12345'),
             'phone' => '0912198345',
-            'address' => '789 User Avenue',
+            'address' => 'Thôn Kim Cương 1, Xẫ Sơn Kim 1, Tỉnh Hà Tĩnh',
             'avatar' => null,
             'role' => 'user',
             'email_verified_at' => now(),

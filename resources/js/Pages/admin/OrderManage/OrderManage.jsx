@@ -9,8 +9,12 @@ import {
 } from "antd";
 import axios from "axios";
 import styles from "./OrderManage.module.scss";
+import classNames from "classnames/bind";
+
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+const cx = classNames.bind(styles);
+
 
 const OrderManage = () => {
     const [orders, setOrders] = useState([]);
@@ -76,21 +80,21 @@ const OrderManage = () => {
     ];
 
     return (
-        <div className={styles.wrapper}>
-            <h2 className={styles.title}>Quản lý đơn hàng</h2>
+        <div className={cx("wrapper")}>
+            <h2 className={cx("title")}>Quản lý đơn hàng</h2>
 
-            <div className={styles.filters}>
+            <div className={cx("filters")}>
                 <Input
                     placeholder="Tìm theo tên khách"
                     value={searchName}
                     onChange={(e) => setSearchName(e.target.value)}
-                    className={styles.input}
+                    className={cx("input")}
                 />
 
                 <Select
                     value={statusFilter}
                     onChange={setStatusFilter}
-                    className={styles.select}
+                    className={cx("select")}
                     allowClear
                     placeholder="Lọc theo trạng thái"
                 >
@@ -99,7 +103,7 @@ const OrderManage = () => {
                     <Option value="Đã huỷ">Đã huỷ</Option>
                 </Select>
 
-                <RangePicker className={styles.datePicker} />
+                <RangePicker className={cx("datePicker")} />
 
                 <AntButton type="primary" onClick={fetchOrders}>
                     Lọc
@@ -110,7 +114,7 @@ const OrderManage = () => {
                 columns={columns}
                 dataSource={orders}
                 rowKey="id"
-                className={styles.table}
+                className={cx("table")}
             />
         </div>
     );
