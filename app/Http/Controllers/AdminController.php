@@ -93,6 +93,7 @@ class AdminController extends Controller
                 return response()->json([
                     'success' => true,
                     'data' => [
+                        'product' => new ProductResource($product),
                         'product_name' => $product->name,
                         'quantity' => $mostSoldProduct->quantity,
                         'price' => $product->price,

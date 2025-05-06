@@ -117,7 +117,7 @@ const Dashboard = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/product/most-sold"
             );
-            // console.log(response.data);
+            console.log(response.data);
             // Hiển thị thông tin sản phẩm bán chạy nhất
          if (response.data && response.data.data) {
              const mostSoldProduct = response.data.data;
@@ -141,7 +141,7 @@ const Dashboard = () => {
             const response = await axios.get(
                 "http://127.0.0.1:8000/api/product/highest-income"
             );
-            console.log(response.data);
+            // console.log(response.data);
 
             if (response.data && response.data.data) {
                 const highestIncomeProduct = response.data.data;
@@ -248,7 +248,7 @@ const Dashboard = () => {
             </Row> */}
             <div className={cx("summaryGrid")}>
                 <div className={cx("summaryItem")}>
-                    <h1 className={cx("highlight")}>Sản phẩm bán chạy nhất</h1>
+                    <h1 className={cx("highlight")}>Sản phẩm đặt hàng nhiều nhất</h1>
                     <h1 className={cx("productName")}>
                         {mostSoldProduct.name}
                     </h1>
