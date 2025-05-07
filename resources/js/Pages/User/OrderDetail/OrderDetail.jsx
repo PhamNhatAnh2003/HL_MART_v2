@@ -93,19 +93,28 @@ const OrderDetail = () => {
             render: (price) => formatPrice(price),
         },
         {
-            title: "Trạng thái",
-            dataIndex: "status",
-            key: "status",
-            render: (status) => {
-                const color =
-                    status === "cancelled"
-                        ? "red"
-                        : status === "completed"
-                        ? "green"
-                        : "blue";
-                return <Tag color={color}>{status.toUpperCase()}</Tag>;
-            },
-        },
+    title: "Trạng thái",
+    dataIndex: "status",
+    key: "status",
+    render: (status) => {
+        let color;
+        
+        // Điều kiện màu sắc cho từng trạng thái
+        if (status === "cancelled") {
+            color = "red";
+        } else if (status === "completed") {
+            color = "green";
+        } else if (status === "shipping") {
+            color = "orange"; // Màu cam cho "Đang giao hàng"
+        } else {
+            color = "blue"; // Màu mặc định nếu trạng thái khác
+        }
+
+        // Trả về trạng thái và màu sắc tương ứng
+        return <Tag color={color}>{status.toUpperCase()}</Tag>;
+    },
+},
+
         {
             title: "Thao tác",
             key: "actions",

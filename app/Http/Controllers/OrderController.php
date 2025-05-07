@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends Controller
 {
@@ -144,5 +145,68 @@ public function cancel($id)
     }
 }
 
+public function getOrders(Request $request)
+{
+    $status = $request->query('status');
+    $name = $request->query('name');
+    $startDate = $request->query('start_date');
+    $endDate = $request->query('end_date');
 
+    $query = Order::query(); // 👈 Đưa lên đầu tiên
+
+    // Lọc theo ngày
+    if ($startDate && $endDate) {
+        $query->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+    }
+
+    // Lọc theo trạng thái
+    if ($status) {
+        $query->where('status', $status);
+    }
+
+    // Lọc theo tên khách hàng từ bảng address
+    if ($name) {
+        $query->whereHas('address', function ($q) use ($name) {
+            $q->where('receiver_name', 'like', '%' . $name . '%');
+        });
+    }
+
+    // Eager load 'address'
+    $orders = $query->with('address')->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => OrderResource::collection($orders),
+    ]);
 }
+
+
+// Cập nhật trạng thái đơn hàng
+public function updateStatus(Request $request, $id)
+{
+    // Tìm đơn hàng theo ID
+    $order = Order::find($id);
+    if (!$order) {
+        return response()->json(['success' => false, 'message' => 'Đơn hàng không tồn tại'], 404);
+    }
+
+    // Kiểm tra trạng thái mới
+    $newStatus = $request->input('status');
+    if (!$newStatus) {
+        return response()->json(['success' => false, 'message' => 'Trạng thái không hợp lệ'], 400);
+    }
+
+    // Cập nhật trạng thái đơn hàng
+    $order->status = $newStatus;
+    $order->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Trạng thái đơn hàng đã được cập nhật!',
+        'data' => $order
+    ]);
+}
+}
+
+
+
