@@ -63,6 +63,9 @@ Route::post('/create-order', [OrderController::class, 'CreateOrder']);
 Route::get('/orders/user/{userId}', [OrderController::class, 'getOrdersByUser']);
 Route::get('/orders/{id}', [OrderController::class, 'getOrderDetail']);
 Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel']);
+Route::get('/orders', [OrderController::class, 'getOrders']);
+Route::post('orders/{id}/status', [OrderController::class, 'updateStatus']);
+
 
 //address
 Route::get('/addresses', [AddressController::class, 'getAddresses']);

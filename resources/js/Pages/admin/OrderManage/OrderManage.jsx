@@ -6,6 +6,7 @@ import {
     Select,
     DatePicker,
     Button as AntButton,
+    message,
 } from "antd";
 import axios from "axios";
 import styles from "./OrderManage.module.scss";
@@ -15,21 +16,33 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const cx = classNames.bind(styles);
 
-
 const OrderManage = () => {
     const [orders, setOrders] = useState([]);
     const [statusFilter, setStatusFilter] = useState("");
     const [searchName, setSearchName] = useState("");
+    const [dateRange, setDateRange] = useState([]);
 
-    useEffect(() => {
-        fetchOrders();
-    }, [statusFilter, searchName]);
+useEffect(() => {
+    fetchOrders();
+}, [statusFilter, searchName, dateRange]);
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get(
-                `http://127.0.0.1:8000/api/orders?status=${statusFilter}&name=${searchName}`
-            );
+
+            const [start, end] = dateRange || [];
+            const params = {
+                status: statusFilter,
+                name: searchName,
+                start_date: start ? start.format("YYYY-MM-DD") : undefined,
+                end_date: end ? end.format("YYYY-MM-DD") : undefined,
+            };
+           const response = await axios.get(
+               "http://127.0.0.1:8000/api/orders",
+               {
+                   params,
+               }
+           );
+        //    console.log(response.data);
             if (response.data.success) {
                 setOrders(response.data.data);
             }
@@ -38,12 +51,30 @@ const OrderManage = () => {
         }
     };
 
+    const handleStatusChange = async (orderId, newStatus) => {
+        try {
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/orders/${orderId}/status`,
+                { status: newStatus }
+            );
+            if (response.data.success) {
+                message.success("Trạng thái đơn hàng đã được cập nhật!");
+                fetchOrders(); // Tải lại danh sách đơn hàng
+            } else {
+                message.error("Cập nhật trạng thái thất bại.");
+            }
+        } catch (error) {
+            console.error("Error updating order status:", error);
+            message.error("Có lỗi xảy ra khi cập nhật trạng thái.");
+        }
+    };
+
     const columns = [
         { title: "ID", dataIndex: "id", key: "id" },
         {
-            title: "Khách hàng",
-            dataIndex: "customer_name",
-            key: "customer_name",
+            title: "Người Nhận",
+            dataIndex: "receiver_name",
+            key: "receiver_name",
         },
         { title: "SĐT", dataIndex: "phone", key: "phone" },
         {
@@ -61,17 +92,35 @@ const OrderManage = () => {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (status) => {
+            render: (status, record) => {
                 const color =
                     status === "Đã giao"
                         ? "green"
                         : status === "Đã huỷ"
                         ? "red"
                         : "orange";
-                return <Tag color={color}>{status}</Tag>;
+                return (
+                    <Select
+                        value={status}
+                        style={{ width: 120 }}
+                        onChange={(newStatus) =>
+                            handleStatusChange(record.id, newStatus)
+                        }
+                    >
+                        <Option value="pending">Pending</Option>
+                        <Option value="shipping">Shipping</Option>
+                        <Option value="completed">Completed</Option>
+                        <Option value="cancelled">Cancelled</Option>
+                    </Select>
+                );
             },
         },
-        { title: "Ngày đặt", dataIndex: "created_at", key: "created_at" },
+        {
+            title: "Ngày đặt",
+            dataIndex: "created_at",
+            key: "created_at",
+            render: (date) => new Date(date).toLocaleString(),
+        },
         {
             title: "Hành động",
             key: "action",
@@ -98,12 +147,16 @@ const OrderManage = () => {
                     allowClear
                     placeholder="Lọc theo trạng thái"
                 >
-                    <Option value="Đang xử lý">Đang xử lý</Option>
-                    <Option value="Đã giao">Đã giao</Option>
-                    <Option value="Đã huỷ">Đã huỷ</Option>
+                    <Option value="pending">Pending</Option>
+                    <Option value="shipping">Shipping</Option>
+                    <Option value="completed">Completed</Option>
+                    <Option value="cancelled">Cancelled</Option>
                 </Select>
 
-                <RangePicker className={cx("datePicker")} />
+                <RangePicker
+                    className={cx("datePicker")}
+                    onChange={(dates) => setDateRange(dates)}
+                />
 
                 <AntButton type="primary" onClick={fetchOrders}>
                     Lọc
