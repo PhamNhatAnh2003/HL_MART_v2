@@ -12,6 +12,7 @@ class CreateBilliardTablesTable extends Migration
             $table->id();
             $table->string('name'); // Tên bàn (ví dụ: Bàn 1, Bàn VIP, v.v.)
             $table->enum('status', ['available', 'reserved', 'using'])->default('available');
+            $table->timestamp('booking_time')->nullable(); // Thời điểm đặt bàn trước
             $table->timestamps();
         });
     }

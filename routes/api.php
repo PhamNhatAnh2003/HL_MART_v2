@@ -93,15 +93,11 @@ Route::post('/favorite-toggle', [FavoriteController::class, 'toggleFavorite']);
 Route::get('/is-favorite', [FavoriteController::class, 'isFavorite']);
 Route::get('/favorites_home', [FavoriteController::class, 'getFavoritesInHome']);
 
-// billards
-Route::prefix('table-bookings')->group(function () {
-    Route::get('/', [TableBookingController::class, 'index']);
-    Route::post('/reserve', [TableBookingController::class, 'reserve']);
-    Route::post('/start/{id}', [TableBookingController::class, 'startUsing']);
-    Route::delete('/cancel/{id}', [TableBookingController::class, 'cancel']);
-});
-
 
 // routes/api.php
 Route::get('/billiard-tables', [TableBookingController::class, 'listtable']);
+Route::post('/book-table', [TableBookingController::class, 'bookTable']);
+Route::get('/my-bookings', [TableBookingController::class, 'myBookings']);
+Route::post('/cancel-booking', [TableBookingController::class, 'cancel']);
+
 

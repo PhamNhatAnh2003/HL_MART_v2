@@ -60,7 +60,7 @@ public function createOrder(Request $request)
     $product->sold += $item['quantity'];
     $product->save();
     }
-return response()->json([
+    return response()->json([
     'status' => true,
     'message' => 'Đặt hàng thành công!',
     'order_id' => $order->id,

@@ -27,4 +27,9 @@ class TableBooking extends Model
     {
         return $this->hasMany(TableItem::class);
     }
+
+    public function billiardTable()
+{
+    return $this->belongsTo(BilliardTable::class, 'billiard_table_id');
+}
 }
