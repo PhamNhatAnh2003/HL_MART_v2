@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {useContext ,useState, useEffect } from "react";
 import axios from "axios";
 import "./Billards.scss";
+import { AuthContext } from "~/context/AuthContext";
 import { FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
-import { Modal, Button } from "antd"; // Import Modal và Button từ Ant Design
+import { Modal, Button, DatePicker, TimePicker, message } from "antd";
+import dayjs from "dayjs";
 
 const statusMap = {
     available: {
@@ -22,46 +24,82 @@ const statusMap = {
     },
 };
 
-// Mảng giả lập các món ăn đã gọi
-const fakeMenus = ["Gà rán", "Hamburger", "Pasta", "Pizza", "Bánh ngọt"];
-
-
 const Billards = () => {
+    const { user: loginedProfile } = useContext(AuthContext);
     const [tables, setTables] = useState([]);
     const [selected, setSelected] = useState(null);
-    const [modalVisible, setModalVisible] = useState(false); // Trạng thái để mở/đóng modal
-    const [currentTable, setCurrentTable] = useState(null); // Lưu thông tin bàn hiện tại
+    const [modalVisible, setModalVisible] = useState(false);
+    const [currentTable, setCurrentTable] = useState(null);
+    const [bookingModalVisible, setBookingModalVisible] = useState(false);
+    const [bookingDate, setBookingDate] = useState(null);
+    const [bookingTime, setBookingTime] = useState(null);
 
+    const fetchTables = async () => {
+        try {
+            const res = await axios.get(
+                "http://127.0.0.1:8000/api/billiard-tables"
+            );
+            console.log(res.data)
+            setTables(res.data.data);
+        } catch (err) {
+            console.error("Lỗi khi tải danh sách bàn:", err);
+        }
+    };
 
     useEffect(() => {
-        const fetchTables = async () => {
-            try {
-                const res = await axios.get(
-                    "http://127.0.0.1:8000/api/billiard-tables"
-                ); // Đổi URL tùy backend
-                console.log(res.data)
-                setTables(res.data.data);
-            } catch (err) {
-                console.error("Lỗi khi tải danh sách bàn:", err);
-            }
-        };
-
         fetchTables();
     }, []);
 
-
-
-
-    // Hàm mở modal khi bàn đang dùng
     const openModal = (table) => {
         setCurrentTable(table);
         setModalVisible(true);
     };
 
-    // Hàm đóng modal
     const closeModal = () => {
         setModalVisible(false);
         setCurrentTable(null);
+    };
+
+    const openBookingModal = (table) => {
+        setSelected(table.id);
+        setCurrentTable(table);
+        setBookingModalVisible(true);
+    };
+
+    const closeBookingModal = () => {
+        setBookingModalVisible(false);
+        setBookingDate(null);
+        setBookingTime(null);
+        setSelected(null);
+        setCurrentTable(null);
+    };
+
+    const handleBooking = async () => {
+        if (!bookingDate || !bookingTime) {
+            message.error("Vui lòng chọn ngày và giờ đặt bàn.");
+            return;
+        }
+
+        const bookingDateTime = dayjs(bookingDate)
+            .hour(bookingTime.hour())
+            .minute(bookingTime.minute())
+            .second(0)
+            .format("YYYY-MM-DD HH:mm:ss");
+
+        try {
+            await axios.post("http://127.0.0.1:8000/api/book-table", {
+                user_id: loginedProfile?.id,
+                table_id: currentTable.id,
+                booking_time: bookingDateTime,
+            });
+
+            message.success("Đặt bàn thành công!");
+            closeBookingModal();
+            fetchTables(); // cập nhật lại trạng thái
+        } catch (err) {
+            console.error("Lỗi đặt bàn:", err);
+            message.error("Đặt bàn thất bại. Vui lòng thử lại.");
+        }
     };
 
     return (
@@ -71,20 +109,19 @@ const Billards = () => {
             <div className="table-grid">
                 {tables.map((table) => {
                     const { label, color, icon } = statusMap[table.status];
-                    const isSelected = selected === table.id;
 
                     return (
                         <div
                             key={table.id}
                             className={`table-card ${
-                                isSelected ? "selected" : ""
+                                selected === table.id ? "selected" : ""
                             }`}
                             style={{ backgroundColor: color }}
                             onClick={() => {
                                 if (table.status === "available") {
-                                    setSelected(table.id);
+                                    openBookingModal(table);
                                 } else if (table.status === "using") {
-                                    openModal(table); // Mở modal khi bàn đang dùng
+                                    openModal(table);
                                 }
                             }}
                         >
@@ -105,12 +142,12 @@ const Billards = () => {
                 })}
             </div>
 
-            {/* Modal hiển thị các món ăn đã gọi */}
+            {/* Modal hiển thị món đã gọi khi đang dùng */}
             <Modal
                 title={currentTable ? currentTable.name : "Bàn"}
-                open={modalVisible} // Điều khiển hiển thị modal
-                onCancel={closeModal} // Đóng modal khi nhấn "Cancel"
-                footer={null} // Không cần nút footer
+                open={modalVisible}
+                onCancel={closeModal}
+                footer={null}
                 width={500}
             >
                 {currentTable && (
@@ -119,19 +156,14 @@ const Billards = () => {
                             <strong>Thời gian bắt đầu: </strong>
                             {currentTable.usingTime}
                         </p>
-                        {currentTable.orderedItems.length > 0 ? (
-                            <div className="ordered-items">
-                                <p>
-                                    <strong>Món đã gọi:</strong>
-                                </p>
-                                <ul>
-                                    {currentTable.orderedItems.map(
-                                        (item, index) => (
-                                            <li key={index}>{item}</li>
-                                        )
-                                    )}
-                                </ul>
-                            </div>
+                        {currentTable.orderedItems?.length > 0 ? (
+                            <ul>
+                                {currentTable.orderedItems.map(
+                                    (item, index) => (
+                                        <li key={index}>{item}</li>
+                                    )
+                                )}
+                            </ul>
                         ) : (
                             <p>Chưa có món ăn nào được gọi.</p>
                         )}
@@ -140,6 +172,27 @@ const Billards = () => {
                 <Button onClick={closeModal} type="primary">
                     Đóng
                 </Button>
+            </Modal>
+
+            {/* Modal đặt bàn */}
+            <Modal
+                title={`Đặt bàn: ${currentTable?.name}`}
+                open={bookingModalVisible}
+                onCancel={closeBookingModal}
+                onOk={handleBooking}
+                okText="Xác nhận đặt"
+                cancelText="Hủy"
+            >
+                <p>Chọn ngày và giờ đặt bàn:</p>
+                <DatePicker
+                    style={{ width: "100%", marginBottom: "1rem" }}
+                    onChange={(value) => setBookingDate(value)}
+                />
+                <TimePicker
+                    style={{ width: "100%" }}
+                    format="HH:mm"
+                    onChange={(value) => setBookingTime(value)}
+                />
             </Modal>
         </div>
     );

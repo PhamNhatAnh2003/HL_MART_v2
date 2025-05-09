@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
                 CartSeeder::class,
                 CartItemSeeder::class,
                 BilliardTableSeeder::class,
-                TableBookingsSeeder::class,  // Đảm bảo dòng này có trong DatabaseSeeder
-                TableItemsSeeder::class,  
+                // TableBookingsSeeder::class,  // Đảm bảo dòng này có trong DatabaseSeeder
+                // TableItemsSeeder::class,  
             ]);
     }
 

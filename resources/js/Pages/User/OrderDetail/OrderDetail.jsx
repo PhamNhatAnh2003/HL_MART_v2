@@ -14,8 +14,34 @@ const OrderDetail = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [orderDetails, setOrderDetails] = useState([]);
-    const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+    const [isOrderCancelModalOpen, setIsOrderCancelModalOpen] = useState(false);
+    const [isBookingCancelModalOpen, setIsBookingCancelModalOpen] =
+        useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [bookings, setBookings] = useState([]);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [selectedBookingId, setSelectedBookingId] = useState(null);
+
+
+    const fetchMyBookings = async () => {
+        try {
+            const res = await axios.get(
+                "http://127.0.0.1:8000/api/my-bookings",
+                {
+                    params: { user_id: user.id },
+                }
+            );
+            setBookings(res.data.data);
+        } catch (err) {
+            console.error("Lỗi khi tải danh sách đặt bàn:", err);
+        }
+    };
+
+    useEffect(() => {
+        if (user?.id) fetchMyBookings();
+    }, [user]);
+    
+
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -73,6 +99,26 @@ const OrderDetail = () => {
             setIsCancelModalOpen(false);
         }
     };
+
+    const handleCancelBooking = async (bookingId) => {
+        if (!bookingId) {
+            alert("Đặt bàn không hợp lệ.");
+            return;
+        }
+
+        try {
+            await axios.post("http://127.0.0.1:8000/api/cancel-booking", {
+                booking_id: bookingId,
+                user_id: user?.id,
+            });
+            alert("Huỷ đặt bàn thành công!");
+            setIsCancelModalOpen(false);
+            fetchMyBookings(); // reload lại danh sách
+        } catch (err) {
+            console.error("Lỗi huỷ đặt bàn:", err);
+        }
+    };
+
 
     const columns = [
         {
@@ -135,76 +181,161 @@ const OrderDetail = () => {
 
     return (
         <div className={cx("wrapper")}>
-            <h2>Theo dõi đơn hàng</h2>
-            <Table
-                columns={columns}
-                dataSource={orders}
-                rowKey="id"
-                onRow={(record) => ({
-                    onClick: () => handleRowClick(record),
-                    style: { cursor: "pointer" },
-                })}
-            />
-            <Modal
-                title={`Chi tiết đơn hàng #${selectedOrder?.id}`}
-                open={!!selectedOrder}
-                onCancel={() => setSelectedOrder(null)}
-                footer={null}
-            >
-                {orderDetails && orderDetails.length > 0 ? ( // Kiểm tra orderDetails có tồn tại và có phần tử
-                    <Table
-                        dataSource={orderDetails}
-                        rowKey="id"
-                        pagination={false}
-                        columns={[
-                            {
-                                title: "Sản phẩm",
-                                dataIndex: "product_name",
-                                key: "product_name",
-                            },
-                            {
-                                title: "Số lượng",
-                                dataIndex: "quantity",
-                                key: "quantity",
-                            },
-                            {
-                                title: "Giá tiền",
-                                dataIndex: "price_at_time",
-                                key: "price_at_time",
-                                render: (price) => formatPrice(price),
-                            },
-                        ]}
-                    />
-                ) : (
-                    <p>Không có dữ liệu.</p> // Hiển thị thông báo nếu không có dữ liệu
-                )}
+            <div className={cx("first")}>
+                <h2>Theo dõi đơn hàng</h2>
+                <Table
+                    columns={columns}
+                    dataSource={orders}
+                    rowKey="id"
+                    onRow={(record) => ({
+                        onClick: () => handleRowClick(record),
+                        style: { cursor: "pointer" },
+                    })}
+                />
+                <Modal
+                    title={`Chi tiết đơn hàng #${selectedOrder?.id}`}
+                    open={!!selectedOrder}
+                    onCancel={() => setSelectedOrder(null)}
+                    footer={null}
+                >
+                    {orderDetails && orderDetails.length > 0 ? ( // Kiểm tra orderDetails có tồn tại và có phần tử
+                        <Table
+                            dataSource={orderDetails}
+                            rowKey="id"
+                            pagination={false}
+                            columns={[
+                                {
+                                    title: "Sản phẩm",
+                                    dataIndex: "product_name",
+                                    key: "product_name",
+                                },
+                                {
+                                    title: "Số lượng",
+                                    dataIndex: "quantity",
+                                    key: "quantity",
+                                },
+                                {
+                                    title: "Giá tiền",
+                                    dataIndex: "price_at_time",
+                                    key: "price_at_time",
+                                    render: (price) => formatPrice(price),
+                                },
+                            ]}
+                        />
+                    ) : (
+                        <p>Không có dữ liệu.</p> // Hiển thị thông báo nếu không có dữ liệu
+                    )}
 
-                {/* Phần hiển thị nút huỷ đơn hàng */}
-                {selectedOrder?.status === "pending" && (
-                    <div style={{ marginTop: 16 }}>
-                        <Button
-                            danger
-                            onClick={() => {
-                                setSelectedOrderId(selectedOrder.id);
-                                setIsCancelModalOpen(true);
-                            }}
-                        >
-                            Huỷ đơn hàng
-                        </Button>
-                    </div>
-                )}
-            </Modal>
-            <Modal
-                title="Xác nhận huỷ đơn hàng"
-                open={isCancelModalOpen}
-                onCancel={() => setIsCancelModalOpen(false)}
-                onOk={() => handleCancelOrder(selectedOrderId)}
-                okText="Xác nhận"
-                cancelText="Huỷ"
-                centered
-            >
-                <p>Bạn có chắc chắn muốn huỷ đơn hàng này không?</p>
-            </Modal>
+                    {/* Phần hiển thị nút huỷ đơn hàng */}
+                    {selectedOrder?.status === "pending" && (
+                        <div style={{ marginTop: 16 }}>
+                            <Button
+                                danger
+                                onClick={() => {
+                                    setSelectedOrderId(selectedOrder.id);
+                                    setIsOrderCancelModalOpen(true);
+                                }}
+                            >
+                                Huỷ đơn hàng
+                            </Button>
+                        </div>
+                    )}
+                </Modal>
+                <Modal
+                    title="Xác nhận huỷ đơn hàng"
+                    open={isOrderCancelModalOpen}
+                    onCancel={() => setIsOrderCancelModalOpen(false)}
+                    onOk={() => handleCancelOrder(selectedOrderId)}
+                    okText="Xác nhận"
+                    cancelText="Huỷ"
+                    centered
+                >
+                    <p>Bạn có chắc chắn muốn huỷ đơn hàng này không?</p>
+                </Modal>
+            </div>
+            <div className={cx("second")}>
+                <h2>Đặt bàn</h2>
+                <Table
+                    columns={[
+                        {
+                            title: "STT",
+                            key: "stt",
+                            render: (text, record, index) => index + 1,
+                        },
+                        {
+                            title: "Tên bàn",
+                            dataIndex: ["billiard_table", "name"],
+                            key: "table_name",
+                        },
+                        {
+                            title: "Giờ đặt",
+                            dataIndex: "booking_time",
+                            key: "booking_time",
+                        },
+                        {
+                            title: "Trạng thái",
+                            dataIndex: "status",
+                            key: "status",
+                            render: (status) => {
+                                const color =
+                                    status === "reserved"
+                                        ? "orange"
+                                        : status === "using"
+                                        ? "green"
+                                        : "gray";
+                                const label =
+                                    status === "reserved"
+                                        ? "Đã đặt"
+                                        : status === "using"
+                                        ? "Đang dùng"
+                                        : "Đã xong";
+                                return <span style={{ color }}>{label}</span>;
+                            },
+                        },
+                        {
+                            title: "Thao tác",
+                            key: "actions",
+                            render: (_, record) => {
+                                // Kiểm tra trạng thái "reserved" để hiển thị nút huỷ
+                                if (record.status === "reserved") {
+                                    return (
+                                        <Button
+                                            danger
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Ngừng sự kiện click để tránh mở modal chi tiết
+                                                setSelectedBookingId(record.id); // Lưu id của đặt bàn
+                                                setIsBookingCancelModalOpen(
+                                                    true
+                                                ); // Mở modal huỷ đặt bàn
+                                            }}
+                                        >
+                                            Huỷ đặt bàn
+                                        </Button>
+                                    );
+                                }
+                                return null; // Trả về null nếu không phải trạng thái "reserved"
+                            },
+                        },
+                    ]}
+                    dataSource={bookings}
+                    rowKey="id"
+                    onRow={(record) => ({
+                        onClick: () => handleRowClick(record),
+                        style: { cursor: "pointer" },
+                    })}
+                />
+                <Modal
+                    title="Xác nhận huỷ đặt bàn"
+                    open={isBookingCancelModalOpen}
+                    onCancel={() => setIsBookingCancelModalOpen(false)}
+                    onOk={() => handleCancelBooking(selectedBookingId)}
+                    okText="Xác nhận"
+                    cancelText="Huỷ"
+                    centered
+                >
+                    <p>Bạn có chắc chắn muốn huỷ đặt bàn này không?</p>
+                </Modal>
+            </div>
         </div>
     );
 };

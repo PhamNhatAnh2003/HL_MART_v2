@@ -4,40 +4,45 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class TableBookingsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
+        $now = Carbon::now();
+
         DB::table('table_bookings')->insert([
             [
-                'table_number' => 1,
-                'user_id' => 1,
+                'billiard_table_id' => 1,
+                'user_id' => 3,
                 'status' => 'reserved',
-                'booking_time' => Carbon::now()->addHours(1), // Đặt bàn trong 1 giờ
-                'start_time' => null,
-                'end_time' => null,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'booking_time' => $now->copy()->addHour(),
+                'start_time' => $now->copy()->addHour(),
+                'end_time' => $now->copy()->addHours(3),
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
-                'table_number' => 2,
-                'user_id' => 2,
+                'billiard_table_id' => 2,
+                'user_id' => 3,
                 'status' => 'using',
-                'booking_time' => Carbon::now()->addHours(2), // Đặt bàn trong 2 giờ
+                'booking_time' => $now->copy()->subHour(),
+                'start_time' => $now->copy()->subHour(),
+                'end_time' => $now->copy()->addHour(),
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            [
+                'billiard_table_id' => 3,
+                'user_id' => 2,
+                'status' => 'reserved',
+                'booking_time' => $now->copy()->addDays(1),
                 'start_time' => null,
                 'end_time' => null,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
-            // Thêm các bản ghi khác nếu cần
         ]);
     }
 }
