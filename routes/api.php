@@ -9,6 +9,9 @@ use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\TableBookingController;
+
+
 
 
 Route::get('/user', function (Request $request) {
@@ -90,4 +93,15 @@ Route::post('/favorite-toggle', [FavoriteController::class, 'toggleFavorite']);
 Route::get('/is-favorite', [FavoriteController::class, 'isFavorite']);
 Route::get('/favorites_home', [FavoriteController::class, 'getFavoritesInHome']);
 
+// billards
+Route::prefix('table-bookings')->group(function () {
+    Route::get('/', [TableBookingController::class, 'index']);
+    Route::post('/reserve', [TableBookingController::class, 'reserve']);
+    Route::post('/start/{id}', [TableBookingController::class, 'startUsing']);
+    Route::delete('/cancel/{id}', [TableBookingController::class, 'cancel']);
+});
+
+
+// routes/api.php
+Route::get('/billiard-tables', [TableBookingController::class, 'listtable']);
 

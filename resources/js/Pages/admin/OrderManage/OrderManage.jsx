@@ -70,7 +70,11 @@ useEffect(() => {
     };
 
     const columns = [
-        { title: "ID", dataIndex: "id", key: "id" },
+        {
+            title: "STT",
+            key: "stt",
+            render: (text, record, index) => index + 1,
+        },
         {
             title: "Người Nhận",
             dataIndex: "receiver_name",

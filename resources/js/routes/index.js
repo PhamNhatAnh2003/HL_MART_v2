@@ -60,6 +60,11 @@ const publicRoutes = [
         layout: layouts.user.default,
     },
     {
+        path: config.routes.user.billards,
+        component: pages.user.billards,
+        layout: layouts.user.default,
+    },
+    {
         path: config.routes.user.step2,
         component: pages.user.step2,
         layout: layouts.user.default,

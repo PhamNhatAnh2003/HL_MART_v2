@@ -1,0 +1,100 @@
+.table-booking-wrapper {
+  padding: 30px;
+  background-color: #f0f2f5;
+  font-family: 'Segoe UI', sans-serif;
+
+  h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+    color: #001529;
+  }
+
+  .table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 20px;
+  }
+
+  .table-card {
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.25s ease;
+    border: 2px solid transparent;
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    &.selected {
+      border-color: #1890ff;
+      box-shadow: 0 0 0 3px #1890ff33;
+    }
+
+    .table-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .table-name {
+      font-weight: 600;
+      font-size: 16px;
+      color: #000;
+      margin-bottom: 4px;
+    }
+
+    .table-status {
+      font-size: 13px;
+      color: #595959;
+    }
+  }
+}
+
+/* Billards.scss */
+
+.table-card {
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  margin: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  &.selected {
+    border: 2px solid #1890ff;
+  }
+
+  .table-icon {
+    font-size: 24px;
+  }
+
+  .table-name {
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  .table-status {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .using-time, .ordered-items {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+    }
+  }
+}
+
