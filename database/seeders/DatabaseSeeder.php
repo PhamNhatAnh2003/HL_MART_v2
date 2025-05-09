@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
                 ProductSeeder::class,
                 CartSeeder::class,
                 CartItemSeeder::class,
-                VnAddressSeeder::class,
+                BilliardTableSeeder::class,
+                TableBookingsSeeder::class,  // Đảm bảo dòng này có trong DatabaseSeeder
+                TableItemsSeeder::class,  
             ]);
     }
 

@@ -9,7 +9,7 @@ import { GiEightBall } from "react-icons/gi";
 import styles from "./Category.module.scss"; // Import SCSS module
 import classNames from "classnames/bind";
 import { useNavigate } from "react-router-dom";
-
+import config from "~/config";
 
 const cx = classNames.bind(styles);
 
@@ -90,8 +90,12 @@ useEffect(() => {
 
             {/* Phần Tin Tức và Chăm Sóc Khách Hàng */}
             <div className={cx("extra-menu")}>
-                <div className={cx("menu-item")}>
-                    <GiEightBall className={cx("icon")} /> Billard
+                <div
+                    onClick={() => navigate(config.routes.user.billards)}
+                    className={cx("menu-item")}
+                >
+                    <GiEightBall className={cx("icon")} />
+                    Billard
                 </div>
                 <div className={cx("menu-item")}>
                     <FaHeadphones className={cx("icon")} /> Chăm sóc khách hàng

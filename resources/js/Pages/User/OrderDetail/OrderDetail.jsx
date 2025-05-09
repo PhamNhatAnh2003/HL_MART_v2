@@ -76,9 +76,9 @@ const OrderDetail = () => {
 
     const columns = [
         {
-            title: "Mã đơn",
-            dataIndex: "id",
-            key: "id",
+            title: "STT",
+            key: "stt",
+            render: (text, record, index) => index + 1,
         },
         {
             title: "Ngày đặt",
@@ -93,27 +93,27 @@ const OrderDetail = () => {
             render: (price) => formatPrice(price),
         },
         {
-    title: "Trạng thái",
-    dataIndex: "status",
-    key: "status",
-    render: (status) => {
-        let color;
-        
-        // Điều kiện màu sắc cho từng trạng thái
-        if (status === "cancelled") {
-            color = "red";
-        } else if (status === "completed") {
-            color = "green";
-        } else if (status === "shipping") {
-            color = "orange"; // Màu cam cho "Đang giao hàng"
-        } else {
-            color = "blue"; // Màu mặc định nếu trạng thái khác
-        }
+            title: "Trạng thái",
+            dataIndex: "status",
+            key: "status",
+            render: (status) => {
+                let color;
 
-        // Trả về trạng thái và màu sắc tương ứng
-        return <Tag color={color}>{status.toUpperCase()}</Tag>;
-    },
-},
+                // Điều kiện màu sắc cho từng trạng thái
+                if (status === "cancelled") {
+                    color = "red";
+                } else if (status === "completed") {
+                    color = "green";
+                } else if (status === "shipping") {
+                    color = "orange"; // Màu cam cho "Đang giao hàng"
+                } else {
+                    color = "blue"; // Màu mặc định nếu trạng thái khác
+                }
+
+                // Trả về trạng thái và màu sắc tương ứng
+                return <Tag color={color}>{status.toUpperCase()}</Tag>;
+            },
+        },
 
         {
             title: "Thao tác",
@@ -142,6 +142,7 @@ const OrderDetail = () => {
                 rowKey="id"
                 onRow={(record) => ({
                     onClick: () => handleRowClick(record),
+                    style: { cursor: "pointer" },
                 })}
             />
             <Modal

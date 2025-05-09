@@ -1,3 +1,5 @@
+
+
 const routes = {
     admin: {
         dashboard: "/admin/dashboard",
@@ -18,6 +20,7 @@ const routes = {
         step3: "/cart/step3",
         success: "/order-success",
         orderDetail: "/order-detail",
+        billards: "/order-billards"
         // map: '/map',
     },
 

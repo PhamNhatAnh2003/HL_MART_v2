@@ -8,7 +8,7 @@ import CategoryProduct from "./CategoryProduct";
 import ProductList from "./ProductList";
 import Success from "./Cart/Step/Success";
 import OrderDetail from "./OrderDetail";
-// import Favorite from "./Favorite";
+import Billards from "./Billards";
 
 const user = {
     home: Home,
@@ -21,6 +21,7 @@ const user = {
     step3: Step3,
     success: Success,
     orderDetail: OrderDetail,
+    billards: Billards,
 };
 
 export default user;

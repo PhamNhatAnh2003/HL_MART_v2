@@ -60,15 +60,16 @@ public function createOrder(Request $request)
     $product->sold += $item['quantity'];
     $product->save();
     }
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Đặt hàng thành công!',
-        'order_id' => $order->id,
-        'qr_url' => $validated['payment_method'] === 'momo' 
-        ? $this->generateMomoQr($order) 
-        : null,
-    ]);
+return response()->json([
+    'status' => true,
+    'message' => 'Đặt hàng thành công!',
+    'order_id' => $order->id,
+    'qr_url' => match ($validated['payment_method']) {
+        'momo' => $this->generateMomoQr($order),
+        'vnpay' => $this->generateVnpayUrl($order),
+        default => null,
+    },
+]);
 }
 
 private function generateMomoQr($order)
@@ -76,6 +77,57 @@ private function generateMomoQr($order)
     // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
     return 'https://dummy-momo-qr.com/images/qr_3.png' . $order->id;
 }
+
+private function generateVnpayUrl($order)
+{
+    $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+    $vnp_Returnurl = "http://localhost:8080/weblinhkienmaytinh/checkout";
+    $vnp_TmnCode = "1VYBIYQP"; // Từ VNPAY
+    $vnp_HashSecret = "NOH6MBGNLQL9O9OMMFMZ2AX8NIEP50W1"; // Từ VNPAY
+
+    $vnp_TxnRef = $order->id;
+    $vnp_OrderInfo = 'Thanh toán đơn hàng #' . $order->id;
+    $vnp_OrderType = 'billpayment';
+    $vnp_Amount = $order->total_price * 100; // Nhân 100 vì VNPAY yêu cầu
+    $vnp_Locale = 'vn';
+    $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+
+    $inputData = array(
+        "vnp_Version" => "2.1.0",
+        "vnp_TmnCode" => $vnp_TmnCode,
+        "vnp_Amount" => $vnp_Amount,
+        "vnp_Command" => "pay",
+        "vnp_CreateDate" => date('YmdHis'),
+        "vnp_CurrCode" => "VND",
+        "vnp_IpAddr" => $vnp_IpAddr,
+        "vnp_Locale" => $vnp_Locale,
+        "vnp_OrderInfo" => $vnp_OrderInfo,
+        "vnp_OrderType" => $vnp_OrderType,
+        "vnp_ReturnUrl" => $vnp_Returnurl,
+        "vnp_TxnRef" => $vnp_TxnRef,
+    );
+
+    ksort($inputData);
+    $query = "";
+    $hashdata = "";
+    $i = 0;
+    foreach ($inputData as $key => $value) {
+        if ($i == 1) {
+            $hashdata .= '&' . urlencode($key) . "=" . urlencode($value);
+        } else {
+            $hashdata .= urlencode($key) . "=" . urlencode($value);
+            $i = 1;
+        }
+        $query .= urlencode($key) . "=" . urlencode($value) . '&';
+    }
+
+    $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret);
+    $vnp_Url .= "?" . $query . 'vnp_SecureHash=' . $vnpSecureHash;
+
+    return $vnp_Url;
+}
+
+
 
 public function getOrdersByUser($userId)
 {

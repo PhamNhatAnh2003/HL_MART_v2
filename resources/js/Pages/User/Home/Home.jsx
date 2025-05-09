@@ -30,6 +30,7 @@ const Home = () => {
                 if (response.status === 200) {
                     setNewProducts(response.data.data || []); // Đổi từ response.data.products -> response.data.data
                 }
+                
             } catch (error) {
                 console.error("Lỗi khi lấy sản phẩm mới:", error);
                 setNewProducts([]); // Tránh lỗi undefined
@@ -81,7 +82,7 @@ const Home = () => {
             </section>
 
             <section className={cx("newStyleSection")}>
-                <h2 className={cx("sectionHeading")}>SẢN PHẨM MỚI NHẤT</h2>
+                <h2 className={cx("sectionHeading")}>SẢN PHẨM BÁN CHẠY NHẤT</h2>
                 <div className={cx("productList")}>
                     {topProducts.map((product, index) => (
                         <Card key={index} product={product} />
