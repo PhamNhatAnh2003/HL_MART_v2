@@ -65,7 +65,7 @@ public function createOrder(Request $request)
     'message' => 'Đặt hàng thành công!',
     'order_id' => $order->id,
     'qr_url' => match ($validated['payment_method']) {
-        'momo' => $this->generateMomoQr($order),
+        'CK' => $this->generateMomoQr($order),
         'vnpay' => $this->generateVnpayUrl($order),
         default => null,
     },

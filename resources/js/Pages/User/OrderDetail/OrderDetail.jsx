@@ -5,7 +5,7 @@ import axios from "axios";
 import { AuthContext } from "~/context/AuthContext";
 import { formatPrice } from "~/utils/format";
 import Button from "~/components/Button"
-import { Table, Tag, Modal } from "antd"; // thêm Modal và Button
+import { Table, Tag, Modal, Empty } from "antd"; // thêm Modal và Button
 
 const cx = classNames.bind(styles);
 
@@ -19,7 +19,6 @@ const OrderDetail = () => {
         useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState(null);
     const [bookings, setBookings] = useState([]);
-    const [selectedBooking, setSelectedBooking] = useState(null);
     const [selectedBookingId, setSelectedBookingId] = useState(null);
 
 
@@ -40,8 +39,6 @@ const OrderDetail = () => {
     useEffect(() => {
         if (user?.id) fetchMyBookings();
     }, [user]);
-    
-
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -82,6 +79,7 @@ const OrderDetail = () => {
             );
             if (res.data.success) {
                 alert("Đơn hàng đã được huỷ!");
+                // window.location.reload();
                 setOrders((prevOrders) =>
                     prevOrders.map((order) =>
                         order.id === orderId
@@ -96,7 +94,7 @@ const OrderDetail = () => {
             console.error("Lỗi khi huỷ đơn hàng:", error);
             alert("Có lỗi xảy ra khi huỷ đơn hàng.");
         } finally {
-            setIsCancelModalOpen(false);
+            setIsOrderCancelModalOpen(false);
         }
     };
 
@@ -112,7 +110,7 @@ const OrderDetail = () => {
                 user_id: user?.id,
             });
             alert("Huỷ đặt bàn thành công!");
-            setIsCancelModalOpen(false);
+            setIsBookingCancelModalOpen(false);
             fetchMyBookings(); // reload lại danh sách
         } catch (err) {
             console.error("Lỗi huỷ đặt bàn:", err);
@@ -170,7 +168,7 @@ const OrderDetail = () => {
                         danger
                         onClick={() => {
                             setSelectedOrderId(record.id);
-                            setIsCancelModalOpen(true);
+                            // setIsOrderCancelModalOpen(true);
                         }}
                     >
                         Huỷ đơn hàng
@@ -183,15 +181,19 @@ const OrderDetail = () => {
         <div className={cx("wrapper")}>
             <div className={cx("first")}>
                 <h2>Theo dõi đơn hàng</h2>
-                <Table
-                    columns={columns}
-                    dataSource={orders}
-                    rowKey="id"
-                    onRow={(record) => ({
-                        onClick: () => handleRowClick(record),
-                        style: { cursor: "pointer" },
-                    })}
-                />
+                {orders.length > 0 ? (
+                    <Table
+                        columns={columns}
+                        dataSource={orders}
+                        rowKey="id"
+                        onRow={(record) => ({
+                            onClick: () => handleRowClick(record),
+                            style: { cursor: "pointer" },
+                        })}
+                    />
+                ) : (
+                    <Empty description="Chưa có đơn hàng nào." />
+                )}
                 <Modal
                     title={`Chi tiết đơn hàng #${selectedOrder?.id}`}
                     open={!!selectedOrder}
@@ -255,75 +257,83 @@ const OrderDetail = () => {
             </div>
             <div className={cx("second")}>
                 <h2>Đặt bàn</h2>
-                <Table
-                    columns={[
-                        {
-                            title: "STT",
-                            key: "stt",
-                            render: (text, record, index) => index + 1,
-                        },
-                        {
-                            title: "Tên bàn",
-                            dataIndex: ["billiard_table", "name"],
-                            key: "table_name",
-                        },
-                        {
-                            title: "Giờ đặt",
-                            dataIndex: "booking_time",
-                            key: "booking_time",
-                        },
-                        {
-                            title: "Trạng thái",
-                            dataIndex: "status",
-                            key: "status",
-                            render: (status) => {
-                                const color =
-                                    status === "reserved"
-                                        ? "orange"
-                                        : status === "using"
-                                        ? "green"
-                                        : "gray";
-                                const label =
-                                    status === "reserved"
-                                        ? "Đã đặt"
-                                        : status === "using"
-                                        ? "Đang dùng"
-                                        : "Đã xong";
-                                return <span style={{ color }}>{label}</span>;
+                {bookings.length > 0 ? (
+                    <Table
+                        columns={[
+                            {
+                                title: "STT",
+                                key: "stt",
+                                render: (text, record, index) => index + 1,
                             },
-                        },
-                        {
-                            title: "Thao tác",
-                            key: "actions",
-                            render: (_, record) => {
-                                // Kiểm tra trạng thái "reserved" để hiển thị nút huỷ
-                                if (record.status === "reserved") {
+                            {
+                                title: "Tên bàn",
+                                dataIndex: ["billiard_table", "name"],
+                                key: "table_name",
+                            },
+                            {
+                                title: "Giờ đặt",
+                                dataIndex: "booking_time",
+                                key: "booking_time",
+                            },
+                            {
+                                title: "Trạng thái",
+                                dataIndex: "status",
+                                key: "status",
+                                render: (status) => {
+                                    const color =
+                                        status === "reserved"
+                                            ? "orange"
+                                            : status === "using"
+                                            ? "green"
+                                            : "gray";
+                                    const label =
+                                        status === "reserved"
+                                            ? "Đã đặt"
+                                            : status === "using"
+                                            ? "Đang dùng"
+                                            : "Đã xong";
                                     return (
-                                        <Button
-                                            danger
-                                            onClick={(e) => {
-                                                e.stopPropagation(); // Ngừng sự kiện click để tránh mở modal chi tiết
-                                                setSelectedBookingId(record.id); // Lưu id của đặt bàn
-                                                setIsBookingCancelModalOpen(
-                                                    true
-                                                ); // Mở modal huỷ đặt bàn
-                                            }}
-                                        >
-                                            Huỷ đặt bàn
-                                        </Button>
+                                        <span style={{ color }}>{label}</span>
                                     );
-                                }
-                                return null; // Trả về null nếu không phải trạng thái "reserved"
+                                },
                             },
-                        },
-                    ]}
-                    dataSource={bookings}
-                    rowKey="id"
-                    onRow={(record) => ({
-                        onClick: () => handleRowClick(record),
-                        style: { cursor: "pointer" },
-                    })}
-                />
+                            {
+                                title: "Thao tác",
+                                key: "actions",
+                                render: (_, record) => {
+                                    // Kiểm tra trạng thái "reserved" để hiển thị nút huỷ
+                                    if (record.status === "reserved") {
+                                        return (
+                                            <Button
+                                                danger
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Ngừng sự kiện click để tránh mở modal chi tiết
+                                                    setSelectedBookingId(
+                                                        record.id
+                                                    ); // Lưu id của đặt bàn
+                                                    setIsBookingCancelModalOpen(
+                                                        true
+                                                    ); // Mở modal huỷ đặt bàn
+                                                }}
+                                            >
+                                                Huỷ đặt bàn
+                                            </Button>
+                                        );
+                                    }
+                                    return null; // Trả về null nếu không phải trạng thái "reserved"
+                                },
+                            },
+                        ]}
+                        dataSource={bookings}
+                        rowKey="id"
+                        onRow={(record) => ({
+                            onClick: () => handleRowClick(record),
+                            style: { cursor: "pointer" },
+                        })}
+                    />
+                ) : (
+                    <Empty description="Chưa có đặt bàn nào." />
+                )}
                 <Modal
                     title="Xác nhận huỷ đặt bàn"
                     open={isBookingCancelModalOpen}

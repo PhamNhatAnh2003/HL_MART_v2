@@ -101,3 +101,7 @@ Route::get('/my-bookings', [TableBookingController::class, 'myBookings']);
 Route::post('/cancel-booking', [TableBookingController::class, 'cancel']);
 
 
+use App\Http\Controllers\Payment\VnPayController;
+
+Route::post('/vnpay-payment', [VNPayController::class, 'createPayment']); // ✅ Cho phép POST
+Route::get('/vnpay-return', [VnPayController::class, 'vnpayReturn'])->name('vnpay.return');
