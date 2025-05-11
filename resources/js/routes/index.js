@@ -94,6 +94,11 @@ const publicRoutes = [
         component: pages.admin.orderManage,
         role: "admin",
     },
+    {
+        path: config.routes.admin.billiardManage,
+        component: pages.admin.billiardManage,
+        role: "admin",
+    },
 ];
 
 const privateRoutes = [
