@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
+
 class ReviewController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+
+
  public function getReviews(Request $request)
     {
         $userId = $request->query('user_id') ?? null;
@@ -87,7 +91,7 @@ public function createReview(Request $request)
                 'name' => $review->product->name
         ],
         '   created_at' => $review->created_at
-    ]
+     ]
         ], 201);
         } catch (\Exception $e) {
              return response()->json([
@@ -96,45 +100,6 @@ public function createReview(Request $request)
                 'error' => $e->getMessage()
         ], 400);
         }
-}
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Review $review)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Review $review)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Review $review)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Review $review)
-    {
-        //
-    }
 }
