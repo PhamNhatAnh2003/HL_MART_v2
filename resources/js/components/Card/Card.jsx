@@ -28,14 +28,14 @@ const Product = {
 const Card = ({ product = Product }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const navigate = useNavigate();
-    const { addToCart } = useCart(); // 🔥 Lấy hàm addToCart từ context
+    const { addToCart } = useCart(); // Lấy hàm addToCart từ context
     const { user: loginedProfile } = useContext(AuthContext);
     const handleSeeDetail = () => {
         navigate(`/product/${product.id}`);
     };
 
     const handleAddToCart = () => {
-        addToCart(product); // 🔥 Gọi hàm thêm vào giỏ hàng
+        addToCart(product); // Gọi hàm thêm vào giỏ hàng
     };
 
     const handleToggleFavorite = async () => {

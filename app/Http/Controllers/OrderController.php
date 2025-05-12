@@ -69,7 +69,7 @@ public function createOrder(Request $request)
         'vnpay' => $this->generateVnpayUrl($order),
         default => null,
     },
-]);
+    ]);
 }
 
 private function generateMomoQr($order)
@@ -126,8 +126,6 @@ private function generateVnpayUrl($order)
 
     return $vnp_Url;
 }
-
-
 
 public function getOrdersByUser($userId)
 {
@@ -231,7 +229,6 @@ public function getOrders(Request $request)
         'data' => OrderResource::collection($orders),
     ]);
 }
-
 
 // Cập nhật trạng thái đơn hàng
 public function updateStatus(Request $request, $id)
