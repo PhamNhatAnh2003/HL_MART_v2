@@ -10,231 +10,36 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
-    /**
-     * Lấy 5 sản phẩm mới nhất
-     */
+    protected $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     public function getLatestProducts()
     {
-    $products = Product::orderBy('created_at', 'desc')->take(4)->get();
-    return response()->json([
+        $products = $this->productService->getLatestProducts(4);
+    
+        return response()->json([
         'success' => true,
         'data' => ProductResource::collection($products),
-    ]);
+        ]);
     }
 
-    public function getTopProducts()
-    {
-    $topProducts = Product::orderByDesc('sold')
-        ->take(4)
-        ->get();
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Top 4 sản phẩm bán chạy nhất',
-        'data' => ProductResource::collection($topProducts)
-    ]);
-    }
-
-    public function getProduct(Request $request)
-    {
-        $id = $request->query('id');
-        $userId = $request->query('user_id') ?? null;
-
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json([
-                'message' => 'Sản phẩm không tồn tại.'
-            ], 404);
-        }
-
-        return response()->json([
-            'message' => 'Lấy sản phẩm thành công.',
-            'product' => new ProductResource($product),
-        ], 200);
-    }
-    
     public function createProduct(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'media.*' => 'nullable|mimes:jpg,jpeg,png,mp4,avi,mkv|max:20480000',
-            'description' => 'nullable|string',
-            'price' => 'required|integer|min:0',
-            'discount_price' => 'nullable|integer|min:0',
-            'stock' => 'required|integer|min:0',
-            'sold' => 'nullable|integer|min:0',
-            'unit' => 'required|string|max:50', // 🔥 Thêm đơn vị tính, bắt buộc nhập
-        ]);
-
-        if ($request->filled('discount_price') && $request->input('price') <= $request->input('discount_price')) {
-            return response()->json(['message' => 'Giá khuyến mãi phải nhỏ hơn giá gốc'], 422);
-        }
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Dữ liệu không hợp lệ.',
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $avatarPath = null;
-        if ($request->hasFile('avatar')) {
-            $avatar = $request->file('avatar');
-            $avatarName = time() . '_avatar_' . uniqid() . '.' . $avatar->extension();
-            $avatar->storeAs('images', $avatarName, 'public');
-            $avatarPath = "/storage/images/$avatarName";
-        }
-
-        $mediaPaths = [];
-        if ($request->hasFile('media')) {
-            foreach ($request->file('media') as $mediaFile) {
-                $mediaName = time() . '_media_' . uniqid() . '.' . $mediaFile->extension();
-                $mediaFile->storeAs('images', $mediaName, 'public');
-                $mediaPaths[] = "/storage/images/$mediaName";
-            }
-        }
-
-        $product = Product::create([
-            'name' => $request->input('name'),
-            'avatar' => $avatarPath,
-            'media' => json_encode($mediaPaths),
-            'description' => $request->input('description'),
-            'price' => $request->input('price'),
-            'discount_price' => $request->input('discount_price'),
-            'unit' => $request->input('unit'),
-            'stock' => $request->input('stock'),
-            'sold' => $request->input('sold'),
-        ]);
-
-        return response()->json([
-            'message' => 'Tạo sản phẩm thành công',
-            'product' => $product,
-        ], 200);
+        return $this->productService->createProduct($request);
     }
+
 
     public function updateProduct(Request $request, $id)
     {
-         try {
-        // Tìm sản phẩm theo ID
-        $product = Product::find($id);
-
-        if (!$product) {
-            return response()->json(['message' => 'Không tìm thấy sản phẩm.'], 404);
-        }
-
-        // Định nghĩa các quy tắc validate
-        $rules = [
-            'name' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'discount_price' => 'nullable|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'sold' => 'nullable|integer|min:0',
-            'unit' => 'required|string|max:50',
-        ];    
-
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Dữ liệu không hợp lệ.',
-                'errors' => $validator->errors(),
-            ], 422); // HTTP 422: Unprocessable Entity
-        }
-
-        $validatedData = $validator->validated();
-
-        // Xử lý ảnh avatar (nếu có)
-            if ($request->hasFile('avatar')) {
-                $avatar = $request->file('avatar');
-                $avatarName = time() . '_avatar_' . uniqid() . '.' . $avatar->extension();
-                $avatar->storeAs('images', $avatarName, 'public');
-                $validatedData['avatar'] = "/storage/images/$avatarName";
-            }
-
-        if ($request->input('media') === null) {
-                // Xóa old media
-                $oldMedia = json_decode($product->media, true);
-                if (is_array($oldMedia)) {
-                    foreach ($oldMedia as $oldMediaPath) {
-                       $filePath = public_path($oldMediaPath);
-        if (!empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
-                unlink($filePath);
-            }
-                    }
-                }
-                $validatedData['media'] = null;
-            }
-
-            // Xử lý media (nếu có)
-            if ($request->hasFile('media')) {
-                $oldMedia = [];
-                if ($product->media) {
-                    $oldMedia = json_decode($product->media, true);
-                    if ($request->has('media')) {
-                        $mediaStrings = $request->input('media');
-                        // Ensure $mediaStrings is an array
-                        if (!is_array($mediaStrings)) {
-                            $mediaStrings = [$mediaStrings];
-                        }
-                        // Delete old media that are not in the new media strings
-                        foreach ($oldMedia as $oldMediaPath) {
-        $filePath = public_path($oldMediaPath);
-        if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
-        unlink($filePath);
-        }
-        }
-                        $oldMedia = array_merge([], $mediaStrings);
-                    }
-                }
-                $mediaPaths = [];
-                foreach ($request->file('media') as $media) {
-                    $mediaName = time() . '_media_' . uniqid() . '.' . $media->extension();
-                    $media->storeAs('images', $mediaName, 'public');
-                    $mediaPaths[] = "/storage/images/$mediaName";
-                }
-
-                $mediaPaths = array_merge($mediaPaths, $oldMedia);
-
-                // Lưu các đường dẫn media mới vào cơ sở dữ liệu
-                $validatedData['media'] = json_encode($mediaPaths);
-            } else if ($request->has('media')) {
-                $mediaStrings = $request->input('media');
-                // Ensure $mediaStrings is an array
-                if (!is_array($mediaStrings)) {
-                    $mediaStrings = [$mediaStrings];
-                }
-                $oldMedia = json_decode($product->media, true);
-                foreach ($oldMedia as $oldMediaPath) {
-        $filePath = public_path($oldMediaPath);
-        if (!in_array($oldMediaPath, $mediaStrings) && !empty($oldMediaPath) && file_exists($filePath) && is_file($filePath)) {
-        unlink($filePath);
-     }
-     }
-                $validatedData['media'] = json_encode($mediaStrings);
-            }
-
-
-        // Cập nhật thông tin sản phẩm
-        $product->update($validatedData);
-
-        return response()->json([
-            'message' => 'Cập nhật sản phẩm thành công.',
-            'data' => new ProductResource($product), // Trả về dữ liệu của sản phẩm đã cập nhật
-        ], 200);
-
-        } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Đã xảy ra lỗi khi cập nhật sản phẩm.',
-            'error' => $e->getMessage(),
-        ], 500);
-        }
+        return $this->productService->updateProduct($request, $id); // Gọi từ service
     }
 
 
@@ -274,7 +79,6 @@ class ProductController extends Controller
         }
     }
 
-
     public function getProductsByCategory($categoryId, Request $request)
     {
     // Kiểm tra danh mục có tồn tại không
@@ -312,7 +116,6 @@ class ProductController extends Controller
         'products' => ProductResource::collection($products),
     ], 200);
     }   
-
 
     public function getProducts(Request $request)
     {
@@ -439,7 +242,37 @@ class ProductController extends Controller
     ], 200); // Trả về mã 200 khi lấy sản phẩm thành công
     }
 
+    public function getTopProducts()
+    {
+         $topProducts = Product::orderByDesc('sold')
+        ->take(4)
+        ->get();
 
+        return response()->json([
+        'status' => true,
+        'message' => 'Top 4 sản phẩm bán chạy nhất',
+        'data' => ProductResource::collection($topProducts)
+        ]);
+    }
+
+    public function getProduct(Request $request)
+    {
+        $id = $request->query('id');
+        $userId = $request->query('user_id') ?? null;
+
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->json([
+                'message' => 'Sản phẩm không tồn tại.'
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Lấy sản phẩm thành công.',
+            'product' => new ProductResource($product),
+        ], 200);
+    }
 
 
 }
