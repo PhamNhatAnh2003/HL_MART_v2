@@ -89,7 +89,7 @@ export default function HeaderUser() {
 
                     <img
                         className={cx("avatar-header")}
-                        src={user.avatar ?? images.login}
+                        src={user.avatar ?? images.avatarUser}
                         alt="avatar"
                         onClick={() => setShowMenu((prev) => !prev)}
                     />

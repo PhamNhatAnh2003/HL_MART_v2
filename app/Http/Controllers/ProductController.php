@@ -26,7 +26,7 @@ class ProductController extends Controller
     }
 
     public function getTopProducts()
-{
+    {
     $topProducts = Product::orderByDesc('sold')
         ->take(4)
         ->get();
@@ -36,7 +36,7 @@ class ProductController extends Controller
         'message' => 'Top 4 sản phẩm bán chạy nhất',
         'data' => ProductResource::collection($topProducts)
     ]);
-}
+    }
 
     public function getProduct(Request $request)
     {
@@ -414,7 +414,7 @@ class ProductController extends Controller
     }
 
    public function getProduct_v(Request $request, $id)
-{
+    {
     // Kiểm tra xem ID có phải là số hợp lệ không
     if (!is_numeric($id)) {
         return response()->json([
@@ -437,7 +437,7 @@ class ProductController extends Controller
         'message' => 'Lấy sản phẩm thành công.',
         'product' =>  new ProductResource($product),
     ], 200); // Trả về mã 200 khi lấy sản phẩm thành công
-}
+    }
 
 
 
