@@ -80,9 +80,26 @@ const CartStep3 = () => {
                 const response = await axios.post(
                     "http://127.0.0.1:8000/api/vnpay-payment",
                     {
+                        user_id: loginedProfile?.id,
                         amount: totalPrice,
+                        shipping_address: [
+                            profile?.default_address?.street_address,
+                            profile?.default_address?.ward,
+                            profile?.default_address?.district,
+                            profile?.default_address?.province,
+                        ]
+                            .filter(Boolean)
+                            .join(", "),
+                        items: filteredCart.map((item) => ({
+                            product_id: item.product.id,
+                            quantity: item.quantity,
+                            price_at_time:
+                                item.product.discount_price ||
+                                item.product.price,
+                        })),
                     }
                 );
+                console.log("Response from API:", response.data);
 
                 const paymentUrl = response.data.payment_url;
                 if (paymentUrl) {
