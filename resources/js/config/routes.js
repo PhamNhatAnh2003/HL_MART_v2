@@ -7,7 +7,7 @@ const routes = {
         productManage: "/admin/managers",
         userManage: "/admin/userManage",
         orderManage: "/admin/orderManage",
-        billiardManage: "/manage-billards"
+        billiardManage: "/manage-billards",
     },
 
     user: {
@@ -22,7 +22,6 @@ const routes = {
         success: "/order-success",
         orderDetail: "/order-detail",
         billards: "/order-billards",
-        // map: '/map',
     },
 
     other: {

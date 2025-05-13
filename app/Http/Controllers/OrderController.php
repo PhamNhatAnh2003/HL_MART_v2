@@ -45,7 +45,6 @@ public function createOrder(Request $request)
         'total_price' => $totalItemPrice,
     ]);
 
-    // ✅ Cập nhật số lượng tồn kho và đã bán
     $product = Product::findOrFail($item['product_id']);
 
     // Kiểm tra tồn kho trước khi trừ (phòng tránh gian lận)
@@ -70,12 +69,6 @@ public function createOrder(Request $request)
         default => null,
     },
     ]);
-}
-
-private function generateMomoQr($order)
-{
-    // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
-    return 'https://dummy-momo-qr.com/images/qr_3.png' . $order->id;
 }
 
 private function generateVnpayUrl($order)
@@ -254,6 +247,12 @@ public function updateStatus(Request $request, $id)
         'message' => 'Trạng thái đơn hàng đã được cập nhật!',
         'data' => $order
     ]);
+}
+
+private function generateMomoQr($order)
+{
+    // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
+    return 'https://dummy-momo-qr.com/images/qr_3.png' . $order->id;
 }
 }
 
