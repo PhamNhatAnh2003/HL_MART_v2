@@ -60,16 +60,15 @@ const Home = () => {
     return (
         <div className={cx("homePage")}>
             {/* QC Bar Section */}
-            <div className={cx("first-section")}>
-                <div className={cx("slider")}>
+            <section className={cx("hero-section")}>
+                <div className={cx("hero-slider")}>
                     <Slider medias={medias} />
                 </div>
-
-                <div className={cx("banner")}>
-                    <img src={images.slider1} alt="Product Banner" />
-                    <img src={images.slider2} alt="Product Banner" />
+                <div className={cx("hero-banners")}>
+                    <img src={images.slider1} alt="Banner 1" />
+                    <img src={images.slider2} alt="Banner 2" />
                 </div>
-            </div>
+            </section>
 
             {/* New Product Section */}
             <section className={cx("newStyleSection")}>

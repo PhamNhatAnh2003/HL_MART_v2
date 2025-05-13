@@ -11,16 +11,38 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
+    width: 32px !important;
+    height: 32px !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.react-multiple-carousel__arrow::before {
+    font-size: 16px !important;
+    color: #333;
+}
+
+.react-multiple-carousel__arrow:hover {
+    background-color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .react-multiple-carousel__arrow--right {
-    right: 2%;
+    right: 10px;
 }
 
 .react-multiple-carousel__arrow--left {
-    left: 2%;
+    left: 10px;
 }
 
 .react-multi-carousel-dot-list {
-    bottom: 2%;
+    bottom: 10px;
+}
+
+/* Responsive: Ẩn nút ở mobile nếu muốn */
+@media screen and (max-width: 768px) {
+    .react-multiple-carousel__arrow {
+        display: none !important;
+    }
 }

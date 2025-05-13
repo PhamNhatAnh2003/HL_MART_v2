@@ -6,32 +6,31 @@
     width: 100%;
     overflow-x: hidden;
     background-color: white;
-}
+    .hero-section {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
 
-/* Search Bar Section */
-.first-section{
-    display: flex;
-    width: 100%;
-    height: 400hv;
-}
+        .hero-slider {
+            flex: 2;
+            min-width: 300px;
+        }
 
-.slider{
-    height: 400hv;
-    width: 70%;
-}
+        .hero-banners {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
 
-.banner{
-    margin-left: 10px;
-    width: 30%;
-    height: 400hv;
-    display: flex;
-    flex-direction: column; /* Xếp theo chiều dọc */
-    gap: 10px; /* Khoảng cách giữa các hàng */
-
-    img{
-        width: 100%;
-    }
-}
+            img {
+                width: 100%;
+                height: auto;
+                border-radius: 8px;
+                object-fit: cover;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+        }
+    }}
 
 /* New Cafe Style Section */
 .newStyleSection {
