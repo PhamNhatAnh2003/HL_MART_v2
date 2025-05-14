@@ -47,6 +47,13 @@ public function createOrder(Request $request)
 
     $product = Product::findOrFail($item['product_id']);
 
+    if ($product->stock < $item['quantity'] && $validated['payment_method'] === 'CK') {
+        return response()->json([
+            'status' => false,
+            'message' => "Không thể thanh toán bằng Chuyển Khoản. Sản phẩm '{$product->name}' không đủ hàng trong kho.",
+        ], 400);
+    }
+
     // Kiểm tra tồn kho trước khi trừ (phòng tránh gian lận)
     if ($product->stock < $item['quantity']) {
         return response()->json([
@@ -254,6 +261,23 @@ private function generateMomoQr($order)
     // 🧪 Giả lập link QR thanh toán Momo (bạn có thể tích hợp SDK thật ở đây)
     return 'https://dummy-momo-qr.com/images/qr_3.png' . $order->id;
 }
+
+public function checkStock(Request $request)
+{
+    $items = $request->input('items');
+    foreach ($items as $item) {
+        $product = Product::find($item['product_id']);
+        if (!$product || $product->stock < $item['quantity']) {
+            return response()->json([
+                'status' => false,
+                'message' => "Sản phẩm '{$product->name}' không đủ hàng trong kho.",
+            ]);
+        }
+    }
+
+    return response()->json(['status' => true]);
+}
+
 }
 
 

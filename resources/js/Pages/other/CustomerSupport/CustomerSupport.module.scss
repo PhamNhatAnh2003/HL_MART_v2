@@ -1,0 +1,94 @@
+.wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: sans-serif;
+  }
+  
+  .heading {
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .subheading {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #555;
+  }
+  
+  .faqList {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .faqItem {
+    background: #f9f9f9;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .faqHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  
+    h2 {
+      font-size: 1.1rem;
+      margin-left: 0.5rem;
+      color: #333;
+    }
+  }
+  
+  .faqContent {
+    padding-left: 1.8rem;
+  
+    li {
+      margin-bottom: 0.5rem;
+      list-style-type: disc;
+      color: #444;
+    }
+  }
+  
+  .contactBox {
+    margin-top: 3rem;
+    background: #fff8f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #ffd9b3;
+  
+    h2 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+    }
+  
+    p {
+      display: flex;
+      align-items: center;
+      margin: 0.5rem 0;
+      color: #333;
+  
+      .icon {
+        margin-right: 0.5rem;
+        color: #e67e22;
+      }
+    }
+  }
+  
+  .icon {
+    font-size: 1.3rem;
+  }
+  
+  .blue { color: #3498db; }
+  .green { color: #2ecc71; }
+  .purple { color: #9b59b6; }
+  .yellow { color: #f1c40f; }
+  .red { color: #e74c3c; }
+  

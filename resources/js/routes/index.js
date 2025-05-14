@@ -25,6 +25,11 @@ const publicRoutes = [
         layout: layouts.other.noHeader,
     },
     {
+        path: config.routes.other.customerSupport,
+        component: pages.other.customerSupport,
+        layout: layouts.other.noHeader,
+    },
+    {
         path: config.routes.other.register,
         component: pages.other.register,
         layout: layouts.other.noHeader,

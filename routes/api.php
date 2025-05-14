@@ -68,6 +68,7 @@ Route::get('/orders/{id}', [OrderController::class, 'getOrderDetail']);
 Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel']);
 Route::get('/orders', [OrderController::class, 'getOrders']);
 Route::post('orders/{id}/status', [OrderController::class, 'updateStatus']);
+Route::post('check-stock', [OrderController::class, 'checkStock']);
 
 
 //address

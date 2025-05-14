@@ -109,8 +109,25 @@ const CartStep3 = () => {
                     alert("Không thể tạo URL thanh toán VNPay.");
                 }
             } catch (error) {
+                if (error.response) {
+                    // Lỗi từ server API
+                    showToast(
+                        ` ${
+                            error.response.data.message ||
+                            "Có lỗi xảy ra khi tạo thanh toán VNPay!"
+                        }`
+                    );
+                } else if (error.request) {
+                    // Không nhận được phản hồi từ server
+                    alert(
+                        "Không thể kết nối đến hệ thống VNPay. Vui lòng thử lại sau."
+                    );
+                } else {
+                    // Lỗi khác
+                    alert(`Có lỗi xảy ra: ${error.message}`);
+                }
+
                 console.error("Lỗi khi gọi API VNPay:", error);
-                alert("Có lỗi xảy ra khi tạo thanh toán VNPay!");
             }
         } else if (selectedPaymentMethod === "CK") {
             setShowQrModal(true); // Hiển thị modal QR cho chuyển khoản
