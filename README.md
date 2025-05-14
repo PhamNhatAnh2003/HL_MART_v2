@@ -13,3 +13,10 @@ Mức độ	    Mã màu	        Ghi chú
 ahhihia
 
 
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="HLMartSupport"
+  agent-id="5d19fa8d-30d4-4a93-943d-8ff5c4fe2eda"
+  language-code="en"
+></df-messenger>

@@ -1,12 +1,13 @@
 import Login from "./Login";
 import Register from "./Register";
+import CustomerSupport from "./CustomerSupport";
 // import Landing from "./Landing";
 // import Test from "./Test";
 
 const other = {
     register: Register,
     // landing: Landing,
-    // test: Test,
+    customerSupport: CustomerSupport,
     login: Login,
 };
 

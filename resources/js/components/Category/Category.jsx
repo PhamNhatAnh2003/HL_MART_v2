@@ -97,7 +97,9 @@ useEffect(() => {
                     <GiEightBall className={cx("icon")} />
                     Billard
                 </div>
-                <div className={cx("menu-item")}>
+                <div
+                onClick={() => navigate(config.routes.other.customerSupport)} 
+                className={cx("menu-item")}>
                     <FaHeadphones className={cx("icon")} /> Chăm sóc khách hàng
                 </div>
             </div>

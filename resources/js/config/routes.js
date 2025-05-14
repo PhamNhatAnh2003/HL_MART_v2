@@ -30,6 +30,7 @@ const routes = {
         landing: "/",
         forbidden: "/forbidden",
         test: "/test",
+        customerSupport: "/customerSupport",
     },
 };
 
