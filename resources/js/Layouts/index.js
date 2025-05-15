@@ -1,6 +1,7 @@
 import UserLayout from './user/Default/UserLayout';
 import AdminLayout from './admin/Default/AdminLayout';
 import NoHeaderLayout from './other/NoHeader/NoHeaderLayout';
+import StaffLayout from './staff/Default/StaffLayout';
 
 const layouts = {
     admin: {
@@ -13,6 +14,9 @@ const layouts = {
 
     other: {
         noHeader: NoHeaderLayout,
+    },
+    staff: {
+        default: StaffLayout,
     },
 };
 
