@@ -41,6 +41,8 @@ const Login = () => {
                     navigate(config.routes.user.home);
                 } else if (role === "admin") {
                     navigate(config.routes.admin.dashboard);
+                } else if (role === "staff"){
+                    navigate(config.routes.staff.productManage);
                 }
             }
             console.log(response);

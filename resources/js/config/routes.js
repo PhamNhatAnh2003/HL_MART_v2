@@ -1,5 +1,3 @@
-
-
 const routes = {
     admin: {
         dashboard: "/admin/dashboard",
@@ -31,6 +29,10 @@ const routes = {
         forbidden: "/forbidden",
         test: "/test",
         customerSupport: "/customerSupport",
+    },
+
+    staff: {
+        productManage: "/staff/productManage",
     },
 };
 

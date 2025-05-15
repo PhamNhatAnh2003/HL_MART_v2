@@ -13,7 +13,8 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [currentUser, setCurrentUser] = useState({});
     const [headPhone, setHeadPhone] = useState("+84");
-    const [admin, setAdmin] = useState(null); // <<< Thêm admin state mới
+    const [admin, setAdmin] = useState(null);
+    const [staff, setStaff] = useState(null);
 
   const fetchUser = async () => {
       try {
@@ -29,8 +30,13 @@ const AuthProvider = ({ children }) => {
           // Nếu user có role là admin, setAdmin luôn
           if (role === "admin") {
               setAdmin(fetchedUser);
+              setStaff(null);
+          } else if (role === "staff") {
+              setStaff(fetchedUser);
+              setAdmin(null);
           } else {
               setAdmin(null);
+              setStaff(null);
           }
       } catch (error) {
           console.error("Error fetching user:", error);
@@ -98,6 +104,7 @@ const AuthProvider = ({ children }) => {
         setRole("");
         setUserId("");
         setAdmin(null);
+        setStaff(null);
     };
 
     return (
@@ -110,7 +117,8 @@ const AuthProvider = ({ children }) => {
                 userId,
                 user,
                 currentUser,
-                admin, 
+                admin,
+                staff, 
                 setUser,
                 setCurrentUser,
                 updateUser,

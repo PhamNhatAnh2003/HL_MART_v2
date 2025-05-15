@@ -2,15 +2,16 @@
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReviewController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\API\CartController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\UploadController;
-use App\Http\Controllers\AddressController;
+use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\TableBookingController;
-
+use App\Http\Controllers\Payment\VnPayController;
+use App\Http\Controllers\Staff\ProductManageController;
 
 
 
@@ -101,8 +102,10 @@ Route::post('/book-table', [TableBookingController::class, 'bookTable']);
 Route::get('/my-bookings', [TableBookingController::class, 'myBookings']);
 Route::post('/cancel-booking', [TableBookingController::class, 'cancel']);
 
-
-use App\Http\Controllers\Payment\VnPayController;
-
+// Vnpay
 Route::post('/vnpay-payment', [VNPayController::class, 'createPayment']); // Cho phép POST
 Route::get('/vnpay-return', [VnPayController::class, 'vnpayReturn'])->name('vnpay.return');
+
+//staff
+Route::get('/staff/all_product', [ProductManageController::class, 'getAllProduct']);
+Route::delete('/staff/product/delete/{id}', [ProductManageController::class, 'deleteProduct_v']);
