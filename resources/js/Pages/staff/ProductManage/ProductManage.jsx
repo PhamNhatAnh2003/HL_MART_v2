@@ -9,6 +9,7 @@ import {
     Row,
     Input,
     Modal,
+    InputNumber,
 } from "antd";
 import axios from "axios";
 import Button from "~/components/Button";
@@ -84,6 +85,65 @@ const Dashboard = () => {
         });
     };
 
+    const handleStockChange = (productId, newStock) => {
+        axios
+            .post(`http://127.0.0.1:8000/api/products/${productId}/stock`, {
+                stock: newStock,
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    notification.success({
+                        message: "Cập nhật số lượng thành công",
+                    });
+                    setProducts((prevProducts) =>
+                        prevProducts.map((item) =>
+                            item.id === productId
+                                ? { ...item, stock: newStock }
+                                : item
+                        )
+                    );
+                } else {
+                    notification.error({
+                        message: "Cập nhật số lượng thất bại",
+                    });
+                }
+            })
+            .catch((error) => {
+                notification.error({
+                    message: "Lỗi cập nhật số lượng: " + error.message,
+                });
+            });
+    };
+
+    const StockInput = ({ stock, productId, onStockChange }) => {
+        const [value, setValue] = React.useState(stock);
+
+        React.useEffect(() => {
+            setValue(stock);
+        }, [stock]);
+
+        const onChange = (val) => {
+            setValue(val);
+        };
+
+        const updateStock = () => {
+            if (value !== stock) {
+                onStockChange(productId, value);
+            }
+        };
+
+        return (
+            <InputNumber
+                min={0}
+                value={value}
+                onChange={onChange}
+                onPressEnter={updateStock} // Khi nhấn Enter
+                onBlur={updateStock} // Khi mất focus (ra khỏi ô input)
+                style={{ width: 100 }}
+            />
+        );
+    };
+
     useEffect(() => {
         fetchProducts();
     }, []);
@@ -116,7 +176,18 @@ const Dashboard = () => {
             key: "discount",
             render: (text) => <span>{formatPrice(text)}</span>,
         },
-        { title: "Số lượng trong kho", dataIndex: "stock", key: "stock" },
+        {
+            title: "Số lượng trong kho",
+            dataIndex: "stock",
+            key: "stock",
+            render: (stock, record) => (
+                <StockInput
+                    stock={stock}
+                    productId={record.id}
+                    onStockChange={handleStockChange}
+                />
+            ),
+        },
         { title: "Loại sản phẩm", dataIndex: "category_name", key: "category" },
         {
             title: "Tác vụ",
@@ -158,7 +229,7 @@ const Dashboard = () => {
             )}
 
             <div style={{ padding: "24px" }}>
-                <h2>Sản phẩm</h2>
+                <h2>Danh sách sản phẩm</h2>
 
                 {/* Input tìm kiếm */}
                 <Input.Search

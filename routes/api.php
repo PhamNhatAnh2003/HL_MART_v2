@@ -89,6 +89,9 @@ Route::get('/productlist', [AdminController::class, 'getProductList']);
 Route::delete('/product/delete/{id}', [AdminController::class, 'deleteProduct']);
 Route::get('/v1/users', [AdminController::class, 'getFilteredUsers']);
 Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
+Route::post('/admin/change-role', [AdminController::class, 'changeRole']);
+Route::get('/revenue-by-time', [AdminController::class, 'getRevenueByTime']);
+
 
 // favorite
 Route::post('/favorite-toggle', [FavoriteController::class, 'toggleFavorite']);
@@ -109,3 +112,4 @@ Route::get('/vnpay-return', [VnPayController::class, 'vnpayReturn'])->name('vnpa
 //staff
 Route::get('/staff/all_product', [ProductManageController::class, 'getAllProduct']);
 Route::delete('/staff/product/delete/{id}', [ProductManageController::class, 'deleteProduct_v']);
+Route::post('/products/{id}/stock', [ProductManageController::class, 'updateStock']);

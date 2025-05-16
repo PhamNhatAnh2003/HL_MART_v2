@@ -64,4 +64,18 @@ class ProductManageController extends Controller
         ], 404);
      }
     }
+
+    public function updateStock(Request $request, $id)
+{
+    $request->validate([
+        'stock' => 'required|integer|min:0',
+    ]);
+
+    $product = Product::findOrFail($id);
+    $product->stock = $request->stock;
+    $product->save();
+
+    return response()->json(['message' => 'Cập nhật số lượng thành công'], 200);
+}
+
 }
