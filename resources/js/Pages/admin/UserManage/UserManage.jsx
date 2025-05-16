@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, Input, notification } from "antd";
+import { Table, Modal, Input, notification,Select } from "antd";
 import axios from "axios";
 import classNames from "classnames/bind";
 import styles from "./userManage.module.scss";
@@ -16,6 +16,7 @@ const UserManage = () => {
     const [nameFilter, setNameFilter] = useState("");
     const [addressFilter, setAddressFilter] = useState("");
     const [phoneFilter, setPhoneFilter] = useState("");
+    const { Option } = Select;
 
     useEffect(() => {
         fetchUsers();
@@ -63,6 +64,35 @@ const UserManage = () => {
         });
     };
 
+    const handleChangeRole = async (userId, newRole) => {
+        try {
+            const response = await axios.post(
+                `http://127.0.0.1:8000/api/admin/change-role`,
+                { user_id: userId, role: newRole }
+            );
+
+            if (response.data.success) {
+                notification.success({
+                    message: `Cập nhật vai trò thành công: ${newRole}`,
+                });
+                fetchUsers();
+            } else {
+                notification.error({
+                    message: "Cập nhật vai trò thất bại",
+                });
+            }
+        } catch (error) {
+            console.error("Error changing role:", error);
+            notification.error({
+                message: "Lỗi khi đổi vai trò",
+                description:
+                    error.response?.data?.message ||
+                    "Đã xảy ra lỗi không xác định",
+            });
+        }
+    };
+    
+
     const columns = [
         { title: "ID", dataIndex: "id", key: "id" },
         { title: "Tên người dùng", dataIndex: "name", key: "name" },
@@ -84,6 +114,17 @@ const UserManage = () => {
                     >
                         Xem
                     </Button>
+
+                    <Select
+                        defaultValue={record.role}
+                        style={{ width: 120, margin: "0 8px" }}
+                        onChange={(value) => handleChangeRole(record.id, value)}
+                    >
+                        <Option value="user">User</Option>
+                        <Option value="admin">Admin</Option>
+                        <Option value="staff">Staff</Option>
+                    </Select>
+
                     <Button
                         className={cx("btn")}
                         danger

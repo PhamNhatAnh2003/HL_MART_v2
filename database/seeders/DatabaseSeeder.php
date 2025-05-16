@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 CategorySeeder::class,
                 ProductSeeder::class,
-                CartSeeder::class,
                 CartItemSeeder::class,
                 BilliardTableSeeder::class,
                 // TableBookingsSeeder::class,  // Đảm bảo dòng này có trong DatabaseSeeder

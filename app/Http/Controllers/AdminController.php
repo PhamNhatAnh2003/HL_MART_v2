@@ -16,6 +16,43 @@ use Firebase\JWT\Key;
 
 class AdminController extends Controller
 {
+    public function getRevenueByTime(Request $request)
+    {
+        $timeFrame = $request->query('time_frame', 'daily');
+
+        $query = DB::table('orders')
+            ->where('status', 'completed') // Chỉ lấy đơn hàng đã hoàn thành
+            ->selectRaw('SUM(total_price) as revenue');
+
+        switch ($timeFrame) {
+            case 'daily':
+                $query->selectRaw('DATE(ordered_at) as date')
+                    ->groupBy('date')
+                    ->orderBy('date', 'asc');
+                break;
+            case 'monthly':
+                $query->selectRaw("DATE_FORMAT(ordered_at, '%Y-%m') as month")
+                    ->groupBy('month')
+                    ->orderBy('month', 'asc');
+                break;
+            case 'yearly':
+                $query->selectRaw("YEAR(ordered_at) as year")
+                    ->groupBy('year')
+                    ->orderBy('year', 'asc');
+                break;
+            default:
+                return response()->json(['error' => 'Invalid time frame'], 400);
+        }
+
+        $data = $query->get();
+
+        return response()->json([
+            'data' => $data,
+            'time_frame' => $timeFrame,
+        ]);
+    }
+
+
     public function dashboardStats()
     {
         // Tổng số người dùng
@@ -116,36 +153,36 @@ class AdminController extends Controller
 
     public function filter(Request $request)
     {
-    $category = $request->query('category');
-    $minPrice = $request->query('minPrice');
-    $maxPrice = $request->query('maxPrice');
-    $name = $request->query('name');
+        $category = $request->query('category');
+        $minPrice = $request->query('minPrice');
+        $maxPrice = $request->query('maxPrice');
+        $name = $request->query('name');
 
-    $query = Product::query();
+        $query = Product::query();
 
-    // Lọc theo danh mục (join bảng categories)
-    if (!empty($category)) {
-        $query->join('categories', 'products.category_id', '=', 'categories.id')
-              ->where('categories.name', $category);
-    }
+        // Lọc theo danh mục (join bảng categories)
+        if (!empty($category)) {
+            $query->join('categories', 'products.category_id', '=', 'categories.id')
+                 ->where('categories.name', $category);
+        }
 
-    // Lọc theo tên sản phẩm (dùng đúng tên cột trong bảng products)
-    if (!empty($name)) {
-        $query->where('products.name', 'like', '%' . $name . '%'); // Đổi từ 'product_name' thành 'name'
-    }
+        // Lọc theo tên sản phẩm (dùng đúng tên cột trong bảng products)
+        if (!empty($name)) {
+            $query->where('products.name', 'like', '%' . $name . '%'); // Đổi từ 'product_name' thành 'name'
+        }
 
-    // Lọc theo giá
-    if (is_numeric($minPrice) && is_numeric($maxPrice)) {
-        $query->whereBetween('products.price', [$minPrice, $maxPrice]);
-    }
+        // Lọc theo giá
+        if (is_numeric($minPrice) && is_numeric($maxPrice)) {
+            $query->whereBetween('products.price', [$minPrice, $maxPrice]);
+        }
 
-    // Lấy sản phẩm sau khi lọc
-    $products = $query->get();
+        // Lấy sản phẩm sau khi lọc
+        $products = $query->get();
 
-    return response()->json([
-        'success' => true,
-        'data' => ProductResource::collection($products),
-    ]);
+        return response()->json([
+            'success' => true,
+            'data' => ProductResource::collection($products),
+        ]);
     }
 
      public function getProductList()
@@ -163,7 +200,7 @@ class AdminController extends Controller
 
     public function deleteProduct($id)
     {
-    try {
+     try {
         // Tìm sản phẩm theo ID
         $product = Product::findOrFail($id);
 
@@ -188,41 +225,41 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'Sản phẩm đã được xóa thành công!',
         ], 200);
-    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         return response()->json([
             'message' => 'Không tìm thấy sản phẩm.',
         ], 404);
-    }
+     }
     }
 
     public function getFilteredUsers(Request $request)
     {
-    $query = User::query();
+        $query = User::query();
 
-    // Thêm các điều kiện lọc theo tên, email, điện thoại, và địa chỉ
-    if ($request->has('name')) {
+        // Thêm các điều kiện lọc theo tên, email, điện thoại, và địa chỉ
+        if ($request->has('name')) {
         $query->where('name', 'like', '%' . $request->name . '%');
-    }
+        }
 
-    if ($request->has('email')) {
+        if ($request->has('email')) {
         $query->where('email', 'like', '%' . $request->email . '%');
-    }
+        }
 
-    if ($request->has('phone')) {
+        if ($request->has('phone')) {
         $query->where('phone', 'like', '%' . $request->phone . '%');
-    }
+        }
 
-    if ($request->has('address')) {
+        if ($request->has('address')) {
         $query->where('address', 'like', '%' . $request->address . '%');
-    }
+        }
 
-    // Sử dụng with() để tải luôn quan hệ cartItems của mỗi người dùng
-    $users = $query->with('cartItems.product')->get(); // Thêm 'cartItems.product' để lấy thông tin sản phẩm của mỗi cart item
+        // Sử dụng with() để tải luôn quan hệ cartItems của mỗi người dùng
+        $users = $query->with('cartItems.product')->get(); // Thêm 'cartItems.product' để lấy thông tin sản phẩm của mỗi cart item
 
-    return response()->json([
-        'success' => true,
-        'data' => $users
-    ]);
+        return response()->json([
+            'success' => true,
+            'data' => $users
+        ]);
     }
 
     public function deleteUser($id)
@@ -247,4 +284,20 @@ class AdminController extends Controller
             'message' => 'User deleted successfully'
         ]);
     }
+
+    public function changeRole(Request $request)
+    {
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'role' => 'required|in:user,admin,staff', // tuỳ vào roles bạn sử dụng
+    ]);
+
+    $user = User::find($request->user_id);
+    $user->role = $request->role;
+    $user->save();
+
+    return response()->json(['success' => true, 'message' => 'Vai trò đã được cập nhật']);
+    }
+
+    
 }

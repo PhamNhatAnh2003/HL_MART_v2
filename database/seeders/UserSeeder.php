@@ -31,13 +31,13 @@ class UserSeeder extends Seeder
 
         // Tạo user seller
         User::create([
-            'name' => 'Seller',
-            'email' => 'seller@example.com',
-            'password' => Hash::make('password'),
+            'name' => 'Staff',
+            'email' => 'Staff@example.com',
+            'password' => Hash::make('12345'),
             'phone' => '0987654321',
             'address' => '456 Seller Road',
             'avatar' => null,
-            'role' => 'seller',
+            'role' => 'staff',
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);

@@ -35,7 +35,10 @@ export default function HeaderStaff() {
     
     return (
         <div className={cx("header")}>
-            <Link to={config.routes.staff.productManage } className={cx("logoText")}>
+            <Link
+                to={config.routes.staff.productManage}
+                className={cx("logoText")}
+            >
                 HL_Mart
             </Link>
             <div className={cx("tab-menu")}>
@@ -58,6 +61,16 @@ export default function HeaderStaff() {
                     })}
                 >
                     Đơn hàng
+                </Link>
+                <Link
+                    to={config.routes.staff.categoryManage}
+                    className={cx("tab-item", {
+                        active:
+                            location.pathname ===
+                            config.routes.staff.categoryManage,
+                    })}
+                >
+                    Danh mục sản phẩm
                 </Link>
             </div>
             {staff && (
