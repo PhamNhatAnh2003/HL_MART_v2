@@ -1,13 +1,12 @@
 import ProductManage from "./ProductManage";
 import CategoryManage from "./CategoryManage";
-// import CustomerSupport from "./CustomerSupport";
-// import Landing from "./Landing";
-// import Test from "./Test";
+import OrderManage from "./OrderManage";
+
 
 const staff = {
     productManage: ProductManage,
     categoryManage: CategoryManage,
-    // landing: Landing,
+    orderManage: OrderManage,
     // customerSupport: CustomerSupport,
     // login: Login,
 };

@@ -19,6 +19,7 @@ return new class extends Migration
         $table->string('payment_method');
         $table->text('shipping_address');
         $table->timestamp('ordered_at')->nullable();
+        $table->string('note')->nullable();
         $table->timestamps();
     });
     }

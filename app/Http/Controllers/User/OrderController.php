@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
@@ -240,12 +241,14 @@ public function updateStatus(Request $request, $id)
     }
 
     // Kiểm tra trạng thái mới
+    $note = $request->input('note');
     $newStatus = $request->input('status');
     if (!$newStatus) {
         return response()->json(['success' => false, 'message' => 'Trạng thái không hợp lệ'], 400);
     }
 
     // Cập nhật trạng thái đơn hàng
+    $order->note = $note;
     $order->status = $newStatus;
     $order->save();
 

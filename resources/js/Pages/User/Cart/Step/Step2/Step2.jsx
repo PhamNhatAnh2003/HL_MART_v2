@@ -10,8 +10,7 @@ import useProfile from "~/hooks/useProfile";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "~/context/AuthContext";
 import axios from "axios";
-import CartItem from "../../Components/CartItem/CartItem";
-import { Modal, Radio } from "antd";
+import { Table, Radio, Modal } from "antd";
 import AddAddress from "../../Components/AddAddress";
 import UpdateAddress from "../../Components/UpdateAddress";
 import showToast from "~/components/message";
@@ -279,6 +278,71 @@ console.log(
     const handleCloseAddAddressModal = () => {
         setShowAddAddressModal(false);
     };
+
+
+    const columns = [
+        {
+            title: "STT",
+            dataIndex: "ID",
+            render: (_, __, index) => index + 1,
+        },
+        {
+            title: "Hình ảnh",
+            dataIndex: "avatar",
+            key: "avatar",
+            render: (avatar) => (
+                <img
+                    src={avatar}
+                    alt="Hình ảnh"
+                    style={{
+                        width: 60,
+                        height: 60,
+                        objectFit: "cover",
+                        borderRadius: 8,
+                    }}
+                />
+            ),
+        },
+        {
+            title: "Tên sản phẩm",
+            dataIndex: "product_name",
+            key: "product_name",
+        },
+        {
+            title: "Số lượng",
+            dataIndex: "quantity",
+            key: "quantity",
+        },
+        {
+            title: "Giá",
+            dataIndex: "price",
+            key: "price",
+            render: (_, record) => {
+                if (record.discount_price) {
+                    return (
+                        <span>
+                            <span
+                                style={{ color: "#ff4d4f", fontWeight: "bold" }}
+                            >
+                                {formatPrice(record.discount_price)}
+                            </span>{" "}
+                            <span
+                                style={{
+                                    textDecoration: "line-through",
+                                    color: "#999",
+                                    marginLeft: 8,
+                                }}
+                            >
+                                {formatPrice(record.price)}
+                            </span>
+                        </span>
+                    );
+                }
+                return <span>{formatPrice(record.price)}</span>;
+            },
+        },
+    ];
+
     return (
         <div className={cx("cart-page")}>
             <div className={cx("cart-left")}>
@@ -286,27 +350,12 @@ console.log(
                 <div className={cx("cart-content")}>
                     <div className={cx("productListContainer")}>
                         <h2 className={cx("title")}>Danh sách sản phẩm</h2>
-                        <div className={cx("productList")}>
-                            <div className={cx("container")}>
-                                <div className={cx("columnSTT")}>STT</div>
-                                <div className={cx("columnImage")}>Ảnh</div>
-                                <div className={cx("columnName")}>
-                                    Tên Sản Phẩm
-                                </div>
-                                <div className={cx("columnUnit")}>ĐVT</div>
-                                <div className={cx("columnPrice")}>Giá</div>
-                                <div className={cx("columnQuantity")}>
-                                    Số Lượng
-                                </div>
-                            </div>
-                            {orderItems.map((item, index) => (
-                                <CartItem
-                                    key={`cart-item-${index}`}
-                                    item={item}
-                                    index={index + 1}
-                                />
-                            ))}
-                        </div>
+                        <Table
+                            columns={columns}
+                            dataSource={orderItems}
+                            rowKey={(record) => record.cart_item_id}
+                            pagination={false}
+                        />
                     </div>
 
                     <div className={cx("address-shipping")}>

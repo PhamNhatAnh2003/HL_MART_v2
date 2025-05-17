@@ -159,7 +159,22 @@ const OrderDetail = () => {
                 return <Tag color={color}>{status.toUpperCase()}</Tag>;
             },
         },
-
+        {
+            title: "Ghi chú",
+            dataIndex: "note",
+            key: "note",
+            render: (note) => (
+                <div
+                    style={{
+                        whiteSpace: "normal",
+                        wordWrap: "break-word",
+                        maxWidth: 250,
+                    }}
+                >
+                    {note}
+                </div>
+            ),
+        },
         {
             title: "Thao tác",
             key: "actions",
