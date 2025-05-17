@@ -16,7 +16,7 @@ const ProductManage = () => {
 
     const [category, setCategory] = useState("");
     const [name, setName] = useState("");
-    const [priceRange, setPriceRange] = useState([20000, 800000]);
+    const [priceRange, setPriceRange] = useState([0, 800000]);
     const [isShowAddPopup, setIsShowAddPopup] = useState(false);
     const [isShowUpdatePopup, setIsShowUpdatePopup] = useState(false);
 
@@ -207,7 +207,7 @@ const ProductManage = () => {
                         <h1 className={cx("filter-label")}>Tầm Giá</h1>
                         <Slider
                             range
-                            min={20000}
+                            min={0}
                             max={800000}
                             value={priceRange}
                             onChange={onPriceChange}

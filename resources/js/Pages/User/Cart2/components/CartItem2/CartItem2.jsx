@@ -28,7 +28,7 @@ const CartItem2 = ({ item, selectedItems, handleSelectItem }) => {
 
             <div className={cx("image-wrapper")}>
                 <img
-                    src={product.avatar ?? images.product}
+                    src={product.avatar}
                     alt={product.name}
                     className={cx("image")}
                 />

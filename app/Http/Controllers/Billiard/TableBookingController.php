@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Billiard;
 
+use App\Http\Controllers\Controller;
 use App\Models\BilliardTable;
 use App\Models\TableBooking;
 use Illuminate\Http\Request;

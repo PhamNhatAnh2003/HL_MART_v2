@@ -86,6 +86,12 @@ const publicRoutes = [
         role: "staff",
     },
     {
+        path: config.routes.staff.orderManage,
+        component: pages.staff.orderManage,
+        layout: layouts.staff.default,
+        role: "staff",
+    },
+    {
         path: config.routes.staff.productManage,
         component: pages.staff.productManage,
         layout: layouts.staff.default,

@@ -1,15 +1,15 @@
 <?php
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\ReviewController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UploadController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\API\FavoriteController;
-use App\Http\Controllers\TableBookingController;
+use App\Http\Controllers\Billiard\TableBookingController;
 use App\Http\Controllers\Payment\VnPayController;
 use App\Http\Controllers\Staff\ProductManageController;
 
@@ -103,7 +103,7 @@ Route::get('/is-favorite', [FavoriteController::class, 'isFavorite']);
 Route::get('/favorites_home', [FavoriteController::class, 'getFavoritesInHome']);
 
 
-// routes/api.php
+// Billiard
 Route::get('/billiard-tables', [TableBookingController::class, 'listtable']);
 Route::post('/book-table', [TableBookingController::class, 'bookTable']);
 Route::get('/my-bookings', [TableBookingController::class, 'myBookings']);
