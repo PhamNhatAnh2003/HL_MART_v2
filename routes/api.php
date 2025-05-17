@@ -4,11 +4,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
-use App\Http\Controllers\UploadController;
+use App\Http\Controllers\API\UploadController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\TableBookingController;
 use App\Http\Controllers\Payment\VnPayController;
 use App\Http\Controllers\Staff\ProductManageController;
@@ -61,6 +61,10 @@ Route::post('/review/create', [ReviewController::class, 'createReview']);
 // Catelogy
 Route::get('categories', [CategoryController::class, 'index']); // Lấy danh sách danh mục
 Route::get('categories/{id}', [CategoryController::class, 'show']); // Lấy chi tiết một danh mục
+Route::post('create_categories', [CategoryController::class, 'addCategory']);
+Route::put('update_categories/{id}', [CategoryController::class, 'update']);
+Route::delete('delete_categories/{id}', [CategoryController::class, 'delete']);
+
 
 //Order
 Route::post('/create-order', [OrderController::class, 'CreateOrder']);

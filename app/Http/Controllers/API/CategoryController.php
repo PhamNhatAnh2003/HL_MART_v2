@@ -9,69 +9,85 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Services\CategoryService;
+
 
 class CategoryController extends Controller
 {
-    // Lấy tất cả danh mục (bao gồm danh mục con)
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function index()
     {
-        $categories = Category::with('children')->whereNull('parent_id')->get();
-        return response()->json($categories);
+        try {
+            $categories = $this->categoryService->getAllRootCategoriesWithChildren();
+            return response()->json($categories, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 
-    // Thêm danh mục mới
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:categories',
-            'parent_id' => 'nullable|exists:categories,id',
-        ]);
-
-        $category = Category::create($request->all());
-        return response()->json($category, 201);
-    }
-
-    // Lấy thông tin một danh mục
     public function show($id)
     {
-        $category = Category::with('children')->find($id);
-        if (!$category) {
-            return response()->json(['message' => 'Danh mục không tồn tại'], 404);
+        try {
+            $category = $this->categoryService->getCategoryByIdWithChildren($id);
+            return response()->json($category, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 404);
         }
-        return response()->json($category);
     }
 
-    // Cập nhật danh mục
+    public function addCategory(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+                'parent_id' => 'nullable|exists:categories,id',
+            ]);
+
+            $category = $this->categoryService->createCategory($data);
+            return response()->json([
+                'message' => 'Tạo danh mục thành công',
+                'data' => $category->load(['children', 'parent'])
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
     public function update(Request $request, $id)
     {
-        $category = Category::find($id);
-        if (!$category) {
-            return response()->json(['message' => 'Danh mục không tồn tại'], 404);
+        try {
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+                'parent_id' => 'nullable|exists:categories,id|not_in:' . $id,
+            ]);
+
+            $category = $this->categoryService->updateCategory($id, $data);
+            return response()->json([
+                'message' => 'Cập nhật danh mục thành công',
+                'data' => $category->load(['children', 'parent'])
+            ], 200);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 500);
         }
-
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'slug' => 'sometimes|required|string|unique:categories,slug,' . $id,
-            'parent_id' => 'nullable|exists:categories,id',
-        ]);
-
-        $category->update($request->all());
-        return response()->json($category);
     }
 
-    // Xóa danh mục
-    public function destroy($id)
+    public function delete($id)
     {
-        $category = Category::find($id);
-        if (!$category) {
-            return response()->json(['message' => 'Danh mục không tồn tại'], 404);
+        try {
+            $this->categoryService->deleteCategory($id);
+            return response()->json(['message' => 'Xóa danh mục thành công'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode() ?: 500);
         }
-
-        // Xóa tất cả danh mục con trước khi xóa danh mục cha
-        $category->children()->delete();
-        $category->delete();
-
-        return response()->json(['message' => 'Danh mục đã được xóa']);
     }
 }

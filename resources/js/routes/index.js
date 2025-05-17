@@ -80,6 +80,12 @@ const publicRoutes = [
         layout: layouts.user.default,
     },
     {
+        path: config.routes.staff.categoryManage,
+        component: pages.staff.categoryManage,
+        layout: layouts.staff.default,
+        role: "staff",
+    },
+    {
         path: config.routes.staff.productManage,
         component: pages.staff.productManage,
         layout: layouts.staff.default,
