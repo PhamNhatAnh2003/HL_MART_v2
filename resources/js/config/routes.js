@@ -33,6 +33,7 @@ const routes = {
 
     staff: {
         productManage: "/staff/productManage",
+        categoryManage: "/staff/categoryManage",
     },
 };
 

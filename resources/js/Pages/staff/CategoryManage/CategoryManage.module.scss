@@ -1,0 +1,33 @@
+.categoryManagement {
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        font-size: 24px;
+        margin-bottom: 16px;
+        color: #333;
+    }
+
+    .ant-btn {
+        font-weight: 500;
+    }
+
+    .ant-table {
+        background: #fafafa;
+        border-radius: 6px;
+    }
+
+    .ant-modal-content {
+        border-radius: 8px;
+    }
+
+    .ant-form-item {
+        margin-bottom: 16px;
+    }
+
+    .ant-alert {
+        margin-bottom: 16px;
+    }
+}

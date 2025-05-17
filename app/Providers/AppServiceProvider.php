@@ -11,6 +11,9 @@ use App\Services\CartServiceInterface;
 use App\Services\CartService;
 use App\Repositories\Interfaces\ReviewRepositoryInterface;
 use App\Repositories\ReviewRepository;
+use App\Repositories\Eloquent\CategoryRepositoryInterface;
+use App\Repositories\Eloquent\CategoryRepository;
+use App\Services\CategoryService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ProductServiceInterface::class, ProductService::class);
         $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
         $this->app->bind(CartServiceInterface::class, CartService::class);
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+        $this->app->bind(CategoryService::class, function ($app) {
+            return new CategoryService($app->make(CategoryRepositoryInterface::class));
+        });
     }
 
     /**
