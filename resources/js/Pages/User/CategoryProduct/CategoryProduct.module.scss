@@ -66,3 +66,79 @@
     color: var(--bg-primary); /* Thay đổi màu khi hover */
     text-decoration: underline; /* Đảm bảo vẫn có gạch chân khi hover */
 }
+
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    margin: 10px 20px 30px 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    gap: 16px;
+}
+
+.sort-filter {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: var(--bg-secondary);
+    }
+
+    select {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        min-width: 180px;
+        font-size: 14px;
+        background-color: white;
+        color: #333;
+        transition: border-color 0.2s;
+
+        &:focus {
+            border-color: var(--bg-secondary);
+            outline: none;
+        }
+    }
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+
+    button {
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &:first-child {
+            background-color: var(--bg-secondary);
+            color: white;
+
+            &:hover {
+                background-color: var(--bg-secondary);
+            }
+        }
+
+        &:last-child {
+            background-color: #ccc;
+            color: #333;
+
+            &:hover {
+                background-color: #bbb;
+            }
+        }
+    }
+}
+
+

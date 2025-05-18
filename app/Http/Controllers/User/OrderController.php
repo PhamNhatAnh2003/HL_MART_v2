@@ -144,6 +144,7 @@ public function getOrderDetail($id)
             'product_name' => $item->product->name,
             'quantity' => $item->quantity,
             'price_at_time' => $item->price_at_time,
+            'avatar' => $item->product->avatar,
         ];
     });
 

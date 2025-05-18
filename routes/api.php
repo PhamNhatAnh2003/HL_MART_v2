@@ -36,6 +36,7 @@ Route::get('/category/{category_id}', [ProductController::class, 'getProductsByC
 Route::post('/product/update/{id}', [ProductController::class, 'updateProduct']);
 Route::get('product_v/{id}', [ProductController::class, 'getProduct_v']);
 Route::get('/top-products', [ProductController::class, 'getTopProducts']);
+Route::get('/products/suggestions', [ProductController::class, 'getSuggestions']);
 
 
 //Upload

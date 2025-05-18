@@ -274,5 +274,20 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function getSuggestions(Request $request)
+    {
+        $keyword = $request->query('keyword');
+
+        if (!$keyword || trim($keyword) === '') {
+            return response()->json([]);
+        }
+
+        // Tìm sản phẩm có tên chứa từ khóa, giới hạn tối đa 10 kết quả
+        $suggestions = Product::where('name', 'LIKE', '%' . $keyword . '%')
+            ->limit(15)
+            ->pluck('name');  // chỉ lấy tên sản phẩm để gợi ý
+
+        return response()->json($suggestions);
+    }
 
 }
