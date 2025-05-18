@@ -13,10 +13,18 @@ Mức độ	    Mã màu	        Ghi chú
 ahhihia
 
 
-<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
-<df-messenger
-  intent="WELCOME"
-  chat-title="HLMartSupport"
-  agent-id="5d19fa8d-30d4-4a93-943d-8ff5c4fe2eda"
-  language-code="en"
-></df-messenger>
+Thông tin thẻ test
+1	
+Ngân hàng: NCB
+Số thẻ: 9704198526191432198
+Tên chủ thẻ:NGUYEN VAN A
+Ngày phát hành:07/15
+Mật khẩu OTP:123456
+Thành công
+
+2	
+Ngân hàng: NCB
+Số thẻ: 9704195798459170488
+Tên chủ thẻ:NGUYEN VAN A
+Ngày phát hành:07/15
+Thẻ không đủ số dư

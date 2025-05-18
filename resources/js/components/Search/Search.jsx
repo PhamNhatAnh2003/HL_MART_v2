@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FaSearch } from "react-icons/fa";
 
 import styles from "./Search.module.scss";
 import classNames from "classnames/bind";
@@ -37,7 +37,7 @@ const Search = ({
             })}
             style={{ width: width }}
         >
-            <FontAwesomeIcon icon={faSearch} className={cx("search-icon")} />
+            <FaSearch className={cx("search-icon")} />
             <input
                 id={`search-input-${id}`}
                 type={type}

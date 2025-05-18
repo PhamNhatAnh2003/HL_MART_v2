@@ -61,7 +61,7 @@ const OrderDetail = () => {
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/orders/${orderId}`
             );
-            console.log(response.data)
+            console.log(response.data.order_items)
             setOrderDetails(response.data.order_items);
         } catch (error) {
             console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
@@ -226,6 +226,23 @@ const OrderDetail = () => {
                                     title: "Sản phẩm",
                                     dataIndex: "product_name",
                                     key: "product_name",
+                                },
+                                {
+                                    title: "Hình ảnh",
+                                    dataIndex: "avatar",
+                                    key: "avatar",
+                                    render: (avatar) => (
+                                        <img
+                                            src={avatar}
+                                            alt="Hình ảnh"
+                                            style={{
+                                                width: 40,
+                                                height: 40,
+                                                objectFit: "cover",
+                                                borderRadius: 8,
+                                            }}
+                                        />
+                                    ),
                                 },
                                 {
                                     title: "Số lượng",
