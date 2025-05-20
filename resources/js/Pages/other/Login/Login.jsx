@@ -38,10 +38,13 @@ const Login = () => {
                 handleLogin(user.token, user.role, user.id);
                 const role = user.role;
                 if (role === "user") {
+                    showToast("Đăng nhập thành công");
                     navigate(config.routes.user.home);
                 } else if (role === "admin") {
+                    showToast("Đăng nhập thành công");
                     navigate(config.routes.admin.dashboard);
                 } else if (role === "staff"){
+                    showToast("Đăng nhập thành công");
                     navigate(config.routes.staff.productManage);
                 }
             }

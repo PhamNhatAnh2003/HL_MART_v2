@@ -299,5 +299,62 @@ class AdminController extends Controller
     return response()->json(['success' => true, 'message' => 'Vai trò đã được cập nhật']);
     }
 
+    public function getOrderDetailByUser($id)
+    {
+        $order = Order::with(['orderItems.product'])
+                      ->where('id', $id)
+                      ->first();
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Không tìm thấy đơn hàng.',
+            ], 404);
+        }
+
+        $data = $order->orderItems->map(function ($item) {
+            return [
+                'order_item_id'  => $item->id,
+                'product_name'   => $item->product->name ?? 'N/A',
+                'avatar'         => $item->product->avatar ?? '',
+                'quantity'       => $item->quantity,
+                'price_at_time'  => $item->price_at_time,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'order_id' => $order->id,
+            'data'    => $data,
+        ]);
+    }
     
+    public function deleteOrder($id)
+{
+    $order = Order::find($id);
+
+    if (!$order) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Đơn hàng không tồn tại.',
+        ], 404);
+    }
+
+    try {
+        $order->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Xóa đơn hàng thành công.',
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Xóa đơn hàng thất bại.',
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+
 }

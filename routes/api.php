@@ -96,6 +96,9 @@ Route::get('/v1/users', [AdminController::class, 'getFilteredUsers']);
 Route::delete('/users/{id}', [AdminController::class, 'deleteUser']);
 Route::post('/admin/change-role', [AdminController::class, 'changeRole']);
 Route::get('/revenue-by-time', [AdminController::class, 'getRevenueByTime']);
+Route::get('/admin/orders/{id}', [AdminController::class, 'getOrderDetailByUser']);
+Route::delete('/admin/orders/{id}', [AdminController::class, 'deleteOrder']);
+
 
 
 // favorite

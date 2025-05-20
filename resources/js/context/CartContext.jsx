@@ -63,8 +63,9 @@ const CartProvider = ({ children }) => {
             showToast(response.data.message);
             setCart(response.data);
         } catch (error) {
-            console.error("Lỗi khi thêm sản phẩm:", error);
-            showToast("Có lỗi xảy ra, vui lòng thử lại!", "error");
+            const errMsg = error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại!";
+            console.error("Lỗi khi thêm sản phẩm:", errMsg);
+            showToast(errMsg, "error");
         }
     };
 
@@ -84,6 +85,10 @@ const CartProvider = ({ children }) => {
                 "Lỗi khi cập nhật số lượng:",
                 error.response?.data || error.message
             );
+        
+            // Hiển thị thông báo lỗi cụ thể từ backend (nếu có)
+            const message = error.response?.data?.message || "Cập nhật thất bại. Vui lòng thử lại!";
+            showToast(message, "error");
         }
     };
 

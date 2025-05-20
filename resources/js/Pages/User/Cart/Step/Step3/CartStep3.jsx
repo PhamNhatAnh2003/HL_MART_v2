@@ -168,11 +168,9 @@ const CartStep3 = () => {
                 alert("Có lỗi xảy ra khi tạo đơn hàng!");
             }
         } catch (error) {
-            console.error(
-                "Lỗi khi tạo đơn hàng:",
-                error.response?.data || error.message
-            );
-            alert("Đặt hàng thất bại.");
+            const errorMsg = error.response?.data?.message || "Đặt hàng thất bại.";
+            console.error("Lỗi khi tạo đơn hàng:", errorMsg);
+            showToast(errorMsg);
         }
     };
 
