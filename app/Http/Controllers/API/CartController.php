@@ -29,7 +29,25 @@ class CartController extends Controller {
             'user_id' => 'required|exists:users,id',
             'quantity' => 'required|integer|min:1'
         ]);
-
+    
+        // 🔍 Lấy thông tin sản phẩm để kiểm tra tồn kho
+        $product = Product::find($product_id);
+    
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sản phẩm không tồn tại.',
+            ], 404);
+        }
+    
+        if ($request->quantity > $product->stock) {
+            return response()->json([
+                'success' => false,
+                'message' => "Số lượng sản phẩm '{$product->name}' trong kho không đủ. Chỉ còn {$product->stock} {$product->unit}.",
+            ], 400);
+        }
+    
+        // ✅ Nếu hợp lệ, tiếp tục update
         return $this->cartService->updateCart($request->user_id, $product_id, $request->quantity);
     }
 
@@ -45,41 +63,55 @@ class CartController extends Controller {
     }
 
         // Thêm sản phẩm vào giỏ hàng
-    public function addToCart(Request $request) 
-    {
-        $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'product_id' => 'required|exists:products,id',
-        'unit' => 'nullable|string|max:50',
-        'quantity' => 'nullable|integer|min:1',
-        'price_at_time' => 'required|numeric|min:0'
-        ]);
-
-         // 🔍 Kiểm tra sản phẩm đã có trong giỏ hàng chưa
-        $cartItem = CartItem::where('user_id', $request->user_id)
-                        ->where('product_id', $request->product_id)
-                        ->first();
-
-        if ($cartItem) {
-        // Nếu đã có, tăng số lượng sản phẩm
-            $cartItem->increment('quantity', $request->input('quantity', 1));
-            } else {
-        // Nếu chưa có, thêm mới vào giỏ hàng
-            $cartItem = CartItem::create([
-                'user_id' => $request->user_id,
-                'product_id' => $request->product_id,
-                'unit' => $request->unit ?? 'default_unit', // Đảm bảo có đơn vị tính
-                'quantity' => $request->input('quantity', 1),
-                'price_at_time' => $request->price_at_time
+        public function addToCart(Request $request) 
+        {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'product_id' => 'required|exists:products,id',
+                'unit' => 'nullable|string|max:50',
+                'quantity' => 'nullable|integer|min:1',
+                'price_at_time' => 'required|numeric|min:0'
             ]);
+        
+            $quantityToAdd = $request->input('quantity', 1);
+        
+            // 🔍 Lấy sản phẩm để kiểm tra tồn kho
+            $product = Product::find($request->product_id);
+        
+            // 🔍 Kiểm tra nếu sản phẩm đã có trong giỏ → cộng dồn để kiểm tra
+            $cartItem = CartItem::where('user_id', $request->user_id)
+                                ->where('product_id', $request->product_id)
+                                ->first();
+        
+            $currentQuantity = $cartItem ? $cartItem->quantity : 0;
+            $totalQuantityAfterAdd = $currentQuantity + $quantityToAdd;
+        
+            if ($totalQuantityAfterAdd > $product->stock) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Số lượng sản phẩm '{$product->name}' trong kho không đủ. Chỉ còn {$product->stock} {$product->unit}..",
+                ], 400);
+            }
+        
+            // ✅ Nếu số lượng hợp lệ → tiếp tục thêm hoặc cập nhật
+            if ($cartItem) {
+                $cartItem->increment('quantity', $quantityToAdd);
+            } else {
+                $cartItem = CartItem::create([
+                    'user_id' => $request->user_id,
+                    'product_id' => $request->product_id,
+                    'unit' => $request->unit ?? 'default_unit',
+                    'quantity' => $quantityToAdd,
+                    'price_at_time' => $request->price_at_time
+                ]);
+            }
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Thêm vào giỏ hàng thành công',
+                'cart_item' => $cartItem
+            ], 200);
         }
-
-        return response()->json([
-         'success' => true,
-            'message' => 'Thêm vào giỏ hàng thành công',
-            'cart_item' => $cartItem
-         ], 200);
-    }
 
     // Lấy danh sách giỏ hàng của người dùng
        public function getCartItems($userId)
