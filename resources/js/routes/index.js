@@ -14,11 +14,11 @@ const publicRoutes = [
         layout: layouts.user.default,
     },
 
-    // {
-    //     path: config.routes.other.landing,
-    //     component: pages.other.landing,
-    //     layout: layouts.other.noHeader,
-    // },
+    {
+        path: config.routes.other.landing,
+        component: pages.other.landing,
+        layout: layouts.other.noHeader,
+    },
     {
         path: config.routes.other.login,
         component: pages.other.login,

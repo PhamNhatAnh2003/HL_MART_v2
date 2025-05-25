@@ -5,6 +5,7 @@ import slider1 from "./slider1.png"
 import slider2 from "./slider2.png"
 import emptycart from "./emptycart.png"
 import image  from "./image.png"
+import landing  from "./landing.png"
 
 const images = {
     logo: logo,
@@ -14,6 +15,7 @@ const images = {
     slider2: slider2,
     emptycart: emptycart,
     image: image,
+    landing: landing,
 };
 
 export default images;

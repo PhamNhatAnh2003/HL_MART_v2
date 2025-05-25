@@ -178,11 +178,22 @@ const ProductManage = () => {
 
             <div className={cx("wrapper")}>
                 <h2 className={cx("title")}>Quản lý sản phẩm</h2>
-
-                {/* filter */}
-                <Row className={cx("filter-section")}>
-                    <Col span={24}>
-                        <div className={cx("filter-item")}>
+                <div
+                    style={{
+                        background: "white",
+                    }}
+                    className={cx("title2")}
+                >
+                    {/* filter */}
+                    <Row gutter={16} className={cx("filter-section")}>
+                        {/* Cột 1: Tên sản phẩm */}
+                        <Col
+                            xl={10}
+                            style={{
+                                marginLeft: 70,
+                            }}
+                            className={cx("filter-item")}
+                        >
                             <h1 className={cx("filter-label")}>Tên sản phẩm</h1>
                             <DefaultInput
                                 placeholder="Tên sản phẩm"
@@ -190,37 +201,44 @@ const ProductManage = () => {
                                 setValue={setName}
                                 onChange={onNameChange}
                             />
-                            <Col span={24}>
-                                <Button
-                                    danger
-                                    onClick={fillters}
-                                    className={cx("search-button")}
-                                >
-                                    Tìm kiếm
-                                </Button>
-                            </Col>
-                        </div>
-                    </Col>
+                        </Col>
 
-                
-                    <Col xl={12} className={cx("filter-item")}>
-                        <h1 className={cx("filter-label")}>Tầm Giá</h1>
-                        <Slider
-                            range
-                            min={0}
-                            max={800000}
-                            value={priceRange}
-                            onChange={onPriceChange}
-                            className={cx("price-slider")}
-                        />
-                        <div className={cx("price-display")}>
-                            <span>Giá từ: {formatPrice(priceRange[0])}</span>{" "}
-                            <br />
-                            <span>Giá đến: {formatPrice(priceRange[1])}</span>
-                        </div>
-                    </Col> 
-                </Row>
-
+                        {/* Cột 2: Tầm giá */}
+                        <Col
+                            xl={10}
+                            style={{
+                                marginLeft: 10,
+                            }}
+                            className={cx("filter-item")}
+                        >
+                            <h1 className={cx("filter-label")}>Tầm Giá</h1>
+                            <Slider
+                                range
+                                min={0}
+                                max={800000}
+                                value={priceRange}
+                                onChange={onPriceChange}
+                                className={cx("price-slider")}
+                            />
+                            <div className={cx("price-display")}>
+                                <span>
+                                    Giá từ: {formatPrice(priceRange[0])}
+                                </span>
+                                <br />
+                                <span>
+                                    Giá đến: {formatPrice(priceRange[1])}
+                                </span>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Button
+                        primary
+                        onClick={fillters}
+                        className={cx("search-button")}
+                    >
+                        Tìm kiếm
+                    </Button>
+                </div>
                 <Button
                     primary
                     className={cx("add-button")}
@@ -229,11 +247,7 @@ const ProductManage = () => {
                     Thêm sản phẩm
                 </Button>
 
-                <Table
-                    columns={columns}
-                    dataSource={products}
-                    rowKey="id"
-                />
+                <Table columns={columns} dataSource={products} rowKey="id" />
             </div>
         </>
     );
