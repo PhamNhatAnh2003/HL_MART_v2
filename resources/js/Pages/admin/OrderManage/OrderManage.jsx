@@ -210,11 +210,11 @@ const OrderManage = () => {
                 />
 
                 <Select
+                    placeholder="Lọc theo trạng thái"
                     value={statusFilter}
                     onChange={setStatusFilter}
                     className={cx("select")}
                     allowClear
-                    placeholder="Lọc theo trạng thái"
                 >
                     <Option value="pending">Pending</Option>
                     <Option value="shipping">Shipping</Option>
