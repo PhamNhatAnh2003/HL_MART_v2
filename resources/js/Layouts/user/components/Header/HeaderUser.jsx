@@ -182,7 +182,7 @@ export default function HeaderUser() {
                                 className={cx("menu-item")}
                                 onClick={() => {
                                     handleLogout();
-                                    navigate("/login");
+                                    navigate("/login", { replace: true });
                                 }}
                             >
                                 Đăng xuất

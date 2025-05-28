@@ -1,5 +1,5 @@
 import classNames from "classnames/bind";
-
+import Card from "~/components/Card";
 import styles from "./ProductDetail.module.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -35,6 +35,7 @@ const ProductDetail = () => {
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [specialProducts, setSpecialProducts] = useState([]);
 
     const fetchReviews = async () => {
         try {
@@ -63,6 +64,27 @@ const ProductDetail = () => {
             console.log(error);
         }
     };
+
+    useEffect(() => {
+        const fetchSpecialProducts = async () => {
+            if (!productId) return;
+
+            try {
+                const response = await axios.get(
+                    `/api/products/${productId}/recommendations`
+                );
+                console.log("Dữ liệu từ API:", response.data.recommendations);
+
+                if (response.status === 200) {
+                    setSpecialProducts(response.data.recommendations || []);
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy sản phẩm mới:", error);
+                setSpecialProducts([]);
+            }
+        };
+        fetchSpecialProducts();
+    }, [productId]);
 
     useEffect(() => {
         fetchProduct();
@@ -98,7 +120,7 @@ const ProductDetail = () => {
                             className={cx("back-btn")}
                             onClick={() => navigate(-1)}
                         >
-                            <span>
+                            <span >
                                 <Button primary>
                                     <FontAwesomeIcon icon={faChevronLeft} />
                                     Quay lại
@@ -153,10 +175,6 @@ const ProductDetail = () => {
                                     <div className={cx("sold")}>
                                         <strong>Đã bán:</strong>{" "}
                                         <span>{product.sold}</span>
-                                    </div>
-                                    <div className={cx("hoho")}>
-                                        <strong>Xuất xứ:</strong>{" "}
-                                        <span>Pham Nhat Anh</span>
                                     </div>
                                 </div>
                                 <div className={cx("btn")}>
@@ -218,6 +236,18 @@ const ProductDetail = () => {
                                     </div>
                                 ))}
                         </div>
+                        <section className={cx("newStyleSection")}>
+                            <h2 className={cx("sectionHeading")}>
+                                CÁC SẢN PHẨM LIÊN QUAN
+                            </h2>
+
+                            <div className={cx("line")}></div>
+                            <div className={cx("productList")}>
+                                {specialProducts.map((product, index) => (
+                                    <Card key={index} product={product} />
+                                ))}
+                            </div>
+                        </section>
                     </div>
                 </main>
             )}

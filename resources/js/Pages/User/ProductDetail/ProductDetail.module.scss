@@ -164,3 +164,30 @@
 .view-btn:hover {
     box-shadow: 0 6px 15px rgba(241, 6, 6, 0.992);
 }
+
+.newStyleSection {
+    margin-top: 10px;
+    padding: 50px 20px;
+    position: relative;
+
+
+    .sectionHeading {
+        font-size: 20px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+    }
+
+    .sectionDescription {
+        font-size: 16px;
+        color: var(--text-secondary);
+        margin-bottom: 40px;
+    }
+
+    .productList {
+        margin-top: 50px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+}
