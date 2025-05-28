@@ -12,7 +12,7 @@ use App\Http\Controllers\API\FavoriteController;
 use App\Http\Controllers\Billiard\TableBookingController;
 use App\Http\Controllers\Payment\VnPayController;
 use App\Http\Controllers\Staff\ProductManageController;
-
+use App\Http\Controllers\AI\DemandForecastController;
 
 
 Route::get('/user', function (Request $request) {
@@ -121,3 +121,11 @@ Route::get('/vnpay-return', [VnPayController::class, 'vnpayReturn'])->name('vnpa
 Route::get('/staff/all_product', [ProductManageController::class, 'getAllProduct']);
 Route::delete('/staff/product/delete/{id}', [ProductManageController::class, 'deleteProduct_v']);
 Route::post('/products/{id}/stock', [ProductManageController::class, 'updateStock']);
+
+//gợi ý
+Route::get('/products/{productId}/recommendations', [ProductController::class, 'getRecommendations']);
+Route::post('/products/recommendations', [ProductController::class, 'recommendProducts']);
+
+//dự đoán
+Route::post('/forecast/sales', [DemandForecastController::class, 'forecastProductSales']);
+

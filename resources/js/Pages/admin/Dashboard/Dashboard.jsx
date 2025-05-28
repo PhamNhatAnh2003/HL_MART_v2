@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import SalesForecastChart from "./SalesForecastChart";
 import axios from "axios";
+import Dropdown from "~/components/dropdown"
 import { Col, Row, Select, Alert } from "antd";
 import { formatPrice } from "~/utils/format";
 import styles from "./Dashboard.module.scss";
@@ -74,17 +76,57 @@ const renderCustomizedLabel = ({
 };
 
 const Dashboard = () => {
+    const [products, setProducts] = useState([]);
     const [chartData, setChartData] = useState([]);
     const [barChartData, setBarChartData] = useState([]);
     const [timeChartData, setTimeChartData] = useState([]);
     const [timeFrame, setTimeFrame] = useState("daily");
     const [totalUsers, setTotalUsers] = useState(0);
+    const [totalStaffs, setTotalStaffs] = useState(0);
     const [totalProductsSold, setTotalProductsSold] = useState(0);
     const [totalPrice, setTotalPrice] = useState(0);
     const [mostSoldProduct, setMostSoldProduct] = useState({});
     const [highestIncomeProduct, setHighestIncomeProduct] = useState({});
     const [error, setError] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [productData, setProductData] = useState([]);
 
+
+    useEffect(() => {
+        axios
+            .get("http://127.0.0.1:8000/api/productlist")
+            .then((response) => {
+                console.log("Dữ liệu API trả về:", response.data.products);
+                setProducts(response.data.products);
+            })
+            .catch((error) => {
+                console.error("Lỗi khi lấy danh mục:", error);
+            });
+    }, []);
+
+    useEffect(() => {
+        const fetchForecast = async () => {
+            try {
+                const response = await axios.post(
+                    "http://127.0.0.1:8000/api/forecast/sales",
+                    { product_id: selectedProduct } // Gửi body dưới dạng JSON
+                );
+                console.log("Dữ liệu dự báo:", response.data);
+                setProductData(response.data)
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu dự báo:", error);
+                alert(
+                    "Lỗi khi lấy dữ liệu: " +
+                        (error?.response?.data?.message || "Lỗi không xác định")
+                );
+            }
+        };
+
+        if (selectedProduct) {
+            fetchForecast();
+        }
+    }, [selectedProduct]);
+    
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -129,6 +171,7 @@ const Dashboard = () => {
                 const data = response.data?.data;
                 if (data) {
                     setTotalUsers(data.total_users);
+                    setTotalStaffs(data. total_staff);
                     setTotalProductsSold(data.total_sold_products);
                     setTotalPrice(data.total_revenue);
                 }
@@ -306,7 +349,7 @@ const Dashboard = () => {
                     <div
                         className={cx("chartBox")}
                         style={{
-                            marginTop:"20px",
+                            marginTop: "20px",
                             padding: "20px",
                             background: "#fff",
                             borderRadius: "8px",
@@ -388,6 +431,10 @@ const Dashboard = () => {
                             <h1 className={cx("valueRed")}>{totalUsers}</h1>
                         </div>
                         <div>
+                            <h1 className={cx("label")}>Tổng số nhân viên:</h1>
+                            <h1 className={cx("valueRed")}>{totalStaffs}</h1>
+                        </div>
+                        <div>
                             <h1 className={cx("label")}>
                                 Tổng số sản phẩm đã bán:
                             </h1>
@@ -401,6 +448,54 @@ const Dashboard = () => {
                                 {formatPrice(totalPrice)}
                             </h1>
                         </div>
+                    </div>
+                </Col>
+                <Col xl={12} sm={24}>
+                    <div
+                        style={{
+                            maxWidth: 600,
+                            marginLeft: 15,
+                            marginTop: 50,
+                            borderRadius: "8px",
+                        }}
+                    >
+                        <Dropdown
+                            className="dropdown-wrapper"
+                            id="Product"
+                            label="Dự báo số lượng sản phẩm bán ra"
+                            title="Chọn Sản Phẩm"
+                            selected={
+                                products.find(
+                                    (option) => option.id === selectedProduct
+                                )?.name || "Chưa chọn sản phẩm"
+                            }
+                            setValue={(value) => {
+                                const selectedOption = products.find(
+                                    (option) => option.name === value
+                                );
+                                if (selectedOption) {
+                                    setSelectedProduct(selectedOption.id); // Lưu ID danh mục đã chọn
+                                }
+                            }}
+                            width="100%"
+                        >
+                            {products.map((option) => (
+                                <div key={option.id}>{option.name}</div>
+                            ))}
+                        </Dropdown>
+                    </div>
+                    <div style={{ maxWidth: 600, marginTop: 5 }}>
+                        {productData &&
+                            Array.isArray(productData.history) &&
+                            typeof productData.forecast_next_day_sales !==
+                                "undefined" && (
+                                <SalesForecastChart
+                                    history={productData.history}
+                                    forecast_next_day_sales={
+                                        productData.forecast_next_day_sales
+                                    }
+                                />
+                            )}
                     </div>
                 </Col>
             </Row>

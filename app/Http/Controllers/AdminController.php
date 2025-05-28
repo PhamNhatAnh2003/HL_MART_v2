@@ -56,8 +56,9 @@ class AdminController extends Controller
     public function dashboardStats()
     {
         // Tổng số người dùng
-       $totalUsers = User::where('role', 'user')->count();
-
+        $totalUsers = User::where('role', 'user')->count();
+        // Tổng số người dùng
+        $totalStaffs = User::where('role', 'staff')->count();
         // Tổng số sản phẩm đã bán
         $totalSoldProducts = Product::sum('sold'); // Tính tổng số sản phẩm đã bán
 
@@ -68,6 +69,7 @@ class AdminController extends Controller
             'message' => 'Lấy thông tin thống kê thành công.',
             'data' => [
                 'total_users' => $totalUsers,
+                'total_staff' => $totalStaffs,
                 'total_sold_products' => $totalSoldProducts,
                 'total_revenue' => $totalRevenue,
             ]

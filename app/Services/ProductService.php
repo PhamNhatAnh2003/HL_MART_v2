@@ -3,10 +3,13 @@
 namespace App\Services;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Order;
 use App\Repositories\ProductRepositoryInterface;
 use App\Repositories\ProductRepository;
 use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
@@ -89,7 +92,7 @@ class ProductService
 
     public function updateProduct(Request $request, $id)
     {
-    try {
+     try {
         $product = Product::find($id);
         if (!$product) {
             return response()->json(['message' => 'Không tìm thấy sản phẩm.'], 404);
@@ -186,12 +189,124 @@ class ProductService
             'data' => new ProductResource($updatedProduct),
         ], 200);
 
-    } catch (\Exception $e) {
-        return response()->json([
+        } catch (\Exception $e) {
+         return response()->json([
             'message' => 'Đã xảy ra lỗi khi cập nhật sản phẩm.',
             'error' => $e->getMessage(),
         ], 500);
-    }
+        }  
     }
 
+
+    // Phương thức cho endpoint /api/products/{productId}/recommendations
+    public function getRecommendationsByProduct($productId, $limit = 4)
+    {
+        Log::info("Starting product recommendations for product: {$productId}");
+        $product = Product::find($productId);
+        if (!$product) {
+            Log::warning("Product not found: {$productId}");
+            return collect([]);
+        }
+
+        $totalProducts = Product::count();
+        Log::info("Total products in database: {$totalProducts}");
+        if ($totalProducts < $limit) {
+            return Product::inRandomOrder()->take($totalProducts)->get();
+        }
+
+        $recommendations = Product::where('id', '!=', $productId)
+            ->where('category', $product->category)
+            ->inRandomOrder()
+            ->take($limit)
+            ->get();
+        Log::info("Category-based recommendations count: {$recommendations->count()}");
+
+        if ($recommendations->count() < $limit) {
+            $excludeIds = [$productId, ...$recommendations->pluck('id')->toArray()];
+            $additional = Product::whereNotIn('id', $excludeIds)
+                ->inRandomOrder()
+                ->take($limit - $recommendations->count())
+                ->get();
+            Log::info("Additional random products count: {$additional->count()}");
+            $recommendations = $recommendations->merge($additional);
+        }
+
+        Log::info("Final product recommendations count: {$recommendations->count()}");
+        return $recommendations->take($limit);
+    }
+    
+    public function getRecommendations($productId, $limit = 4)
+    {
+        $currentProduct = Product::find($productId);
+        if (!$currentProduct) {
+            return collect([]);
+        }
+
+        $products = Product::where('id', '!=', $productId)->get();
+
+        $recommendations = $products->map(function ($product) use ($currentProduct) {
+            $similarity = $this->calculateSimilarity($currentProduct, $product);
+            return ['product' => $product, 'similarity' => $similarity];
+        })->sortByDesc('similarity')->take($limit);
+
+        return $recommendations->pluck('product');
+    }
+
+    private function calculateSimilarity($product1, $product2)
+    {
+        $text1 = strtolower($product1->name . ' ' . $product1->category . ' ' . $product1->description . ' ' . $product1->tags);
+        $text2 = strtolower($product2->name . ' ' . $product2->category . ' ' . $product2->description . ' ' . $product2->tags);
+
+        $words1 = array_filter(explode(' ', \Illuminate\Support\Str::slug($text1, ' ')));
+        $words2 = array_filter(explode(' ', \Illuminate\Support\Str::slug($text2, ' ')));
+
+        $commonWords = array_intersect($words1, $words2);
+        $totalWords = array_unique(array_merge($words1, $words2));
+
+        return count($totalWords) > 0 ? count($commonWords) / count($totalWords) : 0;
+    }
+
+
+    public function recommendForUser($userId, $limit = 8)
+    {
+        // 1. Lấy ID sản phẩm đã mua
+        $purchasedProductIds = Order::where('user_id', $userId)
+            ->with('items.product')
+            ->get()
+            ->flatMap(function ($order) {
+                return $order->items->pluck('product_id');
+            })
+            ->unique()
+            ->toArray();
+    
+        // 2. Lấy danh mục đã mua
+        $categoryIds = Product::whereIn('id', $purchasedProductIds)
+            ->pluck('category_id')
+            ->unique();
+    
+        // 3. Gợi ý sản phẩm cùng danh mục, chưa mua
+        $recommendations = Product::whereIn('category_id', $categoryIds)
+            ->whereNotIn('id', $purchasedProductIds)
+            ->inRandomOrder()
+            ->limit($limit)
+            ->get();
+    
+        $remaining = $limit - $recommendations->count();
+    
+        // 4. Nếu chưa đủ, thêm sản phẩm bất kỳ chưa mua
+        if ($remaining > 0) {
+            $fallbackProducts = Product::whereNotIn('id', $purchasedProductIds)
+                ->whereNotIn('id', $recommendations->pluck('id')) // tránh trùng
+                ->inRandomOrder()
+                ->limit($remaining)
+                ->get();
+    
+            $recommendations = $recommendations->concat($fallbackProducts);
+        }
+    
+        return $recommendations->values(); // đảm bảo là collection tuần tự
+    }
 }
+
+
+

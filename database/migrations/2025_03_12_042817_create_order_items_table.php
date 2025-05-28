@@ -28,6 +28,6 @@ Schema::create('order_items', function (Blueprint $table) {
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_sellers');
+        Schema::dropIfExists('order_items');
     }
 };

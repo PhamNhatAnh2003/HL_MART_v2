@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
@@ -290,4 +291,26 @@ class ProductController extends Controller
         return response()->json($suggestions);
     }
 
+    public function getRecommendations($productId): JsonResponse
+    {
+        $recommendations = $this->productService->getRecommendations($productId);
+        return response()->json([
+            'message' => 'Lấy sản phẩm thành công.',
+            'recommendations' => $recommendations->map(fn($product) => new ProductResource($product),)
+        ]);
+    }
+
+    public function recommendProducts(Request $request, ProductService $productService)
+    {
+        $userId = $request->input('user_id');
+    
+        if (!$userId) {
+            return response()->json(['message' => 'User ID is required'], 400);
+        }
+    
+        $recommendations = $productService->recommendForUser($userId);
+    
+        return response()->json($recommendations);
+    }
+    
 }
