@@ -10,74 +10,124 @@ use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use App\Http\Resources\OrderResource;
+use App\Models\Voucher;
 
 class OrderController extends Controller
 {
-public function createOrder(Request $request)
-{
-    // Validate dữ liệu từ frontend
-    $validated = $request->validate([
-        'user_id' => 'required|exists:users,id',
-        'payment_method' => 'required|string',
-        'items' => 'required|array',
-        'total_price' => 'required|numeric',
-        'shipping_address' => 'required|string',
-    ]);
-
-    // Tạo đơn hàng
-    $order = Order::create([
-        'user_id' => $validated['user_id'],
-        'status' => 'pending',
-        'payment_method' => $validated['payment_method'],
-        'total_price' => $validated['total_price'],
-        'shipping_address' => $validated['shipping_address'],
-        'ordered_at' => Carbon::now(),
-    ]);
-
-    // Thêm các item vào bảng order_items
-    foreach ($validated['items'] as $item) {
-    $totalItemPrice = $item['quantity'] * $item['price_at_time'];
-
-    OrderItem::create([
-        'order_id' => $order->id,
-        'product_id' => $item['product_id'],
-        'quantity' => $item['quantity'],
-        'price_at_time' => $item['price_at_time'],
-        'total_price' => $totalItemPrice,
-    ]);
-
-    $product = Product::findOrFail($item['product_id']);
-
-    if ($product->stock < $item['quantity'] && $validated['payment_method'] === 'CK') {
+    public function createOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'payment_method' => 'required|string',
+            'items' => 'required|array',
+            'total_price' => 'required|numeric',
+            'shipping_address' => 'required|string',
+            'voucher_code' => 'nullable|string',
+        ]);
+    
+        $discount = 0;
+        $voucher = null;
+        if (!empty($validated['voucher_code'])) {
+            $voucher = Voucher::where('code', $validated['voucher_code'])
+                ->where('is_active', true)
+                ->where(function ($query) {
+                    $now = now();
+                    $query->whereNull('starts_at')->orWhere('starts_at', '<=', $now);
+                })
+                ->where(function ($query) {
+                    $now = now();
+                    $query->whereNull('expires_at')->orWhere('expires_at', '>=', $now);
+                })
+                ->first();
+    
+            if (!$voucher) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Mã voucher không hợp lệ hoặc đã hết hạn.',
+                ], 422);
+            }
+    
+            if ($voucher->min_order > $validated['total_price']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Đơn hàng phải đạt tối thiểu " . number_format($voucher->min_order) . "đ để áp dụng voucher này.",
+                ], 422);
+            }
+    
+            if ($voucher->max_usage !== null && $voucher->used >= $voucher->max_usage) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Mã voucher đã đạt giới hạn số lượt sử dụng.',
+                ], 422);
+            }
+    
+            $discount = $voucher->type === 'percent' 
+                ? $validated['total_price'] * ($voucher->value / 100) 
+                : $voucher->value;
+    
+            $discount = min($discount, $validated['total_price']);
+        }
+    
+        $order = Order::create([
+            'user_id' => $validated['user_id'],
+            'status' => 'pending',
+            'payment_method' => $validated['payment_method'],
+            'total_price' => $validated['total_price'] - $discount,
+            'discount' => $discount,
+            'voucher_code' => $voucher->code ?? null,
+            'shipping_address' => $validated['shipping_address'],
+            'ordered_at' => Carbon::now(),
+        ]);
+    
+        foreach ($validated['items'] as $item) {
+            $totalItemPrice = $item['quantity'] * $item['price_at_time'];
+    
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'price_at_time' => $item['price_at_time'],
+                'total_price' => $totalItemPrice,
+            ]);
+    
+            $product = Product::findOrFail($item['product_id']);
+    
+            if ($product->stock < $item['quantity'] && $validated['payment_method'] === 'CK') {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Không thể thanh toán bằng Chuyển Khoản. Sản phẩm '{$product->name}' không đủ hàng trong kho.",
+                ], 400);
+            }
+    
+            if ($product->stock < $item['quantity']) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Sản phẩm '{$product->name}' không đủ hàng trong kho.",
+                ], 400);
+            }
+    
+            $product->stock -= $item['quantity'];
+            $product->sold += $item['quantity'];
+            $product->save();
+        }
+    
+        if (!empty($voucher)) {
+            $voucher->used += 1;
+            $voucher->save();
+        }
+    
         return response()->json([
-            'status' => false,
-            'message' => "Không thể thanh toán bằng Chuyển Khoản. Sản phẩm '{$product->name}' không đủ hàng trong kho.",
-        ], 400);
+            'status' => true,
+            'message' => 'Đặt hàng thành công!',
+            'order_id' => $order->id,
+            'qr_url' => match ($validated['payment_method']) {
+                'CK' => $this->generateMomoQr($order),
+                'vnpay' => $this->generateVnpayUrl($order),
+                default => null,
+            },
+        ]);
     }
-
-    // Kiểm tra tồn kho trước khi trừ (phòng tránh gian lận)
-    if ($product->stock < $item['quantity']) {
-        return response()->json([
-            'status' => false,
-            'message' => "Sản phẩm '{$product->name}' không đủ hàng trong kho.",
-        ], 400);
-    }
-
-    $product->stock -= $item['quantity'];
-    $product->sold += $item['quantity'];
-    $product->save();
-    }
-    return response()->json([
-    'status' => true,
-    'message' => 'Đặt hàng thành công!',
-    'order_id' => $order->id,
-    'qr_url' => match ($validated['payment_method']) {
-        'CK' => $this->generateMomoQr($order),
-        'vnpay' => $this->generateVnpayUrl($order),
-        default => null,
-    },
-    ]);
-}
+    
 
 private function generateVnpayUrl($order)
 {

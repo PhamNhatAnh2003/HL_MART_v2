@@ -5,7 +5,7 @@ const routes = {
         productManage: "/admin/managers",
         userManage: "/admin/userManage",
         orderManage: "/admin/orderManage",
-        billiardManage: "/manage-billards",
+        voucherManage: "/manage-vouchers",
     },
 
     user: {

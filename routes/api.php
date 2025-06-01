@@ -6,6 +6,7 @@ use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UploadController;
 use App\Http\Controllers\API\AddressController;
+use App\Http\Controllers\API\VoucherController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\API\FavoriteController;
@@ -98,6 +99,8 @@ Route::post('/admin/change-role', [AdminController::class, 'changeRole']);
 Route::get('/revenue-by-time', [AdminController::class, 'getRevenueByTime']);
 Route::get('/admin/orders/{id}', [AdminController::class, 'getOrderDetailByUser']);
 Route::delete('/admin/orders/{id}', [AdminController::class, 'deleteOrder']);
+Route::get('/admin/vouchers', [VoucherController::class, 'getVouchers']);
+
 
 
 
@@ -129,3 +132,11 @@ Route::post('/products/recommendations', [ProductController::class, 'recommendPr
 //dự đoán
 Route::post('/forecast/sales', [DemandForecastController::class, 'forecastProductSales']);
 
+//Voucher
+Route::prefix('vouchers')->group(function () {
+    Route::get('/available', [VoucherController::class, 'getAvailableVouchers']);
+    Route::post('/', [VoucherController::class, 'createVoucher']);
+    Route::get('/{code}', [VoucherController::class, 'show']);
+    Route::put('/{id}', [VoucherController::class, 'updateVoucher']);
+    Route::delete('/{id}', [VoucherController::class, 'deleteVoucher']);
+});

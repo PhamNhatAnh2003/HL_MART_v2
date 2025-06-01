@@ -72,10 +72,18 @@ const CartProvider = ({ children }) => {
     // 6️⃣ Cập nhật số lượng sản phẩm
     const updateQuantity = async (productId, quantity) => {
         if (!user?.id) return;
+
+        // Ép kiểu và kiểm tra số lượng
+        const qty = parseInt(quantity);
+        if (isNaN(qty) || qty < 1) {
+            showToast("Số lượng phải là số >= 1", "error");
+            return;
+        }
+
         try {
             const response = await axios.post(`/api/cart/update/${productId}`, {
                 user_id: user.id,
-                quantity,
+                quantity: qty,
             });
 
             refreshCart(); // Cập nhật lại giỏ hàng sau khi cập nhật số lượng
@@ -85,9 +93,9 @@ const CartProvider = ({ children }) => {
                 "Lỗi khi cập nhật số lượng:",
                 error.response?.data || error.message
             );
-        
-            // Hiển thị thông báo lỗi cụ thể từ backend (nếu có)
-            const message = error.response?.data?.message || "Cập nhật thất bại. Vui lòng thử lại!";
+            const message =
+                error.response?.data?.message ||
+                "Cập nhật thất bại. Vui lòng thử lại!";
             showToast(message, "error");
         }
     };

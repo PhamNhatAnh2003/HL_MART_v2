@@ -113,7 +113,7 @@ const Login = () => {
                 </div>
                 <div className={cx("right-content")}>
                     <div className={cx("login-image")}>
-                        <img src={images.login} alt="login" />
+                        <img src={images.logo2} alt="login" />
                     </div>
                 </div>
             </div>

@@ -13,6 +13,7 @@ import axios from "axios";
 import { Table, Radio, Modal } from "antd";
 import images from "~/assets/images";
 import showToast from "~/components/message";
+import VoucherInput from "~/components/Popup/VoucherInput";
 
 const cx = classNames.bind(styles);
 
@@ -21,6 +22,7 @@ const CartStep3 = () => {
     const { profile, setProfile } = useProfile();
     const { cart } = useCart();
     const [showQrModal, setShowQrModal] = useState(false);
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -53,6 +55,7 @@ const CartStep3 = () => {
         setSelectedPaymentMethod(event.target.value);
     };
 
+
     const handleCreateOrder = async () => {
         if (!selectedPaymentMethod) {
             alert("Vui lòng chọn phương thức thanh toán!");
@@ -81,7 +84,11 @@ const CartStep3 = () => {
                     "http://127.0.0.1:8000/api/vnpay-payment",
                     {
                         user_id: loginedProfile?.id,
-                        amount: totalPrice,
+                        voucher_code: selectedVoucher?.code || null,
+                        amount:
+                            totalPrice -
+                            (selectedVoucher?.discount_amount || 0),
+
                         shipping_address: [
                             profile?.default_address?.street_address,
                             profile?.default_address?.ward,
@@ -142,6 +149,7 @@ const CartStep3 = () => {
                 "http://127.0.0.1:8000/api/create-order",
                 {
                     user_id: loginedProfile?.id,
+                    voucher_code: selectedVoucher?.code || null,
                     payment_method: selectedPaymentMethod,
                     items: filteredCart.map((item) => ({
                         product_id: item.product.id,
@@ -149,7 +157,8 @@ const CartStep3 = () => {
                         price_at_time:
                             item.product.discount_price || item.product.price,
                     })),
-                    total_price: totalPrice,
+                    total_price:
+                        totalPrice - (selectedVoucher?.discount_amount || 0),
                     shipping_address: [
                         profile?.default_address?.street_address,
                         profile?.default_address?.ward,
@@ -313,12 +322,30 @@ const CartStep3 = () => {
                     <span>{totalQuantity}</span>
                 </div>
                 <div className={cx("cart-right-line")}>
+                    <span>Phí vận chuyển</span>
+                    <span>{formatPrice(0)}</span>
+                </div>
+                <VoucherInput
+                    totalPrice={totalPrice} // truyền tổng tiền hiện tại
+                    onSelect={(voucher) => setSelectedVoucher(voucher)} // nhận lại voucher có discount_amount
+                />
+                {selectedVoucher && (
+                    <div className={cx("cart-right-line")}>
+                        <span>Khuyến mãi:</span>
+                        <span style={{ color: "#52c41a", fontWeight: 500 }}>
+                            -{formatPrice(selectedVoucher.discount_amount)}
+                        </span>
+                    </div>
+                )}
+                <div className={cx("cart-right-last-line")}></div>
+                <div className={cx("cart-right-line")}>
                     <span>Tổng tiền:</span>
                     <span style={{ fontWeight: 600 }}>
-                        {formatPrice(totalPrice)}
+                        {formatPrice(
+                            totalPrice - (selectedVoucher?.discount_amount || 0)
+                        )}
                     </span>
                 </div>
-                <div className={cx("cart-right-last-line")}></div>
                 <Button
                     primary
                     large
