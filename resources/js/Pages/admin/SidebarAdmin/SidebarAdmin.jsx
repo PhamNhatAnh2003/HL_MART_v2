@@ -78,16 +78,16 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         </div>
                         <div
                             onClick={() => {
-                                navigate(config.routes.admin.billiardManage);
+                                navigate(config.routes.admin.voucherManage);
                                 onClose();
                             }}
                             className={cx("tab-item", {
                                 active:
                                     location.pathname ===
-                                    config.routes.admin.billiardManage,
+                                    config.routes.admin.voucherManage,
                             })}
                         >
-                            Quản lý billiard
+                            Khuyến mãi
                         </div>
                     </div>
                 </div>

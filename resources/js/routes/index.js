@@ -118,8 +118,8 @@ const publicRoutes = [
         role: "admin",
     },
     {
-        path: config.routes.admin.billiardManage,
-        component: pages.admin.billiardManage,
+        path: config.routes.admin.voucherManage,
+        component: pages.admin.voucherManage,
         role: "admin",
     },
 ];

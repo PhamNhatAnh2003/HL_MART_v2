@@ -7,7 +7,7 @@ width: 100%;
 }
 
 .content{
-    margin-top: 70px;
+    margin-top: 30px;
 }
 
 
@@ -34,7 +34,7 @@ width: 100%;
   background-color: #f9f9f9;
   border-left: 4px solid #52c41a;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.741);
   width: 80%; /* Hoặc có thể dùng max-width tùy vào kích thước bạn muốn */
   max-width: 600px; /* Đặt max-width để phần này không quá rộng */
   margin-left: auto;
@@ -57,5 +57,10 @@ width: 100%;
           color: #111;
       }
   }
+}
+
+.back{
+  margin: 30px;
+  padding-bottom: 30PX;
 }
 

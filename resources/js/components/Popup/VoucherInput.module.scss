@@ -1,0 +1,49 @@
+.voucher-detail {
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+    p {
+        margin: 0 0 4px;
+    }
+}
+
+.voucherModal {
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    line-height: 1.6;
+
+    p {
+        margin-bottom: 10px;
+        font-size: 15px;
+        color: #333;
+
+        strong {
+            display: inline-block;
+            min-width: 130px;
+            color: #444;
+            font-weight: 600;
+        }
+    }
+
+    .highlight {
+        color: #e53935;
+        font-weight: 600;
+    }
+
+    .date-range {
+        font-style: italic;
+        color: #777;
+    }
+
+    img {
+        margin-top: 10px;
+        border-radius: 8px;
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #eee;
+    }
+}

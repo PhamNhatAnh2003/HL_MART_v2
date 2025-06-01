@@ -12,11 +12,11 @@ const CartItem2 = ({ item, selectedItems, handleSelectItem }) => {
     const { updateQuantity, removeFromCart } = useCart();
     const [currentQuantity, setCurrentQuantity] = useState(quantity);
 
-    const handleChangeQuantity = (e) => {
-        let newQuantity = Math.max(1, parseInt(e.target.value, 10) || 1);
-        setCurrentQuantity(newQuantity);
-        updateQuantity(product.id, newQuantity);
-    };
+    // const handleChangeQuantity = (e) => {
+    //     let newQuantity = Math.max(1, parseInt(e.target.value, 10) || 1);
+    //     setCurrentQuantity(newQuantity);
+    //     updateQuantity(product.id, newQuantity);
+    // };
 
     return (
         <div className={cx("cart-item")}>
@@ -62,7 +62,15 @@ const CartItem2 = ({ item, selectedItems, handleSelectItem }) => {
                             type="number"
                             value={currentQuantity}
                             min="1"
-                            onChange={handleChangeQuantity}
+                            onChange={(e) => setCurrentQuantity(e.target.value)}
+                            onBlur={() =>
+                                updateQuantity(product.id, currentQuantity)
+                            }
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    updateQuantity(product.id, currentQuantity);
+                                }
+                            }}
                             className={cx("quantity-input")}
                         />
                     </div>

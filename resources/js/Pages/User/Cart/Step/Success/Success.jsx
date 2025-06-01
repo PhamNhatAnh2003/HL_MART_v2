@@ -81,10 +81,11 @@ const Success = () => {
                         )}
                     </div>
                 )}
-
-                <Button primary onClick={() => navigate("/home")}>
-                    Quay về trang chủ
-                </Button>
+                <div className={cx('back')}>
+                    <Button primary onClick={() => navigate("/home")}>
+                        Quay về trang chủ
+                    </Button>
+                </div>
             </div>
         </div>
     );

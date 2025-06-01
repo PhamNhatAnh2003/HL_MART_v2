@@ -3,7 +3,7 @@ import SidebarAdmin from "./SidebarAdmin";
 import ProductManage from "./ProductManage";
 import UserManager from "./UserManage";
 import OrderManage from "./OrderManage";
-import BilliardManage from "./BilliardManage";
+import VoucherManage from "./VoucherManage";
 
 const admin = {
     dashboard: Dashboard,
@@ -11,7 +11,7 @@ const admin = {
     productManage: ProductManage,
     userManage: UserManager,
     orderManage: OrderManage,
-    billiardManage: BilliardManage,
+    voucherManage: VoucherManage,
 };
 
 export default admin;

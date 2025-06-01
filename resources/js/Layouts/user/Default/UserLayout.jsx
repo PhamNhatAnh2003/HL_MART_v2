@@ -5,6 +5,7 @@ import HeaderUser from "../components/Header/HeaderUser";
 import Footer from "~/components/Footer";
 import Category from "../../../components/Category/Category";
 import ChatBox from "../../../components/Chatbox/Chatbox";
+import Banner from "../components/Banner/Banner";
 
 const cx = classNames.bind(styles);
 
@@ -15,6 +16,7 @@ const UserLayout = ({ children }) => {
             <Category />
             <div className={cx("content")}>{children}</div>
             <ChatBox />
+            <Banner />
             <Footer />
         </div>
     );

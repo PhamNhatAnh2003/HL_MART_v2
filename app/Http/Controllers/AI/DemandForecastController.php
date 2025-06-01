@@ -32,10 +32,10 @@ class DemandForecastController extends Controller
 
     $salesQuantities = $salesData->pluck('total_sold')->toArray();
 
-    $window = 3;
+    $days = 3;
 
     // Nếu không đủ dữ liệu để dự báo, vẫn trả về lịch sử (không lỗi)
-    if (count($salesQuantities) < $window) {
+    if (count($salesQuantities) < $days) {
         return response()->json([
             'product_id' => $productId,
             'forecast_next_day_sales' => null,
@@ -46,9 +46,9 @@ class DemandForecastController extends Controller
 
     // Dự báo bằng thuật toán Simple Moving Average
     $averages = [];
-    for ($i = 0; $i <= count($salesQuantities) - $window; $i++) {
-        $windowSlice = array_slice($salesQuantities, $i, $window);
-        $averages[] = array_sum($windowSlice) / $window;
+    for ($i = 0; $i <= count($salesQuantities) - $days; $i++) {
+        $daysSlice = array_slice($salesQuantities, $i, $days);
+        $averages[] = array_sum($daysSlice) / $days;
     }
 
     $nextDayForecast = end($averages);
