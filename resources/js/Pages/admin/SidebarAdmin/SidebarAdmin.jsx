@@ -89,6 +89,19 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                         >
                             Khuyến mãi
                         </div>
+                        <div
+                            onClick={() => {
+                                navigate(config.routes.admin.predictProduct);
+                                onClose();
+                            }}
+                            className={cx("tab-item", {
+                                active:
+                                    location.pathname ===
+                                    config.routes.admin.predictProduct,
+                            })}
+                        >
+                            Dự đoán
+                        </div>
                     </div>
                 </div>
             </div>

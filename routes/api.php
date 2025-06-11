@@ -14,6 +14,7 @@ use App\Http\Controllers\Billiard\TableBookingController;
 use App\Http\Controllers\Payment\VnPayController;
 use App\Http\Controllers\Staff\ProductManageController;
 use App\Http\Controllers\AI\DemandForecastController;
+use App\Http\Controllers\AI\AnalyticsController;
 
 
 Route::get('/user', function (Request $request) {
@@ -140,3 +141,6 @@ Route::prefix('vouchers')->group(function () {
     Route::put('/{id}', [VoucherController::class, 'updateVoucher']);
     Route::delete('/{id}', [VoucherController::class, 'deleteVoucher']);
 });
+
+
+Route::get('/sales-data', [AnalyticsController::class, 'getSalesData']);
