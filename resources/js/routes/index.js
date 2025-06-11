@@ -118,6 +118,11 @@ const publicRoutes = [
         role: "admin",
     },
     {
+        path: config.routes.admin.predictProduct,
+        component: pages.admin.predictProduct,
+        role: "admin",
+    },
+    {
         path: config.routes.admin.voucherManage,
         component: pages.admin.voucherManage,
         role: "admin",

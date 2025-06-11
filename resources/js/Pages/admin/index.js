@@ -4,6 +4,7 @@ import ProductManage from "./ProductManage";
 import UserManager from "./UserManage";
 import OrderManage from "./OrderManage";
 import VoucherManage from "./VoucherManage";
+import PredictProduct from "./PredictProduct";
 
 const admin = {
     dashboard: Dashboard,
@@ -12,6 +13,7 @@ const admin = {
     userManage: UserManager,
     orderManage: OrderManage,
     voucherManage: VoucherManage,
+    predictProduct: PredictProduct,
 };
 
 export default admin;
