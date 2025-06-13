@@ -27,7 +27,7 @@
     padding: 12px;
     font-size: 16px;
     font-weight: 600;
-    background-color: #3498db;
+    background-color: 	#1890ff;
     color: white;
     border: none;
     border-radius: 8px;
@@ -35,7 +35,7 @@
     transition: background 0.3s ease;
 
     &:hover:not(:disabled) {
-        background-color: #2980b9;
+        background-color: rgb(86, 183, 248);
     }
 
     &:disabled {
@@ -93,4 +93,8 @@
     margin-bottom: 24px;
     text-align: center;
     font-weight: 500;
+}
+
+.btn-refresh {
+    margin-left: 1000px;
 }

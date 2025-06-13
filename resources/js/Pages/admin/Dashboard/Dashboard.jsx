@@ -327,6 +327,7 @@ const Dashboard = () => {
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="category" />
                                 <YAxis
+                                    padding={{ top: 20}}
                                     tickFormatter={(value) =>
                                         `${value.toLocaleString()} VND`
                                     }
