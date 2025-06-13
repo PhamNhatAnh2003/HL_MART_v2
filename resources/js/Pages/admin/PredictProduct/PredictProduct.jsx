@@ -14,6 +14,7 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import Dropdown from "@/components/Dropdown";
+import showToast from "~/components/message";
 
 const cx = classNames.bind(styles);
 
@@ -24,6 +25,17 @@ const PredictProduct = () => {
     const [loading, setLoading] = useState(false);
     const [datas, setDatas] = useState(false);
     const [error, setError] = useState("");
+
+    const handleRefresh = async () => {
+        try {
+            const res = await axios.get("http://localhost:5000/fetch-data"); 
+            showToast("Đã làm mới dữ liệu!");
+            console.log(res.data);
+        } catch (error) {
+            console.error(error);
+            message.error("Lỗi khi làm mới dữ liệu!");
+        }
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -109,6 +121,13 @@ const PredictProduct = () => {
 
     return (
         <div className={cx("container")}>
+            <Button 
+            className={cx('btn-refresh')}
+            primary 
+            onClick={handleRefresh}>
+                
+                Làm mới dữ liệu
+            </Button>
             <h2 className={cx("title")}>Dự đoán số lượng bán sản phẩm</h2>
 
             <div className={cx("dropdownWrapper")}>
