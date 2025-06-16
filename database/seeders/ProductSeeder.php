@@ -98,7 +98,7 @@ class ProductSeeder extends Seeder
                     'images/products/' . str_replace('.jpg', '_2.jpg', $image),
                 ]),
                 'stock' => $faker->numberBetween(20, 100),
-                'sold' => $faker->numberBetween(0, 300),
+                'sold' => $faker->numberBetween(0, 70),
                 'category_id' => $categoryId,
                 'created_at' => now(),
                 'updated_at' => now(),
