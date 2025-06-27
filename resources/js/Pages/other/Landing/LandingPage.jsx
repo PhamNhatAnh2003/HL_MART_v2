@@ -5,19 +5,43 @@ import { Link, useNavigate } from "react-router-dom";
 import config from "~/config";
 import axios from "axios";
 import classNames from "classnames/bind";
+import { AuthContext } from "~/context/AuthContext";
+import showToast from "~/components/message";
+import { formatPrice } from "~/utils/format";
+
 const cx = classNames.bind(styles);
-
-const categories = [
-    { name: "Đồ gia dụng", image: "/assets/category1.jpg" },
-    { name: "Thực phẩm", image: "/assets/category2.jpg" },
-    { name: "Đồ nhà bếp", image: "/assets/category3.jpg" },
-    { name: "Đồ uống", image: "/assets/category4.jpg" },
-];
-
 
 
 export default function LandingPage() {
+    const { user } = useContext(AuthContext);
     const [products, setTopProducts] = useState([]);
+    const [newProducts, setNewProducts] = useState([]);
+    const navigate = useNavigate();
+
+    const handleAddToCart = (product) => {
+        console.log("Clicked!", user);
+        if (!user || Object.keys(user).length === 0) {
+            showToast("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
+            return;
+        }
+    }
+
+    useEffect(() => {
+        const fetchNewProducts = async () => {
+            try {
+                const response = await axios.get("/api/products/latest");
+                // console.log("Dữ liệu từ API:", response.data); // Kiểm tra dữ liệu
+
+                if (response.status === 200) {
+                    setNewProducts(response.data.data || []); // Đổi từ response.data.products -> response.data.data
+                }
+            } catch (error) {
+                console.error("Lỗi khi lấy sản phẩm mới:", error);
+                setNewProducts([]); // Tránh lỗi undefined
+            }
+        };
+        fetchNewProducts();
+    }, []);
 
     useEffect(() => {
         const fetchTopProducts = async () => {
@@ -37,63 +61,86 @@ export default function LandingPage() {
     }, []);
 
     return (
-        <div className={styles.landing}>
+        <div className={cx("landing")}>
             {/* Header */}
-            <header className={styles.header}>
-                <div className={styles.logo}>HL Mart</div>
-                <div className={styles.authButtons}>
-                    <Link to="/login" className={styles.loginBtn}>
+            <header className={cx("header")}>
+                <div className={cx("logo")}>HL MART</div>
+                <div className={cx("authButtons")}>
+                    <Link to="/login" className={cx("loginBtn")}>
                         Đăng nhập
                     </Link>
-                    <Link to="/register" className={styles.registerBtn}>
+                    <Link to="/register" className={cx("registerBtn")}>
                         Đăng ký
                     </Link>
                 </div>
             </header>
 
             {/* Hero Section */}
-            <section className={styles.hero}>
-                <div className={styles.heroText}>
+            <section className={cx("hero")}>
+                <div className={cx("heroText")}>
                     <h1>Ưu đãi lớn cho mùa hè!</h1>
                     <p>Giảm giá lên đến 50% cho nhiều mặt hàng</p>
-                    <button className={styles.shopNowBtn}>Mua ngay</button>
+                    <button
+                        onClick={() => navigate(config.routes.other.login)}
+                        className={cx("shopNowBtn")}
+                    >
+                        Mua ngay
+                    </button>
                 </div>
                 <img src={images.landing} alt="Khuyến mãi" />
             </section>
 
-            {/* Categories */}
-            <section className={styles.categories}>
-                <h2>Danh mục nổi bật</h2>
-                <div className={styles.grid}>
-                    {categories.map((cat, index) => (
-                        <div className={styles.categoryCard} key={index}>
-                            <img src={cat.image} alt={cat.name} />
-                            <p>{cat.name}</p>
+            {/* New Products */}
+            <section className={cx("categories")}>
+                <h2>Các sản phẩm mới </h2>
+                <div className={cx("grid")}>
+                    {newProducts.map((p) => (
+                        <div className={cx("productCard")} key={p.id}>
+                            <img src={p.avatar} alt={p.name} />
+                            <h3>{p.name}</h3>
+                            <p>{formatPrice(p.price)} </p>
+                            <button onClick={() => handleAddToCart(p)}>
+                                Thêm vào giỏ
+                            </button>
                         </div>
                     ))}
                 </div>
             </section>
 
             {/* Best Selling Products */}
-            <section className={styles.products}>
+            <section className={cx("products")}>
                 <h2>Sản phẩm bán chạy</h2>
-                <div className={styles.grid}>
+                <div className={cx("grid")}>
                     {products.map((p) => (
-                        <div className={styles.productCard} key={p.id}>
+                        <div className={cx("productCard")} key={p.id}>
                             <img src={p.avatar} alt={p.name} />
                             <h3>{p.name}</h3>
-                            <p>{p.price.toLocaleString()} đ</p>
-                            <button>Thêm vào giỏ</button>
+                            <p>{formatPrice(p.price)}</p>
+                            <button onClick={() => handleAddToCart(p)}>
+                                Thêm vào giỏ
+                            </button>
                         </div>
                     ))}
                 </div>
             </section>
 
             {/* Call to Action */}
-            <section className={styles.cta}>
+            <section className={cx("cta")}>
                 <h2>Đăng ký thành viên để nhận ưu đãi riêng!</h2>
-                <button className={styles.ctaBtn}>Đăng ký ngay</button>
+                <button
+                    onClick={() => navigate(config.routes.other.register)}
+                    className={cx("ctaBtn")}
+                >
+                    Đăng ký ngay
+                </button>
             </section>
+            <footer className={cx("footer")}>
+                <p>
+                    © 2025 HL Mart. Hotline: 0912198345 | Email:
+                    anh.pn214987@sis.hust.edu.vn
+                </p>
+                <p>Địa chỉ: Thôn Kim Cương 1, xã Sơn Kim 1, Hà Tĩnh</p>
+            </footer>
         </div>
     );
 }

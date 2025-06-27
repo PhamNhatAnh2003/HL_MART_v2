@@ -154,11 +154,20 @@ class ProductController extends Controller
 
     // 💰 Lọc theo khoảng giá
     if ($start !== null && $end !== null) {
-        $products->whereBetween(DB::raw('COALESCE(discount_price, price)'), [$start, $end]);
+        $products->whereBetween(
+            DB::raw('IF(discount_price IS NOT NULL AND discount_price > 0, discount_price, price)'),
+            [$start, $end]
+        );
     } elseif ($start !== null) {
-        $products->whereRaw('COALESCE(discount_price, price) >= ?', [$start]);
+        $products->whereRaw(
+            'IF(discount_price IS NOT NULL AND discount_price > 0, discount_price, price) >= ?',
+            [$start]
+        );
     } elseif ($end !== null) {
-        $products->whereRaw('COALESCE(discount_price, price) <= ?', [$end]);
+        $products->whereRaw(
+            'IF(discount_price IS NOT NULL AND discount_price > 0, discount_price, price) <= ?',
+            [$end]
+        );
     }
 
     // 🏷️ Kiểm tra nếu không có sản phẩm phù hợp
@@ -179,9 +188,9 @@ class ProductController extends Controller
 
     // 📊 Sắp xếp theo giá
     if ($sort_price === "asc") {
-        $products->orderByRaw("COALESCE(discount_price, price) ASC");
+        $products->orderByRaw("IF(discount_price IS NOT NULL AND discount_price > 0, discount_price, price) ASC");
     } elseif ($sort_price === "desc") {
-        $products->orderByRaw("COALESCE(discount_price, price) DESC");
+        $products->orderByRaw("IF(discount_price IS NOT NULL AND discount_price > 0, discount_price, price) DESC");
     }
 
     // ⭐ Sắp xếp theo đánh giá
@@ -278,16 +287,16 @@ class ProductController extends Controller
     public function getSuggestions(Request $request)
     {
         $keyword = $request->query('keyword');
-
+    
         if (!$keyword || trim($keyword) === '') {
             return response()->json([]);
         }
-
-        // Tìm sản phẩm có tên chứa từ khóa, giới hạn tối đa 10 kết quả
-        $suggestions = Product::where('name', 'LIKE', '%' . $keyword . '%')
+    
+        // Gợi ý sản phẩm bắt đầu bằng từ khóa (không phải chứa)
+        $suggestions = Product::where('name', 'LIKE', $keyword . '%')
             ->limit(15)
-            ->pluck('name');  // chỉ lấy tên sản phẩm để gợi ý
-
+            ->pluck('name');
+    
         return response()->json($suggestions);
     }
 

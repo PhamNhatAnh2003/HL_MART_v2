@@ -84,6 +84,7 @@ const Card = ({ product = Product }) => {
         <div className={cx("card")}>
             <div className={cx("avatar")}>
                 <img
+                    loading="lazy"
                     onClick={handleSeeDetail}
                     src={product.avatar ?? images.product}
                     alt="avatar"
@@ -142,10 +143,10 @@ const Card = ({ product = Product }) => {
                 shadow
                 onClick={handleAddToCart}
             >
-                Thêm vào giỏ
+                Thêm vào giỏ hàng
             </Button>
         </div>
     );
 };
 
-export default Card;
+export default React.memo(Card);

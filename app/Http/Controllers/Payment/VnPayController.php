@@ -78,7 +78,7 @@ class VnPayController extends Controller
             $discount = min($discount, $validated['amount']);
         }
 
-        $finalAmount = $validated['amount'] - $discount;
+        $finalAmount = $validated['amount'];
 
         // Tạo mã giao dịch duy nhất
         $vnp_TxnRef     = time() . '_' . rand(1000, 9999);
