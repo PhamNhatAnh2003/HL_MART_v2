@@ -72,7 +72,7 @@ class OrderController extends Controller
             'user_id' => $validated['user_id'],
             'status' => 'pending',
             'payment_method' => $validated['payment_method'],
-            'total_price' => $validated['total_price'] - $discount,
+            'total_price' => $validated['total_price'],
             'discount' => $discount,
             'voucher_code' => $voucher->code ?? null,
             'shipping_address' => $validated['shipping_address'],

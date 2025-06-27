@@ -4,6 +4,8 @@ import logo from "./logo.png"
 import logo2 from "./logo2.png"
 import slider1 from "./slider1.png"
 import slider2 from "./slider2.png"
+import slider3 from "./slider3.png"
+import slider4 from "./slider4.png"
 import emptycart from "./emptycart.png"
 import image  from "./image.png"
 import landing  from "./landing.png"
@@ -15,6 +17,8 @@ const images = {
     product: product,
     slider1: slider1,
     slider2: slider2,
+    slider3: slider3,
+    slider4: slider4,
     emptycart: emptycart,
     image: image,
     landing: landing,

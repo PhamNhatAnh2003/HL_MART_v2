@@ -89,8 +89,8 @@ const Home = () => {
                     <Slider medias={medias} />
                 </div>
                 <div className={cx("hero-banners")}>
-                    <img src={images.slider1} alt="Banner 1" />
-                    <img src={images.slider2} alt="Banner 2" />
+                    <img src={images.slider2} alt="Banner 1" />
+                    <img src={images.slider3} alt="Banner 2" />
                 </div>
             </section>
 
@@ -99,7 +99,7 @@ const Home = () => {
                 <h2 className={cx("sectionHeading")}>CÓ THỂ BẠN QUAN TÂM</h2>
                 <div className={cx("productList")}>
                     {specialProducts.map((product, index) => (
-                        <Card key={index} product={product} />
+                        <Card key={product.id} product={product} />
                     ))}
                 </div>
             </section>

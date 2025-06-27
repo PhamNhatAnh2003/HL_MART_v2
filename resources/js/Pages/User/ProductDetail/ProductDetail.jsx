@@ -185,7 +185,7 @@ const ProductDetail = () => {
                                         shadow
                                         onClick={handleAddToCart}
                                     >
-                                        Thêm vào giỏ
+                                        Thêm vào giỏ hàng
                                     </Button>
                                 </div>
                             </div>

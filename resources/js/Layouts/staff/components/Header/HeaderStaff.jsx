@@ -100,7 +100,7 @@ export default function HeaderStaff() {
                                 className={cx("menu-item")}
                                 onClick={() => {
                                     handleLogout();
-                                    navigate("/login");
+                                    navigate("/");
                                     setShowMenu(false);
                                 }}
                             >

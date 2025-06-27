@@ -45,36 +45,40 @@ const CategoryProduct = () => {
     const handleFilter = () => {
         let temp = [...products];
 
+        // Hàm lấy giá cuối cùng
+        const getFinalPrice = (p) => {
+            return p.discount_price && p.discount_price > 0
+                ? p.discount_price
+                : p.price;
+        };
+
+        // Hàm kiểm tra có giảm giá thật không
+        const isDiscounted = (p) => p.discount_price && p.discount_price > 0;
+
         // Lọc theo khoảng giá
         if (minPrice !== "") {
-            temp = temp.filter((p) => {
-                const price = p.discount_price ?? p.price;
-                return price >= parseFloat(minPrice);
-            });
+            temp = temp.filter((p) => getFinalPrice(p) >= parseFloat(minPrice));
         }
 
         if (maxPrice !== "") {
-            temp = temp.filter((p) => {
-                const price = p.discount_price ?? p.price;
-                return price <= parseFloat(maxPrice);
-            });
+            temp = temp.filter((p) => getFinalPrice(p) <= parseFloat(maxPrice));
         }
 
-        // Sắp xếp
+        // Sắp xếp theo lựa chọn
         switch (sortOption) {
             case "priceAsc":
-                temp.sort(
-                    (a, b) =>
-                        (a.discount_price ?? a.price) -
-                        (b.discount_price ?? b.price)
-                );
+                temp.sort((a, b) => {
+                    const aPrice = getFinalPrice(a);
+                    const bPrice = getFinalPrice(b);
+                    return aPrice - bPrice;
+                });
                 break;
             case "priceDesc":
-                temp.sort(
-                    (a, b) =>
-                        (b.discount_price ?? b.price) -
-                        (a.discount_price ?? a.price)
-                );
+                temp.sort((a, b) => {
+                    const aPrice = getFinalPrice(a);
+                    const bPrice = getFinalPrice(b);
+                    return bPrice - aPrice;
+                });
                 break;
             case "name":
                 temp.sort((a, b) => a.name.localeCompare(b.name));

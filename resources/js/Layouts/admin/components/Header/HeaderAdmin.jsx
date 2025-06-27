@@ -70,7 +70,7 @@ return (
                             className={cx("menu-item")}
                             onClick={() => {
                                 handleLogout();
-                                navigate("/login");
+                                navigate("/");
                             }}
                         >
                             Logout
